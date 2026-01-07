@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -125,7 +125,7 @@ import { Product, ProductService } from '../service/product.service';
                         <i class="pi pi-exclamation-triangle mr-4" style="font-size: 2rem"> </i>
                         <span>Are you sure you want to proceed?</span>
                     </div>
-                    <ng-template #footer>
+                    <ng-template #footer1>
                         <p-button label="No" icon="pi pi-times" (click)="closeConfirmation()" text severity="secondary" />
                         <p-button label="Yes" icon="pi pi-check" (click)="closeConfirmation()" severity="danger" outlined autofocus />
                     </ng-template>
@@ -156,11 +156,9 @@ export class OverlayDemo implements OnInit {
 
     selectedProduct!: Product;
 
-    constructor(
-        private productService: ProductService,
-        private confirmationService: ConfirmationService,
-        private messageService: MessageService
-    ) {}
+    public productService = inject(ProductService);
+    public confirmationService = inject(ConfirmationService);
+    public messageService = inject(MessageService);
 
     ngOnInit() {
         this.productService.getProductsSmall().then((products) => (this.products = products));

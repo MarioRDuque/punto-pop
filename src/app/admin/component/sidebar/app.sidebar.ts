@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 import { AppMenu } from '../menu/app.menu';
 
 @Component({
@@ -8,5 +8,5 @@ import { AppMenu } from '../menu/app.menu';
     templateUrl: './app.sidebar.html'
 })
 export class AppSidebar {
-    constructor(public el: ElementRef) {}
+    public el = inject(ElementRef);
 }

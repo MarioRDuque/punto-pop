@@ -15,9 +15,9 @@ import { AppFloatingConfigurator } from '../../../component/floatingconfigurator
     templateUrl: './login.html'
 })
 export class Login {
-    email: string = '';
+    email = '';
 
-    password: string = '';
+    password = '';
 
     checked = false;
 }

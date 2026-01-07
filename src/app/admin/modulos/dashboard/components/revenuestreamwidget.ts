@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { debounceTime, Subscription } from 'rxjs';
 import { LayoutService } from '../../../service/layout.service';
@@ -19,7 +19,9 @@ export class RevenueStreamWidget implements OnInit, OnDestroy{
 
     subscription!: Subscription;
 
-    constructor(public layoutService: LayoutService) {
+    public layoutService = inject(LayoutService);
+
+    constructor() {
         this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
             this.initChart();
         });

@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { FluidModule } from 'primeng/fluid';
 import { debounceTime, Subscription } from 'rxjs';
@@ -72,7 +72,10 @@ export class ChartDemo implements OnInit, OnDestroy{
     radarOptions: any;
 
     subscription: Subscription;
-    constructor(private layoutService: LayoutService) {
+
+    public layoutService = inject(LayoutService);
+
+    constructor() {
         this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
             this.initCharts();
         });

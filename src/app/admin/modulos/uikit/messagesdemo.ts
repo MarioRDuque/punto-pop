@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService, ToastMessageOptions } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -59,7 +59,7 @@ export class MessagesDemo {
 
     email: string | undefined;
 
-    constructor(private service: MessageService) {}
+    public service = inject(MessageService);
 
     showInfoViaToast() {
         this.service.add({ severity: 'info', summary: 'Info Message', detail: 'PrimeNG rocks' });

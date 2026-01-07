@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Subscription } from 'rxjs';
@@ -47,12 +47,12 @@ export class AppMenuitem implements OnInit, OnDestroy{
 
     menuResetSubscription: Subscription;
 
-    key: string = '';
+    key = '';
 
-    constructor(
-        public router: Router,
-        private layoutService: LayoutService
-    ) {
+    public router = inject(Router);
+    public layoutService = inject(LayoutService);
+
+    constructor() {
         this.menuSourceSubscription = this.layoutService.menuSource$.subscribe((value) => {
             Promise.resolve(null).then(() => {
                 if (value.routeEvent) {
@@ -69,7 +69,7 @@ export class AppMenuitem implements OnInit, OnDestroy{
             this.active = false;
         });
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params) => {
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             if (this.item.routerLink) {
                 this.updateActiveStateFromRoute();
             }
@@ -85,7 +85,7 @@ export class AppMenuitem implements OnInit, OnDestroy{
     }
 
     updateActiveStateFromRoute() {
-        let activeRoute = this.router.isActive(this.item.routerLink[0], { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' });
+        const activeRoute = this.router.isActive(this.item.routerLink[0], { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' });
 
         if (activeRoute) {
             this.layoutService.onMenuStateChange({ key: this.key, routeEvent: true });

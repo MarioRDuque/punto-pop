@@ -249,17 +249,17 @@ export class InputDemo implements OnInit {
 
     inputNumberValue: any = null;
 
-    sliderValue: number = 50;
+    sliderValue = 50;
 
     ratingValue: any = null;
 
-    colorValue: string = '#1976D2';
+    colorValue = '#1976D2';
 
     radioValue: any = null;
 
     checkboxValue: any[] = [];
 
-    switchValue: boolean = false;
+    switchValue = false;
 
     listboxValues: any[] = [
         { name: 'New York', code: 'NY' },
@@ -296,15 +296,15 @@ export class InputDemo implements OnInit {
 
     multiselectSelectedCountries!: Country[];
 
-    toggleValue: boolean = false;
+    toggleValue = false;
 
     selectButtonValue: any = null;
 
     selectButtonValues: any = [{ name: 'Option 1' }, { name: 'Option 2' }, { name: 'Option 3' }];
 
-    knobValue: number = 50;
+    knobValue = 50;
 
-    inputGroupValue: boolean = false;
+    inputGroupValue = false;
 
     treeSelectNodes!: TreeNode[];
 

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
@@ -21,23 +21,22 @@ import { ToolbarModule } from 'primeng/toolbar';
     selector: 'app-panels-demo',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        ToolbarModule,
-        ButtonModule,
-        RippleModule,
-        SplitButtonModule,
-        AccordionModule,
-        FieldsetModule,
-        MenuModule,
-        InputTextModule,
-        DividerModule,
-        SplitterModule,
-        PanelModule,
-        TabsModule,
-        IconFieldModule,
-        InputIconModule
-    ],
+    FormsModule,
+    ToolbarModule,
+    ButtonModule,
+    RippleModule,
+    SplitButtonModule,
+    AccordionModule,
+    FieldsetModule,
+    MenuModule,
+    InputTextModule,
+    DividerModule,
+    SplitterModule,
+    PanelModule,
+    TabsModule,
+    IconFieldModule,
+    InputIconModule
+],
     template: `
         <div class="flex flex-col">
             <div class="card">
@@ -191,17 +190,17 @@ import { ToolbarModule } from 'primeng/toolbar';
                     <ng-template #panel>
                         <div class="col flex items-center justify-center">Panel 1</div>
                     </ng-template>
-                    <ng-template #panel>
+                    <ng-template #panel1>
                         <p-splitter layout="vertical" [panelSizes]="[50, 50]">
-                            <ng-template #panel>
+                            <ng-template #panel2>
                                 <div style="grow: 1;" class="flex items-center justify-center">Panel 2</div>
                             </ng-template>
-                            <ng-template #panel>
+                            <ng-template #panel3>
                                 <p-splitter [panelSizes]="[20, 80]">
-                                    <ng-template #panel>
+                                    <ng-template #panel4>
                                         <div class="col flex items-center justify-center">Panel 3</div>
                                     </ng-template>
-                                    <ng-template #panel>
+                                    <ng-template #panel5>
                                         <div class="col flex items-center justify-center">Panel 4</div>
                                     </ng-template>
                                 </p-splitter>

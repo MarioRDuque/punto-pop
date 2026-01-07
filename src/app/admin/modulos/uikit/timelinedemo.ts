@@ -23,7 +23,7 @@ import { ButtonModule } from 'primeng/button';
             <div class="card">
                 <div class="font-semibold text-xl mb-4">Right Align</div>
                 <p-timeline [value]="events1" align="right">
-                    <ng-template #content let-event>
+                    <ng-template #content1 let-event>
                         {{ event.status }}
                     </ng-template>
                 </p-timeline>
@@ -33,7 +33,7 @@ import { ButtonModule } from 'primeng/button';
             <div class="card">
                 <div class="font-semibold text-xl mb-4">Alternate Align</div>
                 <p-timeline [value]="events1" align="alternate">
-                    <ng-template #content let-event>
+                    <ng-template #content2 let-event>
                         {{ event.status }}
                     </ng-template>
                 </p-timeline>
@@ -43,7 +43,7 @@ import { ButtonModule } from 'primeng/button';
             <div class="card">
                 <div class="font-semibold text-xl mb-4">Opposite Content</div>
                 <p-timeline [value]="events1">
-                    <ng-template #content let-event>
+                    <ng-template #content3 let-event>
                         <small class="p-text-secondary">{{ event.date }}</small>
                     </ng-template>
                     <ng-template #opposite let-event>
@@ -61,7 +61,7 @@ import { ButtonModule } from 'primeng/button';
                             <i [class]="event.icon"></i>
                         </span>
                     </ng-template>
-                    <ng-template #content let-event>
+                    <ng-template #content4 let-event>
                         <p-card [header]="event.status" [subheader]="event.date">
                             @if (event.image) {
                                 <img [src]="'/images/product/' + event.image" [alt]="event.name" width="200" class="shadow" />
@@ -81,21 +81,21 @@ import { ButtonModule } from 'primeng/button';
                 <div class="font-semibold text-xl mb-4">Horizontal</div>
                 <div class="font-semibold mb-2">Top Align</div>
                 <p-timeline [value]="events2" layout="horizontal" align="top">
-                    <ng-template #content let-event>
+                    <ng-template #content5 let-event>
                         {{ event }}
                     </ng-template>
                 </p-timeline>
 
                 <div class="font-semibold mt-4 mb-2">Bottom Align</div>
                 <p-timeline [value]="events2" layout="horizontal" align="bottom">
-                    <ng-template #content let-event>
+                    <ng-template #content6 let-event>
                         {{ event }}
                     </ng-template>
                 </p-timeline>
 
                 <div class="font-semibold mt-4 mb-2">Alternate Align</div>
                 <p-timeline [value]="events2" layout="horizontal" align="alternate">
-                    <ng-template #content let-event>
+                    <ng-template #content7 let-event>
                         {{ event }}
                     </ng-template>
                     <ng-template #opposite let-event> &nbsp; </ng-template>

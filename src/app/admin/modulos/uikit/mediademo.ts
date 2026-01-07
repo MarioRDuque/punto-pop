@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { GalleriaModule } from 'primeng/galleria';
@@ -46,7 +46,7 @@ import { Product, ProductService } from '../service/product.service';
         <div class="card">
             <div class="font-semibold text-xl mb-4">Galleria</div>
             <p-galleria [value]="images" [responsiveOptions]="galleriaResponsiveOptions" [containerStyle]="{ 'max-width': '640px' }" [numVisible]="5">
-                <ng-template #item let-item>
+                <ng-template #itemR let-item>
                     <img [src]="item.itemImageSrc" style="width:100%" alt=""/>
                 </ng-template>
                 <ng-template #thumbnail let-item>
@@ -98,10 +98,8 @@ export class MediaDemo implements OnInit {
         }
     ];
 
-    constructor(
-        private productService: ProductService,
-        private photoService: PhotoService
-    ) {}
+    public productService = inject(ProductService);
+    public photoService = inject(PhotoService);
 
     ngOnInit() {
         this.productService.getProductsSmall().then((products) => {

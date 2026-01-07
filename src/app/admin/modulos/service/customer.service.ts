@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface Country {
@@ -9029,7 +9029,7 @@ export class CustomerService {
         ];
     }
 
-    constructor(private http: HttpClient) {}
+    public http = inject(HttpClient);
 
     getCustomersMini() {
         return Promise.resolve(this.getData().slice(0, 5));
