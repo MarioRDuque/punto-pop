@@ -364,7 +364,7 @@ export class AppConfigurator implements OnInit{
         }
     }
 
-    updateColors(event: any, type: string, color: any) {
+    updateColors(event: Event, type: string, color: any) {
         if (type === 'primary') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, primary: color.name }));
         } else if (type === 'surface') {

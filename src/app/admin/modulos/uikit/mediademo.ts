@@ -59,7 +59,7 @@ import { Product, ProductService } from '../service/product.service';
 export class MediaDemo implements OnInit {
     products!: Product[];
 
-    images!: any[];
+    images!: object[];
 
     galleriaResponsiveOptions: any[] = [
         {

@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Params } from '@angular/router';
 
 export interface Country {
     name?: string;
@@ -9051,7 +9052,7 @@ export class CustomerService {
         return Promise.resolve(this.getData());
     }
 
-    getCustomers(params?: any) {
-        return this.http.get<any>('https://www.primefaces.org/data/customers', { params: params }).toPromise();
+    getCustomers(params?: Params) {
+        return this.http.get<object>('https://www.primefaces.org/data/customers', { params: params }).toPromise();
     }
 }

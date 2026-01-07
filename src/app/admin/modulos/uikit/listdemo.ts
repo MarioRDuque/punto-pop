@@ -169,9 +169,9 @@ export class ListDemo implements OnInit {
 
     products: Product[] = [];
 
-    sourceCities: any[] = [];
+    sourceCities: object[] = [];
 
-    targetCities: any[] = [];
+    targetCities: object[] = [];
 
     orderCities: object[] = [];
 

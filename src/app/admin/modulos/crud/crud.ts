@@ -225,7 +225,7 @@ export class Crud implements OnInit {
 
   submitted = false;
 
-  statuses!: any[];
+  statuses!: object[];
 
   @ViewChild('dt') dt!: Table;
 

@@ -239,9 +239,9 @@ import { Country } from '../service/customer.service';
 export class InputDemo implements OnInit {
     floatValue: any = null;
 
-    autoValue: any[] | undefined;
+    autoValue: object[] | undefined;
 
-    autoFilteredValue: any[] = [];
+    autoFilteredValue: object[] = [];
 
     selectedAutoValue: any = null;
 
@@ -257,7 +257,7 @@ export class InputDemo implements OnInit {
 
     radioValue: any = null;
 
-    checkboxValue: any[] = [];
+    checkboxValue: object[] = [];
 
     switchValue = false;
 
