@@ -48,7 +48,7 @@ export class LayoutService {
 
     private configUpdate = new Subject<layoutConfig>();
 
-    private overlayOpen = new Subject<any>();
+    private overlayOpen = new Subject<object | null>();
 
     private menuSource = new Subject<MenuChangeEvent>();
 
@@ -99,7 +99,7 @@ export class LayoutService {
     }
 
     private handleDarkModeTransition(config: layoutConfig): void {
-        if ((document as any).startViewTransition) {
+        if ((document as Document).startViewTransition) {
             this.startViewTransition(config);
         } else {
             this.toggleDarkMode(config);
@@ -108,7 +108,7 @@ export class LayoutService {
     }
 
     private startViewTransition(config: layoutConfig): void {
-        const transition = (document as any).startViewTransition(() => {
+        const transition = (document as Document).startViewTransition(() => {
             this.toggleDarkMode(config);
         });
 
@@ -116,7 +116,7 @@ export class LayoutService {
             .then(() => {
                 this.onTransitionEnd();
             })
-            .catch(() => {});
+            .catch(err => console.warn(err));
     }
 
     toggleDarkMode(config?: layoutConfig): void {

@@ -47,10 +47,10 @@ import { Product, ProductService } from '../service/product.service';
             <div class="font-semibold text-xl mb-4">Galleria</div>
             <p-galleria [value]="images" [responsiveOptions]="galleriaResponsiveOptions" [containerStyle]="{ 'max-width': '640px' }" [numVisible]="5">
                 <ng-template #item let-item>
-                    <img [src]="item.itemImageSrc" style="width:100%" />
+                    <img [src]="item.itemImageSrc" style="width:100%" alt=""/>
                 </ng-template>
                 <ng-template #thumbnail let-item>
-                    <img [src]="item.thumbnailImageSrc" />
+                    <img [src]="item.thumbnailImageSrc" alt=""/>
                 </ng-template>
             </p-galleria>
         </div>`,

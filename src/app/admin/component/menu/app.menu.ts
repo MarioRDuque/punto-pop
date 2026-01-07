@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -10,7 +10,7 @@ import { AppMenuitem } from '../menuitem/app.menuitem';
     imports: [AppMenuitem, RouterModule],
     templateUrl: './app.menu.html'
 })
-export class AppMenu {
+export class AppMenu implements OnInit{
     model: MenuItem[] = [];
 
     ngOnInit() {

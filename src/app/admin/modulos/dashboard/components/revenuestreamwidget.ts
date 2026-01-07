@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { debounceTime, Subscription } from 'rxjs';
 import { LayoutService } from '../../../service/layout.service';
@@ -12,7 +12,7 @@ import { LayoutService } from '../../../service/layout.service';
         <p-chart type="bar" [data]="chartData" [options]="chartOptions" class="h-100" />
     </div>`
 })
-export class RevenueStreamWidget {
+export class RevenueStreamWidget implements OnInit, OnDestroy{
     chartData: any;
 
     chartOptions: any;

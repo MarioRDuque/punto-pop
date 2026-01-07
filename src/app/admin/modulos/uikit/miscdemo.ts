@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { BadgeModule } from 'primeng/badge';
@@ -171,7 +171,7 @@ import { TagModule } from 'primeng/tag';
         </div>
     `
 })
-export class MiscDemo {
+export class MiscDemo implements OnInit, OnDestroy {
     value = 0;
 
     interval: any;

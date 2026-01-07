@@ -1,4 +1,4 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { LayoutService } from '../../service/layout.service';
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
     templateUrl: './app.layout.html',
 })
-export class AppLayout {
+export class AppLayout implements OnDestroy{
     overlayMenuOpenSubscription: Subscription;
 
     menuOutsideClickListener: any;

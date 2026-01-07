@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 export class IconService {
     constructor(private http: HttpClient) {}
 
-    icons!: any[];
+    icons!: object[];
 
     selectedIcon: any;
 

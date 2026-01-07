@@ -19,5 +19,5 @@ export class Login {
 
     password: string = '';
 
-    checked: boolean = false;
+    checked = false;
 }

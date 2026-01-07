@@ -34,7 +34,7 @@ import { ToastModule } from 'primeng/toast';
     providers: [MessageService]
 })
 export class FileDemo {
-    uploadedFiles: any[] = [];
+    uploadedFiles: object[] = [];
 
     constructor(private messageService: MessageService) {}
 

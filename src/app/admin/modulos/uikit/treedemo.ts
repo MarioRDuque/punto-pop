@@ -59,7 +59,7 @@ export class TreeDemo implements OnInit {
 
     selectedTreeTableValue = {};
 
-    cols: any[] = [];
+    cols: object[] = [];
 
     nodeService = inject(NodeService);
 
