@@ -174,7 +174,7 @@ import { TagModule } from 'primeng/tag';
 export class MiscDemo implements OnInit, OnDestroy {
     value = 0;
 
-    interval: any;
+    interval = 0;
 
     ngOnInit() {
         this.interval = setInterval(() => {

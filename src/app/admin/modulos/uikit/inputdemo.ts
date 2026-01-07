@@ -261,7 +261,7 @@ export class InputDemo implements OnInit {
 
     switchValue = false;
 
-    listboxValues: any[] = [
+    listboxValues: object[] = [
         { name: 'New York', code: 'NY' },
         { name: 'Rome', code: 'RM' },
         { name: 'London', code: 'LDN' },
@@ -269,7 +269,7 @@ export class InputDemo implements OnInit {
         { name: 'Paris', code: 'PRS' }
     ];
 
-    listboxValue: any = null;
+    listboxValue: object = {};
 
     dropdownValues = [
         { name: 'New York', code: 'NY' },

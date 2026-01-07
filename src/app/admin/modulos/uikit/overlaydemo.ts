@@ -9,7 +9,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
-import { TableModule } from 'primeng/table';
+import { TableModule, TableRowSelectEvent } from 'primeng/table';
 import { Product, ProductService } from '../service/product.service';
 
 @Component({
@@ -213,9 +213,9 @@ export class OverlayDemo implements OnInit {
         op.toggle(event);
     }
 
-    onProductSelect(op: Popover, event: any) {
+    onProductSelect(op: Popover, event: TableRowSelectEvent<any>) {
         op.hide();
-        this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event?.data.name, life: 3000 });
+        this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event?.data?.name, life: 3000 });
     }
 
     openConfirmation() {
