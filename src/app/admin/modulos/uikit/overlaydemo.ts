@@ -209,7 +209,7 @@ export class OverlayDemo implements OnInit {
         this.display = false;
     }
 
-    toggleDataTable(op: Popover, event: any) {
+    toggleDataTable(op: Popover, event: Event) {
         op.toggle(event);
     }
 

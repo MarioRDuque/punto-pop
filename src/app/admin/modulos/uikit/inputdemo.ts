@@ -323,10 +323,10 @@ export class InputDemo implements OnInit {
     }
 
     filterCountry(event: AutoCompleteCompleteEvent) {
-        const filtered: any[] = [];
+        const filtered: object[] = [];
         const query = event.query;
 
-        for (let i = 0; i < (this.autoValue as any[]).length; i++) {
+        for (let i = 0; i < (this.autoValue as object[]).length; i++) {
             const country = (this.autoValue as any[])[i];
             if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
                 filtered.push(country);

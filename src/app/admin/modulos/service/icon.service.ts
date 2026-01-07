@@ -8,7 +8,7 @@ export class IconService {
 
     icons!: object[];
 
-    selectedIcon: any;
+    selectedIcon: object[] = [];
 
     apiUrl = 'assets/demo/data/icons.json';
 

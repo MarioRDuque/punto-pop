@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { CarouselModule } from 'primeng/carousel';
-import { GalleriaModule } from 'primeng/galleria';
+import { CarouselModule, CarouselResponsiveOptions } from 'primeng/carousel';
+import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
 import { ImageModule } from 'primeng/image';
 import { TagModule } from 'primeng/tag';
 import { PhotoService } from '../service/photo.service';
@@ -61,7 +61,7 @@ export class MediaDemo implements OnInit {
 
     images!: object[];
 
-    galleriaResponsiveOptions: any[] = [
+    galleriaResponsiveOptions: GalleriaResponsiveOptions[] = [
         {
             breakpoint: '1024px',
             numVisible: 5
@@ -80,7 +80,7 @@ export class MediaDemo implements OnInit {
         }
     ];
 
-    carouselResponsiveOptions: any[] = [
+    carouselResponsiveOptions: CarouselResponsiveOptions[] = [
         {
             breakpoint: '1024px',
             numVisible: 3,
