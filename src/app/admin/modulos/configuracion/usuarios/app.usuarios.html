@@ -1,0 +1,108 @@
+<p-fluid>
+    <p-panel [toggleable]="true">
+        <ng-template #header>
+            <div class="flex items-center gap-2">
+                <p-avatar icon="pi pi-user" shape="circle" />
+                <span class="font-bold">REGISTRO USUARIO</span>
+            </div>
+        </ng-template>
+        <ng-template #footer>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <p-button icon="pi pi-user" rounded text></p-button>
+                    <p-button icon="pi pi-bookmark" severity="secondary" rounded text></p-button>
+                </div>
+                <span class="text-surface-500 dark:text-surface-400">VetHome</span>
+            </div>
+        </ng-template>
+        <ng-template #icons>
+            <p-button icon="pi pi-cog" severity="secondary" rounded text (click)="menu.toggle($event)" />
+            <p-menu #menu id="config_menu" [model]="items" [popup]="true" />
+        </ng-template>
+        <div class="flex flex-col md:flex-row gap-8 w-full">
+            <div class="card flex flex-col gap-0 w-full">
+                <p-panel header="Datos" [toggleable]="true">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                        <!-- Apellidos -->
+                        <div class="field">
+                            <input pInputText type="text" placeholder="Apellidos" class="w-full" />
+                        </div>
+                        <!-- Nombre -->
+                        <div class="field">
+                            <input pInputText type="text" placeholder="Nombre" class="w-full" />
+                        </div>
+                        <!-- Usuario -->
+                        <div class="field">
+                            <p-iconfield class="w-full">
+                                <p-inputicon class="pi pi-user"></p-inputicon>
+                                <input pInputText type="text" placeholder="Usuario" class="w-full" />
+                            </p-iconfield>
+                        </div>
+                        <!-- Correo -->
+                        <div class="field md:col-span-2">
+                            <input pInputText type="email" placeholder="Correo electrónico" class="w-full" />
+                        </div>
+                        <!-- Contraseña -->
+                        <div class="field">
+                            <input pInputText type="password" placeholder="Contraseña" class="w-full" />
+                        </div>
+                    </div>
+                </p-panel>
+                <p-panel header="Contacto" [toggleable]="true" [collapsed]="true">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                        <!-- Telefono -->
+                        <div class="field">
+                            <input pInputText type="text" placeholder="Telefono" class="w-full" />
+                        </div>
+                        <!-- Dirección -->
+                        <div class="field  md:col-span-2">
+                            <p-iconfield class="w-full">
+                                <p-inputicon class="pi pi-map-marker"></p-inputicon>
+                                <input pInputText type="text" placeholder="Dirección" class="w-full" />
+                            </p-iconfield>
+                        </div>
+                    </div>
+                </p-panel>
+                <p-panel header="Datos adicionales" [toggleable]="true" [collapsed]="true">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                        <!-- Rol -->
+                        <div class="field">
+                            <p-multiselect [options]="dropdownValues" [(ngModel)]="dropdownValue"
+                                placeholder="Seleccionar rol" optionLabel="name" display="chip">
+                                <ng-template #selecteditems let-countries>
+                                    @for (country of countries; track country.code) {
+                                    <div
+                                        class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                        <div>{{ country.name }}</div>
+                                    </div>
+                                    }
+                                </ng-template>
+                                <ng-template #item let-country>
+                                    <div class="flex items-center">
+                                        <div>{{ country.name }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-multiselect>
+                        </div>
+                        <!-- Fecha Ingreso -->
+                        <div class="field">
+                            <p-datepicker [showIcon]="true" [showButtonBar]="true" dateFormat="dd-mm-yy"
+                                placeholder="dd-mm-yyyy" [(ngModel)]="calendarValue"></p-datepicker>
+                        </div>
+                        <!-- Estado -->
+                        <div class="field text-center">
+                            <p-togglebutton [(ngModel)]="toggleValue" onLabel="Activo" offLabel="Inactivo"
+                                [style]="{ width: '10em' }" />
+                        </div>
+                    </div>
+                </p-panel>
+                <p-panel header="Foto" [toggleable]="true" [collapsed]="true">
+                    <!-- IMAGEN -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+<!-- aqui prorgamar subir imagen -->
+                    </div>
+                </p-panel>
+            </div>
+        </div>
+    </p-panel>
+</p-fluid>

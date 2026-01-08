@@ -14,7 +14,7 @@ import { TableDemo } from './tabledemo';
 import { OverlayDemo } from './overlaydemo';
 import { TreeDemo } from './treedemo';
 import { MenuDemo } from './menudemo';
-import { AppUsuarios } from '../../component/sistema/usuarios/app.usuarios';
+import { AppUsuarios } from '../configuracion/usuarios/app.usuarios';
 
 export default [
     { path: 'button', data: { breadcrumb: 'Button' }, component: ButtonDemo },
