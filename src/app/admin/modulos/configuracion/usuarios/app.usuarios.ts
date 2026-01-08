@@ -17,6 +17,10 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ToolbarModule } from 'primeng/toolbar';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
+import { PanelModule } from 'primeng/panel';
+import { AvatarModule } from 'primeng/avatar';
+import { MenuModule } from 'primeng/menu';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
     selector: 'app-usuarios',
@@ -38,7 +42,11 @@ import { MenuItem } from 'primeng/api';
         DatePickerModule,
         MultiSelectModule,
         ToolbarModule,
-        SplitButtonModule
+        SplitButtonModule,
+        PanelModule,
+        AvatarModule,
+        MenuModule,
+        FileUploadModule
     ],
     templateUrl: './app.usuarios.html'
 })
