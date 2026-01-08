@@ -14,6 +14,7 @@ import { TableDemo } from './tabledemo';
 import { OverlayDemo } from './overlaydemo';
 import { TreeDemo } from './treedemo';
 import { MenuDemo } from './menudemo';
+import { AppUsuarios } from '../../component/sistema/usuarios/app.usuarios';
 
 export default [
     { path: 'button', data: { breadcrumb: 'Button' }, component: ButtonDemo },
@@ -31,5 +32,6 @@ export default [
     { path: 'overlay', data: { breadcrumb: 'Overlay' }, component: OverlayDemo },
     { path: 'tree', data: { breadcrumb: 'Tree' }, component: TreeDemo },
     { path: 'menu', data: { breadcrumb: 'Menu' }, component: MenuDemo },
+    { path: 'usuarios', data: { breadcrumb: 'Usuario' }, component:  AppUsuarios},
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;
