@@ -17,3 +17,67 @@
 .p-0{
     padding: 0px;
 }
+
+//imagen
+
+/* OCULTAR BOTÓN CHOOSE */
+.p-fileupload-choose-button {
+  display: none !important;
+}
+
+/* ZONA DE SUBIDA */
+.upload-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-box:hover {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #22c55e;
+}
+
+/* AVATAR */
+.avatar-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: auto;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #22c55e;
+}
+
+/* BOTÓN ELIMINAR */
+.remove-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: white;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+
+//fin img
