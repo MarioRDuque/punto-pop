@@ -1,26 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
-import { InputTextModule } from 'primeng/inputtext';
-import { FluidModule } from 'primeng/fluid';
-import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { TextareaModule } from 'primeng/textarea';
-import { InputIconModule } from 'primeng/inputicon';
-import { IconFieldModule } from 'primeng/iconfield';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { CommonModule } from '@angular/common';
-import { DatePickerModule } from 'primeng/datepicker';
-import { Country } from '../../../modulos/service/customer.service';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { ToolbarModule } from 'primeng/toolbar';
-import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
-import { PanelModule } from 'primeng/panel';
 import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FluidModule } from 'primeng/fluid';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
-import { FileUploadModule } from 'primeng/fileupload';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { PanelModule } from 'primeng/panel';
+import { PasswordModule } from 'primeng/password';
+import { TableModule } from 'primeng/table';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-usuarios',
@@ -28,25 +24,22 @@ import { FileUploadModule } from 'primeng/fileupload';
 
     imports: [
         ButtonModule,
-        RouterModule,
-        RippleModule,
         InputTextModule,
         FluidModule,
-        SelectModule,
         FormsModule,
-        TextareaModule,
         InputIconModule,
         IconFieldModule,
         ToggleButtonModule,
-        CommonModule,
         DatePickerModule,
         MultiSelectModule,
-        ToolbarModule,
-        SplitButtonModule,
         PanelModule,
         AvatarModule,
         MenuModule,
-        FileUploadModule
+        FloatLabelModule,
+        PasswordModule,
+        FieldsetModule,
+        Tooltip,
+        TableModule
     ],
     templateUrl: './app.usuarios.html'
 })
