@@ -8,7 +8,8 @@
         </ng-template>
 
         <ng-template #icons>
-            <p-button icon="pi pi-save" severity="info" rounded text (click)="menu.toggle($event)" />
+            <p-button icon="pi pi-save" pTooltip="Guardar" tooltipPosition="right" severity="info" rounded text
+                (click)="menu.toggle($event)" />
             <p-menu #menu id="config_menu" [model]="items" [popup]="true" />
         </ng-template>
 
@@ -115,6 +116,34 @@
                     <!-- IMAGEN -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                         <!-- aqui prorgamar subir imagen -->
+                        <div class="md:col-span-3 w-full">
+                            <p-fileupload #fileUploader name="files[]" accept="image/*" [multiple]="false"
+                                mode="advanced" [customUpload]="true" [showUploadButton]="false"
+                                [showCancelButton]="false" (onSelect)="onSelectImage($event)">
+
+                                <!-- ZONA PERSONALIZADA -->
+                                <ng-template pTemplate="empty">
+                                    <div class="upload-box" (click)="fileUploader.choose()">
+                                        <i class="pi pi-camera upload-icon"></i>
+                                        <p class="upload-title">Subir foto</p>
+                                        <small>Click o arrastre aquí</small>
+                                    </div>
+                                </ng-template>
+                                <!-- PREVIEW -->
+                                <ng-template pTemplate="content">
+                                    @if (preview) {
+                                    <div class="avatar-wrapper">
+                                        <img [src]="preview" class="avatar-img" />
+                                        <!-- BOTÓN ELIMINAR -->
+                                        <button type="button" class="remove-btn" (click)="removeImage(fileUploader)">
+                                            <i class="pi pi-times"></i>
+                                        </button>
+                                    </div>
+                                    }
+                                </ng-template>
+
+                            </p-fileupload>
+                        </div>
                     </div>
                 </p-fieldset>
             </div>
@@ -123,72 +152,12 @@
         <ng-template #footer>
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <p-button icon="pi pi-eraser" pTooltip="Limpiar" severity="warn" tooltipPosition="right" rounded
+                    <p-button icon="pi pi-eraser" pTooltip="Limpiar" tooltipPosition="right" severity="warn" rounded
                         text></p-button>
                     <p-button icon="pi pi-bookmark" severity="secondary" rounded text></p-button>
                 </div>
                 <span class="text-surface-500 dark:text-surface-400">VetHome</span>
             </div>
         </ng-template>
-    </p-panel>
-    <p-panel value="1" [toggleable]="true">
-        <ng-template #header>
-            <div class="flex items-center gap-2 pt-15 pt-3">
-                <p-avatar icon="pi pi-user" shape="circle" />
-                <span class="font-bold">LISTADO USUARIO</span>
-            </div>
-            <div class="flex">
-            <p-iconfield iconPosition="left" class="ml-auto">
-                <p-inputicon>
-                    <i class="pi pi-search"></i>
-                </p-inputicon>
-                <input pInputText type="text"  placeholder="Search keyword" />
-            </p-iconfield>
-        </div>
-        </ng-template>
-        <p-table #dt  [customSort]="true">
-            <ng-template #header>
-                <tr>
-                    <th pSortableColumn="code">
-                        <div class="flex items-center gap-2">
-                            Code
-                            <p-sortIcon field="code" />
-                        </div>
-                    </th>
-                    <th pSortableColumn="name">
-                        <div class="flex items-center gap-2">
-                            Name
-                            <p-sortIcon field="name" />
-                        </div>
-                    </th>
-                    <th pSortableColumn="category">
-                        <div class="flex items-center gap-2">
-                            Category
-                            <p-sortIcon field="category" />
-                        </div>
-                    </th>
-                    <th pSortableColumn="quantity">
-                        <div class="flex items-center gap-2">
-                            Quantity
-                            <p-sortIcon field="quantity" />
-                        </div>
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template #body>
-                <tr>
-                    <td>PRUEBA</td>
-                    <td>PRUEBA</td>
-                    <td>PRUEBA</td>
-                    <td>PRUEBA</td>
-                </tr>
-                <tr>
-                    <td>PRUEBA2</td>
-                    <td>PRUEBA2</td>
-                    <td>PRUEBA2</td>
-                    <td>PRUEBA2</td>
-                </tr>
-            </ng-template>
-        </p-table>
     </p-panel>
 </p-fluid>

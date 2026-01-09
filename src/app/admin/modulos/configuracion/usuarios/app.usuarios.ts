@@ -17,10 +17,13 @@ import { PasswordModule } from 'primeng/password';
 import { TableModule } from 'primeng/table';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Tooltip } from 'primeng/tooltip';
+import { FileUpload } from 'primeng/fileupload';
+import { Image } from 'primeng/image';
 
 @Component({
     selector: 'app-usuarios',
     standalone: true,
+
 
     imports: [
         ButtonModule,
@@ -39,11 +42,13 @@ import { Tooltip } from 'primeng/tooltip';
         PasswordModule,
         FieldsetModule,
         Tooltip,
-        TableModule
+        TableModule,
+        FileUpload,
+        Image
     ],
     templateUrl: './app.usuarios.html'
 })
-export class AppUsuarios implements OnInit{
+export class AppUsuarios implements OnInit {
     toggleValue = false;
     calendarValue: any = null;
 
@@ -58,7 +63,7 @@ export class AppUsuarios implements OnInit{
     dropdownValue: any = null;
     dropdownItem = null;
 
-     items: MenuItem[] | undefined;
+    items: MenuItem[] | undefined;
 
     ngOnInit() {
         this.items = [
@@ -72,6 +77,29 @@ export class AppUsuarios implements OnInit{
             }
         ];
     }
+
+    //IMAGEN
+    preview: string | null = null;
+    selectedFile: File | null = null;
+
+    onSelectImage(event: any) {
+        const file: File = event.files?.[0];
+        if (!file) return;
+        // Preview instantáneo
+        this.preview = URL.createObjectURL(file);
+        this.selectedFile = file;
+    }
+
+    removeImage(fileUploader: any) {
+        if (this.preview) {
+            URL.revokeObjectURL(this.preview);
+        }
+        this.preview = null;
+        this.selectedFile = null;
+        fileUploader.clear();
+    }
+    //FIN IMAGEN
+
 }
 
 
