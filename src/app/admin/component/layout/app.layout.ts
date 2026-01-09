@@ -13,10 +13,10 @@ import { LayoutService } from '../../service/layout.service';
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
     templateUrl: './app.layout.html',
 })
-export class AppLayout implements OnDestroy{
+export class AppLayout implements OnDestroy {
     overlayMenuOpenSubscription: Subscription;
 
-    menuOutsideClickListener: any;
+    menuOutsideClickListener: (() => void) | null = null;
 
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 

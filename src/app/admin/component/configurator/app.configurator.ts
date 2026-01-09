@@ -364,7 +364,7 @@ export class AppConfigurator implements OnInit {
         }
     }
 
-    updateColors(event: Event, type: string, color: any) {
+    updateColors(event: Event, type: string, color: SurfacesType) {
         if (type === 'primary') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, primary: color.name }));
         } else if (type === 'surface') {
@@ -375,7 +375,7 @@ export class AppConfigurator implements OnInit {
         event.stopPropagation();
     }
 
-    applyTheme(type: string, color: any) {
+    applyTheme(type: string, color: SurfacesType) {
         if (type === 'primary') {
             updatePreset(this.getPresetExt());
         } else if (type === 'surface') {
@@ -383,7 +383,7 @@ export class AppConfigurator implements OnInit {
         }
     }
 
-    onPresetChange(event: any) {
+    onPresetChange(event: string | undefined) {
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
         const preset = presets[event as KeyOfType<typeof presets>];
         const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
