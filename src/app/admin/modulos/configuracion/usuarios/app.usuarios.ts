@@ -19,6 +19,10 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Tooltip } from 'primeng/tooltip';
 import { FileUpload } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { CommonModule } from '@angular/common';
+import { Fileupload } from "../../../component/fileupload/fileupload";
 
 @Component({
     selector: 'app-usuarios',
@@ -33,7 +37,6 @@ import { Image } from 'primeng/image';
         InputIconModule,
         IconFieldModule,
         ToggleButtonModule,
-        DatePickerModule,
         MultiSelectModule,
         PanelModule,
         AvatarModule,
@@ -43,14 +46,16 @@ import { Image } from 'primeng/image';
         FieldsetModule,
         Tooltip,
         TableModule,
-        FileUpload,
-        Image
+        ToggleSwitch,
+        CommonModule,
+        Fileupload
     ],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
     toggleValue = false;
     calendarValue: any = null;
+    checked: boolean = false;
 
     dropdownValues = [
         { name: 'ADMINISTRADOR', code: 'ADM' },
@@ -78,27 +83,6 @@ export class AppUsuarios implements OnInit {
         ];
     }
 
-    //IMAGEN
-    preview: string | null = null;
-    selectedFile: File | null = null;
-
-    onSelectImage(event: any) {
-        const file: File = event.files?.[0];
-        if (!file) return;
-        // Preview instantáneo
-        this.preview = URL.createObjectURL(file);
-        this.selectedFile = file;
-    }
-
-    removeImage(fileUploader: any) {
-        if (this.preview) {
-            URL.revokeObjectURL(this.preview);
-        }
-        this.preview = null;
-        this.selectedFile = null;
-        fileUploader.clear();
-    }
-    //FIN IMAGEN
 
 }
 

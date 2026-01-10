@@ -82,69 +82,53 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                         <!-- Rol -->
                         <div class="field">
-                            <p-multiselect [options]="dropdownValues" [(ngModel)]="dropdownValue" name="dropdownValue"
-                                placeholder="Seleccionar rol" optionLabel="name" display="chip">
-                                <ng-template #selecteditems let-countries>
-                                    @for (country of countries; track country.code) {
-                                    <div
-                                        class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
-                                        <div>{{ country.name }}</div>
-                                    </div>
-                                    }
-                                </ng-template>
-                                <ng-template #item let-country>
-                                    <div class="flex items-center">
-                                        <div>{{ country.name }}</div>
-                                    </div>
-                                </ng-template>
-                            </p-multiselect>
-                        </div>
-                        <!-- Fecha Ingreso -->
-                        <div class="field">
-                            <p-datepicker [showIcon]="true" [showButtonBar]="true" dateFormat="dd-mm-yy"
-                                placeholder="dd-mm-yyyy" [(ngModel)]="calendarValue"
-                                name="calendarValue"></p-datepicker>
+                            <p-floatlabel variant="on" class="w-full multiselect-float">
+                                <p-multiselect id="roles" class="w-full" [options]="dropdownValues"
+                                    [(ngModel)]="dropdownValue" optionLabel="name" display="chip" placeholder=" "
+                                    [showClear]="true">
+                                    <ng-template pTemplate="selecteditems" let-items>
+                                        @for (item of items; track item.code) {
+                                        <div
+                                            class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                            {{ item.name }}
+                                        </div>
+                                        }
+                                    </ng-template>
+                                    <ng-template pTemplate="item" let-item>
+                                        <div class="flex items-center">
+                                            {{ item.name }}
+                                        </div>
+                                    </ng-template>
+                                </p-multiselect>
+
+                                <label for="roles">Seleccionar rol</label>
+                            </p-floatlabel>
                         </div>
                         <!-- Estado -->
-                        <div class="field text-center">
-                            <p-togglebutton [(ngModel)]="toggleValue" name="toggleValue" onLabel="Activo"
-                                offLabel="Inactivo" [style]="{ width: '10em' }" />
+                        <div class="flex justify-center">
+                            <div class="estado-field items-center">
+                                <label class="estado-label">
+                                    <span [class.text-green]="checked" [class.text-red]="!checked">Estado: {{ checked ?
+                                        'Activo' : 'Inactivo' }}</span>
+                                </label>
+                                <p-toggleswitch [(ngModel)]="checked">
+                                    <ng-template #handle let-checked="checked">
+                                        <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
+                                    </ng-template>
+                                </p-toggleswitch>
+
+                            </div>
                         </div>
                     </div>
-                </p-fieldset>
-                <p-fieldset legend="Foto" [toggleable]="true">
+                    <br>
                     <!-- IMAGEN -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <!-- aqui prorgamar subir imagen -->
-                        <div class="md:col-span-3 w-full">
-                            <p-fileupload #fileUploader name="files[]" accept="image/*" [multiple]="false"
-                                mode="advanced" [customUpload]="true" [showUploadButton]="false"
-                                [showCancelButton]="false" (onSelect)="onSelectImage($event)">
-
-                                <!-- ZONA PERSONALIZADA -->
-                                <ng-template pTemplate="empty">
-                                    <div class="upload-box" (click)="fileUploader.choose()">
-                                        <i class="pi pi-camera upload-icon"></i>
-                                        <p class="upload-title">Subir foto</p>
-                                        <small>Click o arrastre aquí</small>
-                                    </div>
-                                </ng-template>
-                                <!-- PREVIEW -->
-                                <ng-template pTemplate="content">
-                                    @if (preview) {
-                                    <div class="avatar-wrapper">
-                                        <img [src]="preview" class="avatar-img" />
-                                        <!-- BOTÓN ELIMINAR -->
-                                        <button type="button" class="remove-btn" (click)="removeImage(fileUploader)">
-                                            <i class="pi pi-times"></i>
-                                        </button>
-                                    </div>
-                                    }
-                                </ng-template>
-
-                            </p-fileupload>
+                    <p-fieldset legend="Foto">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <div class="md:col-span-3 w-full">
+                                <app-fileupload></app-fileupload>
+                            </div>
                         </div>
-                    </div>
+                    </p-fieldset>
                 </p-fieldset>
             </div>
         </div>
