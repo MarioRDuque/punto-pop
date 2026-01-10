@@ -26,7 +26,7 @@
                             <div class="field">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off"
-                                        type="text" appErrors />
+                                        appErrors />
                                     <label for="Apellidos">Apellidos</label>
                                 </p-floatlabel>
                             </div>
@@ -34,7 +34,7 @@
                             <div class="field">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"
-                                        type="text" appErrors />
+                                        appErrors />
                                     <label for="Nombre">Nombre</label>
                                 </p-floatlabel>
                             </div>
@@ -43,8 +43,8 @@
                                 <p-floatlabel variant="on" class="w-full">
                                     <p-iconfield class="w-full">
                                         <p-inputicon class="pi pi-user"></p-inputicon>
-                                        <input pInputText id="Usuario" type="text" formControlName="usuario"
-                                            class="w-full" autocomplete="off" appErrors />
+                                        <input pInputText id="Usuario" formControlName="usuario" class="w-full"
+                                            autocomplete="off" appErrors />
                                     </p-iconfield>
                                     <label for="Usuario">Usuario</label>
                                 </p-floatlabel>
@@ -53,7 +53,7 @@
                             <div class="field md:col-span-2">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="Correo electrónico" formControlName="correoElectronico"
-                                        autocomplete="off" type="text" appErrors />
+                                        autocomplete="off" appErrors />
                                     <label for="Correo electrónico">Correo electrónico</label>
                                 </p-floatlabel>
                             </div>
@@ -73,7 +73,7 @@
                             <div class="field">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="Telefono" formControlName="telefono" autocomplete="off"
-                                        type="text" appErrors />
+                                        pKeyFilter="num" appErrors />
                                     <label for="Telefono">Telefono</label>
                                 </p-floatlabel>
                             </div>
@@ -82,8 +82,8 @@
                                 <p-floatlabel variant="on" class="w-full">
                                     <p-iconfield class="w-full">
                                         <p-inputicon class="pi pi-map-marker"></p-inputicon>
-                                        <input pInputText id="direccion" formControlName="direccion" type="text"
-                                            class="w-full" autocomplete="off" appErrors />
+                                        <input pInputText id="direccion" formControlName="direccion" class="w-full"
+                                            autocomplete="off" appErrors />
                                     </p-iconfield>
                                     <label for="direccion">Dirección</label>
                                 </p-floatlabel>
@@ -97,7 +97,7 @@
                                 <p-floatlabel variant="on" class="w-full multiselect-float">
                                     <p-multiselect id="roles" class="w-full" [options]="roles" optionLabel="name"
                                         display="chip" placeholder=" " [showClear]="true" formControlName="rol"
-                                        name="rol" appErrors>
+                                        name="rol">
                                         <ng-template pTemplate="selecteditems" let-items>
                                             @for (item of items; track item.code) {
                                             <div
@@ -116,20 +116,20 @@
                                     <label for="roles">Seleccionar rol</label>
                                 </p-floatlabel>
                             </div>
-                            <!-- Estado -->
+                            <!-- Estado Usuario-->
                             <div class="flex justify-center">
                                 <div class="estado-field items-center">
                                     <label class="estado-label">
-                                        <span [class.text-green]="estado" [class.text-red]="!estado">Estado: {{
-                                            estado ?
-                                            'Activo' : 'Inactivo' }}</span>
+                                        <span [class.text-green]="usuarioForm.get('estado')?.value"
+                                            [class.text-red]="!usuarioForm.get('estado')?.value">
+                                            Estado: {{ usuarioForm.get('estado')?.value ? 'Activo' : 'Inactivo' }}
+                                        </span>
                                     </label>
                                     <p-toggleswitch formControlName="estado" appErrors>
-                                        <ng-template #handle let-checked="estado">
-                                            <i [ngClass]="['!text-xs', 'pi', estado ? 'pi-check' : 'pi-times']"></i>
+                                        <ng-template #handle let-checked>
+                                            <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
                                         </ng-template>
                                     </p-toggleswitch>
-
                                 </div>
                             </div>
                         </div>
