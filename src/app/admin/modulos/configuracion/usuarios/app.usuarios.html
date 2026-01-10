@@ -1,139 +1,150 @@
 <p-fluid>
-    <p-panel value="0">
-        <ng-template #header>
-            <div class="flex items-center w-full pl-3 relative">
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
-                <div class="flex flex-col gap-1">
-                    <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0 header-title">Registro de Usuario</h2>
-                    <p class="text-sm text-surface-600 dark:text-surface-400 m-0 hidden md:block">Complete la información del nuevo usuario</p>
+    <form [formGroup]="usuarioForm" (ngSubmit)="registrar()">
+        <p-panel value="0">
+            <ng-template #header>
+                <div class="flex items-center w-full pl-3 relative">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0 header-title">Registro de
+                            Usuario</h2>
+                        <p class="text-sm text-surface-600 dark:text-surface-400 m-0 hidden md:block">Complete la
+                            información del nuevo usuario</p>
+                    </div>
                 </div>
-            </div>
-        </ng-template>
-
-        <ng-template #icons>
-            <div class="flex items-center gap-2">
-                <p-button icon="pi pi-save" [rounded]="true" [raised]="true" />
-                <p-button icon="pi pi-times" [rounded]="true" [raised]="true" severity="secondary" />
-            </div>
-        </ng-template>
-        <div class="flex flex-col md:flex-row gap-4 w-full">
-            <div class="card flex flex-col gap-0 w-full p-0">
-                <p-fieldset legend="Datos" [toggleable]="true">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <!-- Apellidos -->
-                        <div class="field">
-                            <p-floatlabel variant="on">
-                                <input pInputText id="Apellidos" autocomplete="off" type="text" />
-                                <label for="Apellidos">Apellidos</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Nombre -->
-                        <div class="field">
-                            <p-floatlabel variant="on">
-                                <input pInputText id="Nombre" autocomplete="off" type="text" />
-                                <label for="Nombre">Nombre</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Usuario -->
-                        <div class="field">
-                            <p-floatlabel variant="on" class="w-full">
-                                <p-iconfield class="w-full">
-                                    <p-inputicon class="pi pi-user"></p-inputicon>
-                                    <input pInputText id="Usuario" type="text" class="w-full" autocomplete="off" />
-                                </p-iconfield>
-                                <label for="Usuario">Usuario</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Correo -->
-                        <div class="field md:col-span-2">
-                            <p-floatlabel variant="on">
-                                <input pInputText id="Correo electrónico" autocomplete="off" type="text" />
-                                <label for="Correo electrónico">Correo electrónico</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Contraseña -->
-                        <div class="field">
-                            <p-floatlabel variant="on">
-                                <p-password [toggleMask]="true" [feedback]="false" />
-                                <label for="Contraseña">Contraseña</label>
-                            </p-floatlabel>
-                        </div>
-                    </div>
-                </p-fieldset>
-                <p-fieldset legend="Contacto" [toggleable]="true">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <!-- Telefono -->
-                        <div class="field">
-                            <p-floatlabel variant="on">
-                                <input pInputText id="Telefono" autocomplete="off" type="text" />
-                                <label for="Telefono">Telefono</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Dirección -->
-                        <div class="field  md:col-span-2">
-                            <p-floatlabel variant="on" class="w-full">
-                                <p-iconfield class="w-full">
-                                    <p-inputicon class="pi pi-map-marker"></p-inputicon>
-                                    <input pInputText id="direccion" type="text" class="w-full" autocomplete="off" />
-                                </p-iconfield>
-                                <label for="direccion">Dirección</label>
-                            </p-floatlabel>
-                        </div>
-                    </div>
-                </p-fieldset>
-                <p-fieldset legend="Datos adicionales" [toggleable]="true">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <!-- Rol -->
-                        <div class="field">
-                            <p-floatlabel variant="on" class="w-full multiselect-float">
-                                <p-multiselect id="roles" class="w-full" [options]="dropdownValues"
-                                    [(ngModel)]="dropdownValue" optionLabel="name" display="chip" placeholder=" "
-                                    [showClear]="true">
-                                    <ng-template pTemplate="selecteditems" let-items>
-                                        @for (item of items; track item.code) {
-                                        <div
-                                            class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
-                                            {{ item.name }}
-                                        </div>
-                                        }
-                                    </ng-template>
-                                    <ng-template pTemplate="item" let-item>
-                                        <div class="flex items-center">
-                                            {{ item.name }}
-                                        </div>
-                                    </ng-template>
-                                </p-multiselect>
-
-                                <label for="roles">Seleccionar rol</label>
-                            </p-floatlabel>
-                        </div>
-                        <!-- Estado -->
-                        <div class="flex justify-center">
-                            <div class="estado-field items-center">
-                                <label class="estado-label">
-                                    <span [class.text-green]="checked" [class.text-red]="!checked">Estado: {{ checked ?
-                                        'Activo' : 'Inactivo' }}</span>
-                                </label>
-                                <p-toggleswitch [(ngModel)]="checked">
-                                    <ng-template #handle let-checked="checked">
-                                        <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
-                                    </ng-template>
-                                </p-toggleswitch>
-
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <!-- IMAGEN -->
-                    <p-fieldset legend="Foto">
+            </ng-template>
+            <ng-template #icons>
+                <div class="flex items-center gap-2">
+                    <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" />
+                    <p-button icon="pi pi-times" [rounded]="true" [raised]="true" severity="secondary" />
+                </div>
+            </ng-template>
+            <div class="flex flex-col md:flex-row gap-4 w-full">
+                <div class="card flex flex-col gap-0 w-full p-0">
+                    <p-fieldset legend="Datos" [toggleable]="true">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <div class="md:col-span-3 w-full">
-                                <app-fileupload></app-fileupload>
+                            <!-- Apellidos -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off"
+                                        type="text" appErrors />
+                                    <label for="Apellidos">Apellidos</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Nombre -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"
+                                        type="text" appErrors />
+                                    <label for="Nombre">Nombre</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Usuario -->
+                            <div class="field">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-iconfield class="w-full">
+                                        <p-inputicon class="pi pi-user"></p-inputicon>
+                                        <input pInputText id="Usuario" type="text" formControlName="usuario"
+                                            class="w-full" autocomplete="off" appErrors />
+                                    </p-iconfield>
+                                    <label for="Usuario">Usuario</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Correo -->
+                            <div class="field md:col-span-2">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Correo electrónico" formControlName="correoElectronico"
+                                        autocomplete="off" type="text" appErrors />
+                                    <label for="Correo electrónico">Correo electrónico</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Contraseña -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <p-password [toggleMask]="true" formControlName="clave" [feedback]="false"
+                                        appErrors />
+                                    <label for="Contraseña">Contraseña</label>
+                                </p-floatlabel>
                             </div>
                         </div>
                     </p-fieldset>
-                </p-fieldset>
+                    <p-fieldset legend="Contacto" [toggleable]="true">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <!-- Telefono -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Telefono" formControlName="telefono" autocomplete="off"
+                                        type="text" appErrors />
+                                    <label for="Telefono">Telefono</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Dirección -->
+                            <div class="field  md:col-span-2">
+                                <p-floatlabel variant="on" class="w-full">
+                                    <p-iconfield class="w-full">
+                                        <p-inputicon class="pi pi-map-marker"></p-inputicon>
+                                        <input pInputText id="direccion" formControlName="direccion" type="text"
+                                            class="w-full" autocomplete="off" appErrors />
+                                    </p-iconfield>
+                                    <label for="direccion">Dirección</label>
+                                </p-floatlabel>
+                            </div>
+                        </div>
+                    </p-fieldset>
+                    <p-fieldset legend="Datos adicionales" [toggleable]="true">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            <!-- Rol -->
+                            <div class="field">
+                                <p-floatlabel variant="on" class="w-full multiselect-float">
+                                    <p-multiselect id="roles" class="w-full" [options]="roles" optionLabel="name"
+                                        display="chip" placeholder=" " [showClear]="true" formControlName="rol"
+                                        name="rol" appErrors>
+                                        <ng-template pTemplate="selecteditems" let-items>
+                                            @for (item of items; track item.code) {
+                                            <div
+                                                class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                                {{ item.name }}
+                                            </div>
+                                            }
+                                        </ng-template>
+                                        <ng-template pTemplate="item" let-item>
+                                            <div class="flex items-center">
+                                                {{ item.name }}
+                                            </div>
+                                        </ng-template>
+                                    </p-multiselect>
+
+                                    <label for="roles">Seleccionar rol</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Estado -->
+                            <div class="flex justify-center">
+                                <div class="estado-field items-center">
+                                    <label class="estado-label">
+                                        <span [class.text-green]="estado" [class.text-red]="!estado">Estado: {{
+                                            estado ?
+                                            'Activo' : 'Inactivo' }}</span>
+                                    </label>
+                                    <p-toggleswitch formControlName="estado" appErrors>
+                                        <ng-template #handle let-checked="estado">
+                                            <i [ngClass]="['!text-xs', 'pi', estado ? 'pi-check' : 'pi-times']"></i>
+                                        </ng-template>
+                                    </p-toggleswitch>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- IMAGEN -->
+                        <p-fieldset legend="Foto">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                                <div class="md:col-span-3 w-full">
+                                    <app-fileupload></app-fileupload>
+                                </div>
+                            </div>
+                        </p-fieldset>
+                    </p-fieldset>
+                </div>
             </div>
-        </div>
-    </p-panel>
+        </p-panel>
+    </form>
 </p-fluid>

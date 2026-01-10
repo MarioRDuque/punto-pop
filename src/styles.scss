@@ -11,6 +11,7 @@
 .p-panel {
   border-radius: 0 !important;
 }
+
 .p-panel-header {
   padding-bottom: 5px !important;
 }
@@ -25,6 +26,34 @@
 
 .p-0 {
   padding: 0px;
+}
+
+.error-container {
+  margin-top: 0.25rem;
+}
+
+.error-text {
+  display: block;
+  font-size: 0.75rem;
+  color: #ef4444;
+  line-height: 1.25rem;
+}
+
+// Asegurar que los campos tengan espacio para los errores
+.field {
+  margin-bottom: 0;
+}
+
+// Estilo para inputs inválidos de PrimeNG
+.p-invalid input,
+.p-invalid .p-inputtext {
+  border-color: #ef4444 !important;
+}
+
+// Para el campo que contiene el multiselect
+.p-invalid .p-multiselect,
+.p-invalid .p-dropdown {
+  border-color: #ef4444 !important;
 }
 
 //SELECT LABEL FLOAT
@@ -42,6 +71,7 @@
   top: -0.75rem;
   font-size: 0.75rem;
 }
+
 //FIN
 
 //ESTILO FLOAT LABEL
@@ -59,19 +89,21 @@
 .estado-label span {
   font-weight: 600;
 }
+
 //FIN
 
 .header-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0;
-    line-height: 1;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1;
 }
+
 .header-subtitle {
-    font-size: 0.813rem;
-    color: #6b7280;
-    line-height: 1;
-    margin-bottom: 2px;
-    margin-top: -8px;
+  font-size: 0.813rem;
+  color: #6b7280;
+  line-height: 1;
+  margin-bottom: 2px;
+  margin-top: -8px;
 }

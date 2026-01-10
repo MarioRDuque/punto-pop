@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FluidModule } from 'primeng/fluid';
@@ -16,19 +15,14 @@ import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
 import { TableModule } from 'primeng/table';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { Tooltip } from 'primeng/tooltip';
-import { FileUpload } from 'primeng/fileupload';
-import { Image } from 'primeng/image';
-import { CheckboxModule } from 'primeng/checkbox';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
+import { Errors } from '../../../component/directives/errors';
 
 @Component({
     selector: 'app-usuarios',
     standalone: true,
-
-
     imports: [
         ButtonModule,
         InputTextModule,
@@ -44,30 +38,21 @@ import { Fileupload } from "../../../component/fileupload/fileupload";
         FloatLabelModule,
         PasswordModule,
         FieldsetModule,
-        Tooltip,
         TableModule,
         ToggleSwitch,
         CommonModule,
-        Fileupload
+        Fileupload,
+        Errors,
+        ReactiveFormsModule
     ],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
     toggleValue = false;
     calendarValue: any = null;
-    checked: boolean = false;
-
-    dropdownValues = [
-        { name: 'ADMINISTRADOR', code: 'ADM' },
-        { name: 'SOPORTE', code: 'SOP' },
-        { name: 'USUARIO', code: 'USU' },
-        { name: 'PENDEJO', code: 'PEN' },
-        { name: 'BASICO', code: 'BAS' },
-        { name: 'VENDEDOR', code: 'VEN' }
-    ];
-    dropdownValue: any = null;
-    dropdownItem = null;
-
+    estado: boolean = false;
+    private fb = inject(FormBuilder);
+    rol: any = null;
     items: MenuItem[] | undefined;
 
     ngOnInit() {
@@ -82,6 +67,37 @@ export class AppUsuarios implements OnInit {
             }
         ];
     }
+
+    usuarioForm = this.fb.group({
+        apellidos: ['', [Validators.required]],
+        nombre: ['', [Validators.required]],
+        usuario: ['', [Validators.required]],
+        correoElectronico: ['', [Validators.required]],
+        clave: ['', [Validators.required]],
+        telefono: ['', [Validators.required]],
+        direccion: ['', [Validators.required]],
+        rol: ['', [Validators.required]],
+        estado: [false, [Validators.required]],
+    });
+
+    registrar() {
+        if (this.usuarioForm.invalid) {
+            this.usuarioForm.markAllAsTouched();
+            return;
+        }
+        // const data: RegistrarCliente = this.form.value as RegistrarCliente;
+        // this.formDataSrv.setRegistrarCliente(data);
+        // this.router.navigate(['/encontrar/cantidades']);
+    }
+
+    roles = [
+        { name: 'ADMINISTRADOR', code: 'ADM' },
+        { name: 'SOPORTE', code: 'SOP' },
+        { name: 'USUARIO', code: 'USU' },
+        { name: 'PENDEJO', code: 'PEN' },
+        { name: 'BASICO', code: 'BAS' },
+        { name: 'VENDEDOR', code: 'VEN' }
+    ];
 
 
 }
