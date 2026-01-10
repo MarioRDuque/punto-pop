@@ -11,6 +11,7 @@ export const routes: Routes = [
         component: AppLayout,
         children: [
             { path: '', component: Perfil },
+            { path: 'configuracion', loadChildren: () => import('./admin/modulos/configuracion/configuracion.routes') },
             { path: 'uikit', loadChildren: () => import('./admin/modulos/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./admin/modulos/pages.routes') }

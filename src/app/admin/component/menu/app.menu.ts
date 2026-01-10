@@ -22,7 +22,7 @@ export class AppMenu implements OnInit{
             {
                 label: 'Configuración',
                 items: [
-                    { label: 'Usuario', icon: 'pi pi-fw pi-user', routerLink: ['/uikit/usuarios'] },
+                    { label: 'Usuario', icon: 'pi pi-fw pi-user', routerLink: ['/configuracion/usuarios'] },
                     { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] }
                 ]
             },
