@@ -95,9 +95,9 @@
                             <!-- Rol -->
                             <div class="field">
                                 <p-floatlabel variant="on" class="w-full multiselect-float">
-                                    <p-multiselect id="roles" class="w-full" [options]="roles"
-                                        optionLabel="name" display="chip" placeholder=" " [showClear]="true"
-                                        formControlName="rol" name="rol" appErrors>
+                                    <p-multiselect id="roles" class="w-full" [options]="roles" optionLabel="name"
+                                        display="chip" placeholder=" " [showClear]="true" formControlName="rol"
+                                        name="rol" appErrors>
                                         <ng-template pTemplate="selecteditems" let-items>
                                             @for (item of items; track item.code) {
                                             <div

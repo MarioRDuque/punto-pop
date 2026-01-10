@@ -126,15 +126,15 @@ export class Errors implements OnInit, OnDestroy {
 
   private getErrorMessage(key: string, info: any): string | null {
     const fieldLabel = this.fieldName || 'Este campo';
-    
+
     switch (key) {
-      case 'required': 
+      case 'required':
         return `${fieldLabel} es obligatorio.`;
-      case 'email': 
+      case 'email':
         return `${fieldLabel} debe ser un email válido.`;
-      case 'minlength': 
+      case 'minlength':
         return `${fieldLabel} debe tener mínimo ${info.requiredLength} caracteres.`;
-      case 'maxlength': 
+      case 'maxlength':
         return `${fieldLabel} debe tener máximo ${info.requiredLength} caracteres.`;
       case 'min':
         return `${fieldLabel} debe ser mayor o igual a ${info.min}.`;
@@ -142,7 +142,7 @@ export class Errors implements OnInit, OnDestroy {
         return `${fieldLabel} debe ser menor o igual a ${info.max}.`;
       case 'pattern':
         return `${fieldLabel} tiene un formato inválido.`;
-      default: 
+      default:
         return null;
     }
   }
