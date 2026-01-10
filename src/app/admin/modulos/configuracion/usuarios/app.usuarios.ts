@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
+import { FormBuilder,  ReactiveFormsModule, Validators } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -13,12 +12,11 @@ import { MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
-import { TableModule } from 'primeng/table';
-import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
 import { Errors } from '../../../component/directives/errors';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 @Component({
     selector: 'app-usuarios',
@@ -27,10 +25,8 @@ import { Errors } from '../../../component/directives/errors';
         ButtonModule,
         InputTextModule,
         FluidModule,
-        FormsModule,
         InputIconModule,
         IconFieldModule,
-        ToggleButtonModule,
         MultiSelectModule,
         PanelModule,
         AvatarModule,
@@ -38,45 +34,32 @@ import { Errors } from '../../../component/directives/errors';
         FloatLabelModule,
         PasswordModule,
         FieldsetModule,
-        TableModule,
         ToggleSwitch,
         CommonModule,
         Fileupload,
         Errors,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        KeyFilterModule
     ],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
-    toggleValue = false;
-    calendarValue: any = null;
-    estado: boolean = false;
     private fb = inject(FormBuilder);
     rol: any = null;
-    items: MenuItem[] | undefined;
 
     ngOnInit() {
-        this.items = [
-            {
-                label: 'Update',
-                icon: 'pi pi-refresh'
-            },
-            {
-                label: 'Delete',
-                icon: 'pi pi-times'
-            }
-        ];
+       
     }
 
     usuarioForm = this.fb.group({
-        apellidos: ['', [Validators.required]],
-        nombre: ['', [Validators.required]],
+        apellidos: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuario: ['', [Validators.required]],
-        correoElectronico: ['', [Validators.required]],
+        correoElectronico: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
         clave: ['', [Validators.required]],
-        telefono: ['', [Validators.required]],
+        telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]],
         direccion: ['', [Validators.required]],
-        rol: ['', [Validators.required]],
+        rol: ['', []],
         estado: [false, [Validators.required]],
     });
 
