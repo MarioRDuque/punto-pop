@@ -1,18 +1,21 @@
 <p-fluid>
-    <p-panel value="0" [toggleable]="true">
+    <p-panel value="0">
         <ng-template #header>
-            <div class="flex items-center gap-2 pt-15 pt-3">
-                <p-avatar icon="pi pi-user" shape="circle" />
-                <span class="font-bold">REGISTRO USUARIO</span>
+            <div class="flex items-center w-full pl-3 relative">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0 header-title">Registro de Usuario</h2>
+                    <p class="text-sm text-surface-600 dark:text-surface-400 m-0 hidden md:block">Complete la información del nuevo usuario</p>
+                </div>
             </div>
         </ng-template>
 
         <ng-template #icons>
-            <p-button icon="pi pi-save" pTooltip="Guardar" tooltipPosition="right" severity="info" rounded text
-                (click)="menu.toggle($event)" />
-            <p-menu #menu id="config_menu" [model]="items" [popup]="true" />
+            <div class="flex items-center gap-2">
+                <p-button icon="pi pi-save" [rounded]="true" [raised]="true" />
+                <p-button icon="pi pi-times" [rounded]="true" [raised]="true" severity="secondary" />
+            </div>
         </ng-template>
-
         <div class="flex flex-col md:flex-row gap-4 w-full">
             <div class="card flex flex-col gap-0 w-full p-0">
                 <p-fieldset legend="Datos" [toggleable]="true">
@@ -132,16 +135,5 @@
                 </p-fieldset>
             </div>
         </div>
-
-        <ng-template #footer>
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <p-button icon="pi pi-eraser" pTooltip="Limpiar" tooltipPosition="right" severity="warn" rounded
-                        text></p-button>
-                    <p-button icon="pi pi-bookmark" severity="secondary" rounded text></p-button>
-                </div>
-                <span class="text-surface-500 dark:text-surface-400">VetHome</span>
-            </div>
-        </ng-template>
     </p-panel>
 </p-fluid>

@@ -11,6 +11,9 @@
 .p-panel {
   border-radius: 0 !important;
 }
+.p-panel-header {
+  padding-bottom: 5px !important;
+}
 
 .pt-15 {
   padding-top: 15px;
@@ -57,3 +60,18 @@
   font-weight: 600;
 }
 //FIN
+
+.header-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1;
+}
+.header-subtitle {
+    font-size: 0.813rem;
+    color: #6b7280;
+    line-height: 1;
+    margin-bottom: 2px;
+    margin-top: -8px;
+}
