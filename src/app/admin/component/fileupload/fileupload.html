@@ -1,0 +1,24 @@
+<!-- aqui prorgamar subir imagen -->
+<p-fileupload #fileUploader name="files[]" accept="image/*" [multiple]="false" mode="advanced" [customUpload]="true"
+    [showUploadButton]="false" [showCancelButton]="false" (onSelect)="onSelectImage($event)">
+    <!-- ZONA PERSONALIZADA -->
+    <ng-template pTemplate="empty">
+        <div class="upload-box" (click)="fileUploader.choose()">
+            <i class="pi pi-camera upload-icon"></i>
+            <p class="upload-title">Subir foto</p>
+            <small>Click o arrastre aquí</small>
+        </div>
+    </ng-template>
+    <!-- PREVIEW -->
+    <ng-template pTemplate="content">
+        @if (preview) {
+        <div class="avatar-wrapper">
+            <img [src]="preview" class="avatar-img" />
+            <!-- BOTÓN ELIMINAR -->
+            <button type="button" class="remove-btn" (click)="removeImage(fileUploader)">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+        }
+    </ng-template>
+</p-fileupload>

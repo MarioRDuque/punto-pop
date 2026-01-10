@@ -5,7 +5,7 @@
 @use './assets/demo/demo.scss';
 
 .text-primary-contrast {
-    font-size: 10px !important;
+  font-size: 10px !important;
 }
 
 .p-panel {
@@ -24,66 +24,40 @@
     padding: 0px;
 }
 
-//imagen
 
-/* OCULTAR BOTÓN CHOOSE */
-.p-fileupload-choose-button {
-  display: none !important;
+
+//SELECT LABEL FLOAT
+.multiselect-float .p-multiselect {
+  min-height: 2.4rem;
+  display: flex;
+  align-items: center;
 }
 
-/* ZONA DE SUBIDA */
-.upload-box {
-  border: 2px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s;
+.multiselect-float .p-multiselect-label {
+  padding-top: 0.55rem;
 }
 
-.upload-box:hover {
-  border-color: #22c55e;
-  background: #f0fdf4;
+.multiselect-float.p-floatlabel-active label {
+  top: -0.75rem;
+  font-size: 0.75rem;
 }
 
-.upload-icon {
-  font-size: 2rem;
-  color: #22c55e;
+//FIN
+
+//ESTILO FLOAT LABEL
+.estado-field {
+  display: flex;
+  flex-direction: column;
 }
 
-/* AVATAR */
-.avatar-wrapper {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin: auto;
+.estado-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
 }
 
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #22c55e;
+.estado-label span {
+  font-weight: 600;
 }
 
-/* BOTÓN ELIMINAR */
-.remove-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #ef4444;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  color: white;
-  cursor: pointer;
-}
-
-.remove-btn:hover {
-  background: #dc2626;
-}
-
-
-//fin img
+//FIN
