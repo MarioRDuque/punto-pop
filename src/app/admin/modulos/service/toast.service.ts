@@ -13,7 +13,7 @@ export class ToastService {
       severity: 'success',
       summary,
       detail,
-      life: 2000
+      life: 3000
     });
   }
 
@@ -22,7 +22,7 @@ export class ToastService {
       severity: 'error',
       summary,
       detail,
-      life: 2000
+      life: 3000
     });
   }
 
@@ -31,7 +31,7 @@ export class ToastService {
       severity: 'warn',
       summary,
       detail,
-      life: 2000
+      life: 3000
     });
   }
 
@@ -40,7 +40,7 @@ export class ToastService {
       severity: 'info',
       summary,
       detail,
-      life: 2000
+      life: 3000
     });
   }
 
