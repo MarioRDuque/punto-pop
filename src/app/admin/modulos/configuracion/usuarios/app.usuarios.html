@@ -33,18 +33,18 @@
                                     <label for="Usuario">Usuario</label>
                                 </p-floatlabel>
                             </div>
-                            <!-- Apellidos -->
-                            <div class="field">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off"/>
-                                    <label for="Apellidos">Apellidos</label>
-                                </p-floatlabel>
-                            </div>
                             <!-- Nombre -->
                             <div class="field">
                                 <p-floatlabel variant="on">
-                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"/>
+                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off" appErrors/>
                                     <label for="Nombre">Nombre</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Apellidos -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off" />
+                                    <label for="Apellidos">Apellidos</label>
                                 </p-floatlabel>
                             </div>
                             <!-- Correo -->
