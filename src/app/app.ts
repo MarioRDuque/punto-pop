@@ -6,7 +6,7 @@ import { Toast } from 'primeng/toast';
   selector: 'app-root',
   imports: [RouterOutlet, Toast],
   template: `
-  <p-toast position="top-center"></p-toast>
+  <p-toast position="bottom-left"></p-toast>
   <router-outlet></router-outlet>`,
   styleUrl: './app.scss'
 })
