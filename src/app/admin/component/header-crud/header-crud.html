@@ -1,0 +1,17 @@
+<ng-template pTemplate="header">
+                <div class="flex items-center w-full pl-3 relative">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0 header-title">Registro de
+                            Usuario</h2>
+                        <p class="text-sm text-surface-600 dark:text-surface-400 m-0 hidden md:block">Complete la
+                            información del nuevo usuario</p>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template  pTemplate="icons">
+                <div class="flex items-center gap-2">
+                    <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" />
+                    <p-button icon="pi pi-times" [rounded]="true" [raised]="true" severity="secondary" />
+                </div>
+            </ng-template>
