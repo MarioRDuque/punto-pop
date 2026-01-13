@@ -22,22 +22,6 @@
                 <div class="card flex flex-col gap-0 w-full p-0">
                     <p-fieldset legend="Datos" [toggleable]="true">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <!-- Apellidos -->
-                            <div class="field">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off"
-                                        appErrors />
-                                    <label for="Apellidos">Apellidos</label>
-                                </p-floatlabel>
-                            </div>
-                            <!-- Nombre -->
-                            <div class="field">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"
-                                        appErrors />
-                                    <label for="Nombre">Nombre</label>
-                                </p-floatlabel>
-                            </div>
                             <!-- Usuario -->
                             <div class="field">
                                 <p-floatlabel variant="on" class="w-full">
@@ -47,6 +31,20 @@
                                             autocomplete="off" appErrors />
                                     </p-iconfield>
                                     <label for="Usuario">Usuario</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Apellidos -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Apellidos" formControlName="apellidos" autocomplete="off"/>
+                                    <label for="Apellidos">Apellidos</label>
+                                </p-floatlabel>
+                            </div>
+                            <!-- Nombre -->
+                            <div class="field">
+                                <p-floatlabel variant="on">
+                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"/>
+                                    <label for="Nombre">Nombre</label>
                                 </p-floatlabel>
                             </div>
                             <!-- Correo -->
@@ -60,8 +58,8 @@
                             <!-- Contraseña -->
                             <div class="field">
                                 <p-floatlabel variant="on">
-                                    <p-password [toggleMask]="true" formControlName="clave" [feedback]="false"
-                                        appErrors />
+                                    <p-password [toggleMask]="true" id="Contraseña" formControlName="clave"
+                                        [feedback]="false" appErrors />
                                     <label for="Contraseña">Contraseña</label>
                                 </p-floatlabel>
                             </div>
@@ -73,7 +71,7 @@
                             <div class="field">
                                 <p-floatlabel variant="on">
                                     <input pInputText id="Telefono" formControlName="telefono" autocomplete="off"
-                                        pKeyFilter="num" appErrors />
+                                        pKeyFilter="num" />
                                     <label for="Telefono">Telefono</label>
                                 </p-floatlabel>
                             </div>
@@ -83,7 +81,7 @@
                                     <p-iconfield class="w-full">
                                         <p-inputicon class="pi pi-map-marker"></p-inputicon>
                                         <input pInputText id="direccion" formControlName="direccion" class="w-full"
-                                            autocomplete="off" appErrors />
+                                            autocomplete="off" />
                                     </p-iconfield>
                                     <label for="direccion">Dirección</label>
                                 </p-floatlabel>
