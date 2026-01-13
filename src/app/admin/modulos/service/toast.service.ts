@@ -22,8 +22,7 @@ export class ToastService {
       severity: 'error',
       summary,
       detail,
-      life: 4000,
-      key: 'clickable-toast',
+      life: 4000
     });
   }
 
