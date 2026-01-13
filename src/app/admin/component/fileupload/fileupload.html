@@ -1,5 +1,5 @@
 <!-- aqui prorgamar subir imagen -->
-<p-fileupload #fileUploader name="files[]" accept="image/*" [multiple]="false" mode="advanced" [customUpload]="true"
+<p-fileupload #fileUploader name="files[]" accept="image/*" [multiple]="false" mode="advanced" [customUpload]="true" [auto]="true"
     [showUploadButton]="false" [showCancelButton]="false" (onSelect)="onSelectImage($event)">
     <!-- ZONA PERSONALIZADA -->
     <ng-template pTemplate="empty">

@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
 import { Errors } from '../../../component/directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { ToastService } from '../../service/toast.service';
 
 @Component({
     selector: 'app-usuarios',
@@ -46,19 +47,20 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 export class AppUsuarios implements OnInit {
     private fb = inject(FormBuilder);
     rol: any = null;
+    toast = inject(ToastService);
 
     ngOnInit() {
        
     }
 
     usuarioForm = this.fb.group({
-        apellidos: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        apellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        nombre: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuario: ['', [Validators.required]],
         correoElectronico: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
         clave: ['', [Validators.required]],
-        telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]],
-        direccion: ['', [Validators.required]],
+        telefono: ['', []],
+        direccion: ['', []],
         rol: ['', []],
         estado: [false, [Validators.required]],
     });
@@ -66,6 +68,7 @@ export class AppUsuarios implements OnInit {
     registrar() {
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
+            this.toast.error('Complete los campos obligatorios!');
             return;
         }
         // const data: RegistrarCliente = this.form.value as RegistrarCliente;
