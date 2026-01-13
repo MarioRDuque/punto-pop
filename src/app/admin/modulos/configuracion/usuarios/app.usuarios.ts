@@ -15,7 +15,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
-import { Errors } from '../../../component/directives/errors';
+import { Errors } from '../../../directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToastService } from '../../service/toast.service';
 
@@ -23,25 +23,25 @@ import { ToastService } from '../../service/toast.service';
     selector: 'app-usuarios',
     standalone: true,
     imports: [
-        ButtonModule,
-        InputTextModule,
-        FluidModule,
-        InputIconModule,
-        IconFieldModule,
-        MultiSelectModule,
-        PanelModule,
-        AvatarModule,
-        MenuModule,
-        FloatLabelModule,
-        PasswordModule,
-        FieldsetModule,
-        ToggleSwitch,
-        CommonModule,
-        Fileupload,
-        Errors,
-        ReactiveFormsModule,
-        KeyFilterModule
-    ],
+    ButtonModule,
+    InputTextModule,
+    FluidModule,
+    InputIconModule,
+    IconFieldModule,
+    MultiSelectModule,
+    PanelModule,
+    AvatarModule,
+    MenuModule,
+    FloatLabelModule,
+    PasswordModule,
+    FieldsetModule,
+    ToggleSwitch,
+    CommonModule,
+    Fileupload,
+    Errors,
+    ReactiveFormsModule,
+    KeyFilterModule,
+],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {

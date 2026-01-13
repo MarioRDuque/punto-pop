@@ -1,7 +1,7 @@
 <p-fluid>
     <form [formGroup]="usuarioForm" (ngSubmit)="registrar()">
         <p-panel value="0">
-            <ng-template #header>
+            <ng-template pTemplate="header">
                 <div class="flex items-center w-full pl-3 relative">
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
                     <div class="flex flex-col gap-1">
@@ -12,7 +12,7 @@
                     </div>
                 </div>
             </ng-template>
-            <ng-template #icons>
+            <ng-template pTemplate="icons">
                 <div class="flex items-center gap-2">
                     <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" />
                     <p-button icon="pi pi-times" [rounded]="true" [raised]="true" severity="secondary" />
@@ -58,7 +58,8 @@
                             <!-- Contraseña -->
                             <div class="field">
                                 <p-floatlabel variant="on">
-                                    <p-password [toggleMask]="true" id="Contraseña" formControlName="clave"
+                                    <p-password [toggleMask]="true" autocomplete="current-password"
+  [feedback]="false" id="Contraseña" formControlName="clave"
                                         [feedback]="false" appErrors />
                                     <label for="Contraseña">Contraseña</label>
                                 </p-floatlabel>
