@@ -15,4 +15,19 @@
   margin-top: -8px;
 }
 
+.p-panel {
+    display: block;
+    border: 0;
+    border-radius: var(--p-panel-border-radius);
+    background: var(--p-panel-background);
+    color: var(--p-panel-color);
+}
+
+:host ::ng-deep .p-panel-header {
+  padding: 0;
+}
+
+:host ::ng-deep .p-panel-content-container {
+  display: none;
+}
 //FIN
