@@ -21,6 +21,7 @@ import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
 import { ProgressBar } from 'primeng/progressbar';
 import { BlockUI } from 'primeng/blockui';
+import { UsuariosService } from './usuarios.service';
 
 @Component({
     selector: 'app-usuarios',
@@ -51,10 +52,14 @@ import { BlockUI } from 'primeng/blockui';
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
+
     private fb = inject(FormBuilder);
+    private toast = inject(ToastService);
+    private usuariosService = inject(UsuariosService);
+    
     rol: any = null;
-    toast = inject(ToastService);
     cargando: boolean = false;
+
     ngOnInit() {
 
     }
@@ -77,9 +82,12 @@ export class AppUsuarios implements OnInit {
             this.toast.error('Complete los campos obligatorios!');
             return;
         }
-        // const data: RegistrarCliente = this.form.value as RegistrarCliente;
-        // this.formDataSrv.setRegistrarCliente(data);
-        // this.router.navigate(['/encontrar/cantidades']);
+        this.usuariosService.guardar(this.usuarioForm.getRawValue() as any)
+            .subscribe({
+                // next: data => this.usuarios = data,
+                // error: err => console.error(err),
+                // complete: () => this.loading = false
+            });
     }
 
     roles = [
