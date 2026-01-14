@@ -1,0 +1,5 @@
+@if (cargando.loading$ | async) {
+<app-cargando></app-cargando>
+}
+<p-toast position="bottom-left" (click)=" this.toast.clear()"></p-toast>
+<router-outlet></router-outlet>
