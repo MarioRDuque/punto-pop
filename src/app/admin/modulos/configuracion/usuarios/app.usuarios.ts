@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder,  ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -19,40 +19,44 @@ import { Errors } from '../../../directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
+import { ProgressBar } from 'primeng/progressbar';
+import { BlockUI } from 'primeng/blockui';
 
 @Component({
     selector: 'app-usuarios',
     standalone: true,
     imports: [
-    ButtonModule,
-    InputTextModule,
-    FluidModule,
-    InputIconModule,
-    IconFieldModule,
-    MultiSelectModule,
-    PanelModule,
-    AvatarModule,
-    MenuModule,
-    FloatLabelModule,
-    PasswordModule,
-    FieldsetModule,
-    ToggleSwitch,
-    CommonModule,
-    Fileupload,
-    Errors,
-    ReactiveFormsModule,
-    KeyFilterModule,
-    HeaderCrud
-],
+        ButtonModule,
+        InputTextModule,
+        FluidModule,
+        InputIconModule,
+        IconFieldModule,
+        MultiSelectModule,
+        PanelModule,
+        AvatarModule,
+        MenuModule,
+        FloatLabelModule,
+        PasswordModule,
+        FieldsetModule,
+        ToggleSwitch,
+        CommonModule,
+        Fileupload,
+        Errors,
+        ReactiveFormsModule,
+        KeyFilterModule,
+        HeaderCrud,
+        ProgressBar,
+        BlockUI
+    ],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
     private fb = inject(FormBuilder);
     rol: any = null;
     toast = inject(ToastService);
-
+    cargando: boolean = false;
     ngOnInit() {
-       
+
     }
 
     usuarioForm = this.fb.group({

@@ -1,6 +1,8 @@
 <p-fluid>
     <form [formGroup]="usuarioForm" (ngSubmit)="registrar()">
-        <p-panel value="0">
+            <p-progressbar mode="indeterminate" [style]="{'height': '6px'}" />
+            <p-blockui [target]="pnl" [blocked]="true" />
+        <p-panel #pnl value="0">
             <app-header-crud></app-header-crud>
             <div class="flex flex-col md:flex-row gap-4 w-full">
                 <div class="card flex flex-col gap-0 w-full p-0">
