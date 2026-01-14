@@ -17,7 +17,8 @@ import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
 import { Errors } from '../../../directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { ToastService } from '../../service/toast.service';
+import { ToastService } from '../../../service/toast.service';
+import { HeaderCrud } from "../../../component/header-crud/header-crud";
 
 @Component({
     selector: 'app-usuarios',
@@ -41,6 +42,7 @@ import { ToastService } from '../../service/toast.service';
     Errors,
     ReactiveFormsModule,
     KeyFilterModule,
+    HeaderCrud
 ],
     templateUrl: './app.usuarios.html'
 })
