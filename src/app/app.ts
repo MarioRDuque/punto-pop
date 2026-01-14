@@ -1,18 +1,21 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { ToastService } from './admin/service/toast.service';
+import { Cargando } from "./admin/component/cargando/cargando";
+import { CargandoService } from './admin/service/cargando.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Toast],
-  template: `
-  <p-toast position="bottom-left" (click)=" this.toast.clear()"></p-toast>
-  <router-outlet></router-outlet>`,
+  imports: [RouterOutlet, Toast, Cargando, AsyncPipe],
+  templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
+
   protected readonly title = signal('punto-pop');
   toast = inject(ToastService);
+  cargando = inject(CargandoService);
+
 }

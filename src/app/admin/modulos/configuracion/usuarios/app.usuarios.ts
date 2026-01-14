@@ -19,9 +19,8 @@ import { Errors } from '../../../directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
-import { ProgressBar } from 'primeng/progressbar';
-import { BlockUI } from 'primeng/blockui';
 import { UsuariosService } from './usuarios.service';
+import { CargandoService } from '../../../service/cargando.service';
 
 @Component({
     selector: 'app-usuarios',
@@ -45,9 +44,7 @@ import { UsuariosService } from './usuarios.service';
         Errors,
         ReactiveFormsModule,
         KeyFilterModule,
-        HeaderCrud,
-        ProgressBar,
-        BlockUI
+        HeaderCrud
     ],
     templateUrl: './app.usuarios.html'
 })
@@ -56,9 +53,9 @@ export class AppUsuarios implements OnInit {
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
     private usuariosService = inject(UsuariosService);
-    
+    private cargando = inject(CargandoService);
+
     rol: any = null;
-    cargando: boolean = false;
 
     ngOnInit() {
 
@@ -77,6 +74,7 @@ export class AppUsuarios implements OnInit {
     });
 
     registrar() {
+        this.cargando.activar();
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
             this.toast.error('Complete los campos obligatorios!');
