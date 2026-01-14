@@ -19,6 +19,8 @@ import { Errors } from '../../../directives/errors';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
+import { ProgressBar } from 'primeng/progressbar';
+import { BlockUI } from 'primeng/blockui';
 import { UsuariosService } from './usuarios.service';
 
 @Component({
@@ -43,7 +45,9 @@ import { UsuariosService } from './usuarios.service';
         Errors,
         ReactiveFormsModule,
         KeyFilterModule,
-        HeaderCrud
+        HeaderCrud,
+        ProgressBar,
+        BlockUI
     ],
     templateUrl: './app.usuarios.html'
 })
@@ -54,6 +58,7 @@ export class AppUsuarios implements OnInit {
     private usuariosService = inject(UsuariosService);
     
     rol: any = null;
+    cargando: boolean = false;
 
     ngOnInit() {
 
