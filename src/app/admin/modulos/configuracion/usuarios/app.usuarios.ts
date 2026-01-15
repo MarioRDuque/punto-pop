@@ -1,14 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
-import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FluidModule } from 'primeng/fluid';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
@@ -16,7 +11,6 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CommonModule } from '@angular/common';
 import { Fileupload } from "../../../component/fileupload/fileupload";
 import { Errors } from '../../../directives/errors';
-import { KeyFilterModule } from 'primeng/keyfilter';
 import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
 import { UsuariosService } from './usuarios.service';
@@ -27,27 +21,21 @@ import { InputComponent } from "../../../component/input/input.component";
     selector: 'app-usuarios',
     standalone: true,
     imports: [
-    ButtonModule,
-    InputTextModule,
-    FluidModule,
-    InputIconModule,
-    IconFieldModule,
-    MultiSelectModule,
-    PanelModule,
-    AvatarModule,
-    MenuModule,
-    FloatLabelModule,
-    PasswordModule,
-    FieldsetModule,
-    ToggleSwitch,
-    CommonModule,
-    Fileupload,
-    Errors,
-    ReactiveFormsModule,
-    KeyFilterModule,
-    HeaderCrud,
-    InputComponent
-],
+        FluidModule,
+        MultiSelectModule,
+        PanelModule,
+        AvatarModule,
+        FloatLabelModule,
+        PasswordModule,
+        FieldsetModule,
+        ToggleSwitch,
+        CommonModule,
+        Fileupload,
+        Errors,
+        ReactiveFormsModule,
+        HeaderCrud,
+        InputComponent
+    ],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {

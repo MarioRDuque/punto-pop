@@ -40,11 +40,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Telefono -->
                             <div class="field">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="Telefono" formControlName="telefono" autocomplete="off"
-                                        pKeyFilter="num" />
-                                    <label for="Telefono">Telefono</label>
-                                </p-floatlabel>
+                                <app-input label="Teléfono" id="telefono" keyFilter="num">
+                                </app-input>
                             </div>
                             <!-- Dirección -->
                             <div class="field md:col-span-2">
