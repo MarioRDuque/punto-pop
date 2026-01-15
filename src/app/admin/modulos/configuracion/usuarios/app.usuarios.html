@@ -79,7 +79,7 @@
                             <!-- Estado Usuario-->
                             <div class="flex justify-center">
                                 <div class="estado-field items-center">
-                                    <label class="estado-label">
+                                    <label class="estado-label" for="estado">
                                         <span [class.text-green]="usuarioForm.get('estado')?.value"
                                             [class.text-red]="!usuarioForm.get('estado')?.value">
                                             Estado: {{ usuarioForm.get('estado')?.value ? 'Activo' : 'Inactivo' }}

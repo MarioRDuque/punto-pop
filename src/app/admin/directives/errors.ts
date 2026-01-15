@@ -98,7 +98,7 @@ export class Errors implements OnInit, OnDestroy {
     this.renderer.appendChild(this.errorContainer, small);
   }
 
-  private getErrorMessage(key: string, info: any): string | null {
+  private getErrorMessage(key: string, info: Record<string, unknown>): string | null {
     const fieldLabel = this.fieldName || 'Este campo';
 
     switch (key) {
@@ -107,13 +107,13 @@ export class Errors implements OnInit, OnDestroy {
       case 'email':
         return `${fieldLabel} debe ser un email válido.`;
       case 'minlength':
-        return `${fieldLabel} debe tener mínimo ${info.requiredLength} caracteres.`;
+        return `${fieldLabel} debe tener mínimo ${info['requiredLength']} caracteres.`;
       case 'maxlength':
-        return `${fieldLabel} debe tener máximo ${info.requiredLength} caracteres.`;
+        return `${fieldLabel} debe tener máximo ${info['requiredLength']} caracteres.`;
       case 'min':
-        return `${fieldLabel} debe ser mayor o igual a ${info.min}.`;
+        return `${fieldLabel} debe ser mayor o igual a ${info['min']}.`;
       case 'max':
-        return `${fieldLabel} debe ser menor o igual a ${info.max}.`;
+        return `${fieldLabel} debe ser menor o igual a ${info['max']}.`;
       case 'pattern':
         return `${fieldLabel} tiene un formato inválido.`;
       default:
