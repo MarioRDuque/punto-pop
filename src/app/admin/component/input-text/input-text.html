@@ -3,18 +3,14 @@
     @if (icon) {
     <p-iconfield class="w-full">
         <p-inputicon [class]="icon"></p-inputicon>
-
-        <input pInputText class="w-full" [id]="id" [formControl]="control"
-            [autocomplete]="autocomplete" placeholder=" " appErrors />
+        <input pInputText class="w-full" [id]="id" [formControl]="control" [autocomplete]="autocomplete" appErrors />
     </p-iconfield>
     } @else {
-    <input pInputText class="w-full" [id]="id" [formControl]="control" [autocomplete]="autocomplete"
-        placeholder=" " appErrors />
+    <input pInputText class="w-full" [id]="id" [formControl]="control" [autocomplete]="autocomplete" appErrors />
     }
 
     <label [for]="id">
         {{ label }}
     </label>
-
 
 </p-floatlabel>
