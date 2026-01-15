@@ -8,7 +8,7 @@ export class ToastService {
 
   private messageService = inject(MessageService);
 
-  success(detail: string, summary: string = 'Éxito') {
+  success(detail: string, summary = 'Éxito') {
     this.messageService.add({
       severity: 'success',
       summary,
@@ -17,7 +17,7 @@ export class ToastService {
     });
   }
 
-  error(detail: string, summary: string = 'Error') {
+  error(detail: string, summary = 'Error') {
     this.messageService.add({
       severity: 'error',
       summary,
@@ -26,7 +26,7 @@ export class ToastService {
     });
   }
 
-  warn(detail: string, summary: string = 'Advertencia') {
+  warn(detail: string, summary = 'Advertencia') {
     this.messageService.add({
       severity: 'warn',
       summary,
@@ -35,7 +35,7 @@ export class ToastService {
     });
   }
 
-  info(detail: string, summary: string = 'Información') {
+  info(detail: string, summary = 'Información') {
     this.messageService.add({
       severity: 'info',
       summary,

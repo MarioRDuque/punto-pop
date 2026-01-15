@@ -21,6 +21,7 @@ import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
 import { UsuariosService } from './usuarios.service';
 import { CargandoService } from '../../../service/cargando.service';
+import { InputText } from "../../../component/input-text/input-text";
 
 @Component({
     selector: 'app-usuarios',
@@ -44,7 +45,8 @@ import { CargandoService } from '../../../service/cargando.service';
         Errors,
         ReactiveFormsModule,
         KeyFilterModule,
-        HeaderCrud
+        HeaderCrud,
+        InputText
     ],
     templateUrl: './app.usuarios.html'
 })
@@ -64,7 +66,7 @@ export class AppUsuarios implements OnInit {
     usuarioForm = this.fb.group({
         apellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        usuario: ['', [Validators.required]],
+        usuario: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
         correoElectronico: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
         clave: ['', [Validators.required]],
         telefono: ['', []],
@@ -74,7 +76,7 @@ export class AppUsuarios implements OnInit {
     });
 
     registrar() {
-        this.cargando.activar();
+        // this.cargando.activar();
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
             this.toast.error('Complete los campos obligatorios!');

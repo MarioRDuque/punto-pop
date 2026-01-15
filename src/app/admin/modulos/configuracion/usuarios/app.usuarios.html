@@ -1,6 +1,6 @@
 <p-fluid>
-    <form [formGroup]="usuarioForm" (ngSubmit)="registrar()">
-        <p-panel value="0">
+    <p-panel value="0">
+        <form [formGroup]="usuarioForm" (ngSubmit)="registrar()" autocomplete="off">
             <app-header-crud></app-header-crud>
             <div class="flex flex-col md:flex-row gap-4 w-full">
                 <div class="card flex flex-col gap-0 w-full p-0">
@@ -8,22 +8,14 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Usuario -->
                             <div class="field">
-                                <p-floatlabel variant="on" class="w-full">
-                                    <p-iconfield class="w-full">
-                                        <p-inputicon class="pi pi-user"></p-inputicon>
-                                        <input pInputText id="Usuario" formControlName="usuario" class="w-full"
-                                            autocomplete="off" appErrors />
-                                    </p-iconfield>
-                                    <label for="Usuario">Usuario</label>
-                                </p-floatlabel>
+                                <app-input-text label="Usuario" icon="pi pi-user" id="usuario">
+                                </app-input-text>
                             </div>
+
                             <!-- Nombre -->
                             <div class="field">
-                                <p-floatlabel variant="on">
-                                    <input pInputText id="Nombre" formControlName="nombre" autocomplete="off"
-                                        appErrors />
-                                    <label for="Nombre">Nombre</label>
-                                </p-floatlabel>
+                                <app-input-text label="Nombre" [id]="'nombre'">
+                                </app-input-text>
                             </div>
                             <!-- Apellidos -->
                             <div class="field">
@@ -127,6 +119,6 @@
                     </p-fieldset>
                 </div>
             </div>
-        </p-panel>
-    </form>
+        </form>
+    </p-panel>
 </p-fluid>

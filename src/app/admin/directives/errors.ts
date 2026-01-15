@@ -15,50 +15,41 @@ import { fromEvent, Subscription } from 'rxjs';
 })
 export class Errors implements OnInit, OnDestroy {
 
-  @Input() fieldName: string = ''; // Nombre del campo
+  @Input() fieldName = '';
 
   private ngControl = inject(NgControl, { optional: true });
   private host = inject(ElementRef);
   private renderer = inject(Renderer2);
-  private formGroup = inject(FormGroupDirective, { optional: true, host: true });
+  private formGroup = inject(FormGroupDirective, { optional: true });
 
   private subs: Subscription[] = [];
   private errorContainer!: HTMLElement;
   private wrapper!: HTMLElement;
 
   ngOnInit() {
-    if (!this.ngControl) return;
+    if (!this.ngControl?.control) return;
 
-    // Si no se proporciona fieldName, intentar obtenerlo del label o id
     if (!this.fieldName) {
       this.fieldName = this.getFieldNameFromContext();
     }
 
     this.wrapper =
       this.host.nativeElement.closest('.p-float-label') ||
-      this.host.nativeElement.closest('.field');
-
-    if (!this.wrapper) {
-      this.wrapper = this.host.nativeElement.parentElement;
-    }
+      this.host.nativeElement.closest('.field') ||
+      this.host.nativeElement.parentElement;
 
     this.errorContainer = this.renderer.createElement('div');
     this.renderer.addClass(this.errorContainer, 'error-container');
 
     const fieldContainer = this.host.nativeElement.closest('.field');
-    if (fieldContainer) {
-      this.renderer.appendChild(fieldContainer, this.errorContainer);
-    } else {
-      const floatLabel = this.host.nativeElement.closest('.p-float-label');
-      if (floatLabel && floatLabel.parentElement) {
-        this.renderer.appendChild(floatLabel.parentElement, this.errorContainer);
-      } else {
-        this.renderer.appendChild(this.wrapper, this.errorContainer);
-      }
-    }
+    this.renderer.appendChild(fieldContainer ?? this.wrapper, this.errorContainer);
 
     this.subs.push(
       this.ngControl.statusChanges!.subscribe(() => this.updateErrors())
+    );
+
+    this.subs.push(
+      this.ngControl.control.valueChanges!.subscribe(() => this.updateErrors())
     );
 
     this.subs.push(
@@ -71,30 +62,13 @@ export class Errors implements OnInit, OnDestroy {
     if (this.formGroup) {
       this.subs.push(
         this.formGroup.ngSubmit.subscribe(() => {
-          this.ngControl?.control?.markAsTouched();
+          const control = this.ngControl?.control;
+          control?.markAsTouched({ onlySelf: true });
+          control?.updateValueAndValidity({ onlySelf: true });
           this.updateErrors();
         })
       );
     }
-  }
-
-  private getFieldNameFromContext(): string {
-    // Intentar obtener desde el label del p-floatlabel
-    const floatLabel = this.host.nativeElement.closest('.p-float-label');
-    if (floatLabel) {
-      const label = floatLabel.querySelector('label');
-      if (label) {
-        return label.textContent?.trim() || 'Este campo';
-      }
-    }
-
-    // Intentar obtener desde el atributo id
-    const id = this.host.nativeElement.getAttribute('id');
-    if (id) {
-      return id.charAt(0).toUpperCase() + id.slice(1);
-    }
-
-    return 'Este campo';
   }
 
   private updateErrors() {
@@ -108,10 +82,10 @@ export class Errors implements OnInit, OnDestroy {
 
     this.renderer.addClass(this.wrapper, 'p-invalid');
 
-    for (const key of Object.keys(control.errors)) {
-      const msg = this.getErrorMessage(key, control.errors[key]);
+    Object.keys(control.errors).forEach(key => {
+      const msg = this.getErrorMessage(key, control.errors![key]);
       if (msg) this.addError(msg);
-    }
+    });
   }
 
   private addError(message: string) {
@@ -145,6 +119,26 @@ export class Errors implements OnInit, OnDestroy {
       default:
         return null;
     }
+  }
+
+  private getFieldNameFromContext(): string {
+    // 1. Intentar obtener desde el label del p-floatlabel
+    const floatLabel = this.host.nativeElement.closest('.p-float-label');
+    if (floatLabel) {
+      const label = floatLabel.querySelector('label');
+      if (label?.textContent) {
+        return label.textContent.trim();
+      }
+    }
+
+    // 2. Intentar obtener desde el atributo id
+    const id = this.host.nativeElement.getAttribute('id');
+    if (id) {
+      return id.charAt(0).toUpperCase() + id.slice(1);
+    }
+
+    // 3. Fallback
+    return 'Este campo';
   }
 
   ngOnDestroy() {
