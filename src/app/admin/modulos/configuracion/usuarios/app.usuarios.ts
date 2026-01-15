@@ -21,33 +21,33 @@ import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
 import { UsuariosService } from './usuarios.service';
 import { CargandoService } from '../../../service/cargando.service';
-import { InputText } from "../../../component/input-text/input-text";
+import { InputComponent } from "../../../component/input/input.component";
 
 @Component({
     selector: 'app-usuarios',
     standalone: true,
     imports: [
-        ButtonModule,
-        InputTextModule,
-        FluidModule,
-        InputIconModule,
-        IconFieldModule,
-        MultiSelectModule,
-        PanelModule,
-        AvatarModule,
-        MenuModule,
-        FloatLabelModule,
-        PasswordModule,
-        FieldsetModule,
-        ToggleSwitch,
-        CommonModule,
-        Fileupload,
-        Errors,
-        ReactiveFormsModule,
-        KeyFilterModule,
-        HeaderCrud,
-        InputText
-    ],
+    ButtonModule,
+    InputTextModule,
+    FluidModule,
+    InputIconModule,
+    IconFieldModule,
+    MultiSelectModule,
+    PanelModule,
+    AvatarModule,
+    MenuModule,
+    FloatLabelModule,
+    PasswordModule,
+    FieldsetModule,
+    ToggleSwitch,
+    CommonModule,
+    Fileupload,
+    Errors,
+    ReactiveFormsModule,
+    KeyFilterModule,
+    HeaderCrud,
+    InputComponent
+],
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {

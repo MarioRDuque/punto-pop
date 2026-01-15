@@ -7,7 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Errors } from '../../directives/errors';
 
 @Component({
-  selector: 'app-input-text',
+  selector: 'app-input',
   imports: [
     FloatLabel,
     IconField,
@@ -16,8 +16,8 @@ import { Errors } from '../../directives/errors';
     InputTextModule,
     Errors
   ],
-  templateUrl: './input-text.html',
-  styleUrl: './input-text.scss',
+  templateUrl: './input.component.html',
+  styleUrl: './input.component.scss',
   viewProviders: [
     {
       provide: ControlContainer,
@@ -25,7 +25,7 @@ import { Errors } from '../../directives/errors';
     }
   ]
 })
-export class InputText {
+export class InputComponent {
 
   @Input() label!: string;
   @Input() icon?: string;
