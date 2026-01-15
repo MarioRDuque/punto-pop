@@ -1,12 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  Renderer2,
-  inject,
-  Input,
-} from '@angular/core';
+import { Directive, ElementRef, OnDestroy, OnInit, Renderer2, inject, Input } from '@angular/core';
 import { NgControl, FormGroupDirective } from '@angular/forms';
 import { fromEvent, Subscription } from 'rxjs';
 
@@ -122,7 +114,6 @@ export class Errors implements OnInit, OnDestroy {
   }
 
   private getFieldNameFromContext(): string {
-    // 1. Intentar obtener desde el label del p-floatlabel
     const floatLabel = this.host.nativeElement.closest('.p-float-label');
     if (floatLabel) {
       const label = floatLabel.querySelector('label');
@@ -130,14 +121,10 @@ export class Errors implements OnInit, OnDestroy {
         return label.textContent.trim();
       }
     }
-
-    // 2. Intentar obtener desde el atributo id
     const id = this.host.nativeElement.getAttribute('id');
     if (id) {
       return id.charAt(0).toUpperCase() + id.slice(1);
     }
-
-    // 3. Fallback
     return 'Este campo';
   }
 
