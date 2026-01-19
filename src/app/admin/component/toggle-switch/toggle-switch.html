@@ -1,12 +1,12 @@
 <div class="estado-field items-center">
-    <label class="estado-label">
+    <label class="estado-label" [for]="id">
         <span [class.text-green]="control.value" [class.text-red]="!control.value">
             {{ label }}:
             {{ control.value ? 'Activo' : 'Inactivo' }}
         </span>
     </label>
 
-    <p-toggleswitch [formControl]="control" appErrors>
+    <p-toggleswitch [formControl]="control" appErrors [id]="id">
         <ng-template #handle let-checked>
             <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
         </ng-template>

@@ -65,8 +65,6 @@ export class AppUsuarios implements OnInit {
         this.usuariosService.guardar(this.usuarioForm.getRawValue() as any)
             .subscribe({
                 // next: data => this.usuarios = data,
-                // error: err => console.error(err),
-                // complete: () => this.loading = false
             });
     }
 

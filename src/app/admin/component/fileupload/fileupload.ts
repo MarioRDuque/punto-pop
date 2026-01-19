@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
+import { FileUpload } from 'primeng/fileupload';
+import { FileSelectEvent } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-fileupload',
@@ -15,7 +17,7 @@ export class FileuploadComponent {
   preview: string | null = null;
   selectedFile: File | null = null;
 
-  onSelectImage(event: any) {
+  onSelectImage(event: FileSelectEvent) {
     const file: File = event.files?.[0];
     if (!file) return;
     // Preview instantáneo
@@ -23,7 +25,7 @@ export class FileuploadComponent {
     this.selectedFile = file;
   }
 
-  removeImage(fileUploader: any) {
+  removeImage(fileUploader: FileUpload) {
     if (this.preview) {
       URL.revokeObjectURL(this.preview);
     }
