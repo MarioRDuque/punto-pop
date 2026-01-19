@@ -38,6 +38,8 @@ export class AppUsuarios implements OnInit {
     private cargando = inject(CargandoService);
 
     rol: any = null;
+    titulo = 'Registro de Usuario';
+    subtitulo = 'Complete la información del nuevo usuario';
 
     ngOnInit() {
 
