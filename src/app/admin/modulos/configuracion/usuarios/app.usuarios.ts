@@ -1,40 +1,32 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AvatarModule } from 'primeng/avatar';
 import { FieldsetModule } from 'primeng/fieldset';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { FluidModule } from 'primeng/fluid';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
-import { PasswordModule } from 'primeng/password';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { CommonModule } from '@angular/common';
-import { Fileupload } from "../../../component/fileupload/fileupload";
-import { Errors } from '../../../directives/errors';
+import { FileuploadComponent } from "../../../component/fileupload/fileupload";
 import { ToastService } from '../../../service/toast.service';
 import { HeaderCrud } from "../../../component/header-crud/header-crud";
 import { UsuariosService } from './usuarios.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { InputComponent } from "../../../component/input/input.component";
+import { MultiselectComponent } from "../../../component/multiselect/multiselect";
+import { ToggleSwitchComponent } from "../../../component/toggle-switch/toggle-switch";
+import { PasswordComponent } from "../../../component/password/password";
 
 @Component({
     selector: 'app-usuarios',
     standalone: true,
     imports: [
         FluidModule,
-        MultiSelectModule,
         PanelModule,
-        AvatarModule,
-        FloatLabelModule,
-        PasswordModule,
         FieldsetModule,
-        ToggleSwitch,
-        CommonModule,
-        Fileupload,
-        Errors,
+        FileuploadComponent,
         ReactiveFormsModule,
         HeaderCrud,
-        InputComponent
+        InputComponent,
+        MultiselectComponent,
+        ToggleSwitchComponent,
+        PasswordComponent
     ],
     templateUrl: './app.usuarios.html'
 })
@@ -59,7 +51,7 @@ export class AppUsuarios implements OnInit {
         clave: ['', [Validators.required]],
         telefono: ['', []],
         direccion: ['', []],
-        rol: ['', []],
+        rol: ['', [Validators.required]],
         estado: [false, [Validators.required]],
     });
 

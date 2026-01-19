@@ -8,31 +8,23 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Usuario -->
                             <div class="field">
-                                <app-input label="Usuario" icon="pi pi-user" id="usuario">
-                                </app-input>
+                                <app-input label="Usuario" icon="pi pi-user" id="usuario" />
                             </div>
                             <!-- Nombre -->
                             <div class="field">
-                                <app-input label="Nombre" id="nombre">
-                                </app-input>
+                                <app-input label="Nombre" id="nombre" />
                             </div>
                             <!-- Apellidos -->
                             <div class="field">
-                                <app-input label="Apellidos" id="apellidos">
-                                </app-input>
+                                <app-input label="Apellidos" id="apellidos" />
                             </div>
                             <!-- Correo -->
                             <div class="field md:col-span-2">
-                                <app-input label="Correo electrónico" id="correoElectronico">
-                                </app-input>
+                                <app-input label="Correo electrónico" id="correoElectronico" />
                             </div>
                             <!-- Contraseña -->
                             <div class="field">
-                                <p-floatlabel variant="on">
-                                    <p-password [toggleMask]="true" autocomplete="current-password" [feedback]="false"
-                                        id="Contraseña" formControlName="clave" [feedback]="false" appErrors />
-                                    <label for="Contraseña">Contraseña</label>
-                                </p-floatlabel>
+                                <app-password label="Clave" id="clave" />
                             </div>
                         </div>
                     </p-fieldset>
@@ -40,13 +32,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Telefono -->
                             <div class="field">
-                                <app-input label="Teléfono" id="telefono" keyFilter="num">
-                                </app-input>
+                                <app-input label="Teléfono" id="telefono" keyFilter="num" />
                             </div>
                             <!-- Dirección -->
                             <div class="field md:col-span-2">
-                                <app-input label="Dirección" icon="pi pi-map-marker" id="direccion">
-                                </app-input>
+                                <app-input label="Dirección" icon="pi pi-map-marker" id="direccion" />
                             </div>
                         </div>
                     </p-fieldset>
@@ -54,43 +44,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Rol -->
                             <div class="field">
-                                <p-floatlabel variant="on" class="w-full multiselect-float">
-                                    <p-multiselect id="roles" class="w-full" [options]="roles" optionLabel="name"
-                                        display="chip" placeholder=" " [showClear]="true" formControlName="rol"
-                                        name="rol">
-                                        <ng-template pTemplate="selecteditems" let-items>
-                                            @for (item of items; track item.code) {
-                                            <div
-                                                class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
-                                                {{ item.name }}
-                                            </div>
-                                            }
-                                        </ng-template>
-                                        <ng-template pTemplate="item" let-item>
-                                            <div class="flex items-center">
-                                                {{ item.name }}
-                                            </div>
-                                        </ng-template>
-                                    </p-multiselect>
-
-                                    <label for="roles">Seleccionar rol</label>
-                                </p-floatlabel>
+                                <app-multiselect label="Seleccionar rol" [options]="roles" optionLabel="name"
+                                    optionValue="code" id="rol" [showClear]="true" />
                             </div>
                             <!-- Estado Usuario-->
                             <div class="flex justify-center">
-                                <div class="estado-field items-center">
-                                    <label class="estado-label" for="estado">
-                                        <span [class.text-green]="usuarioForm.get('estado')?.value"
-                                            [class.text-red]="!usuarioForm.get('estado')?.value">
-                                            Estado: {{ usuarioForm.get('estado')?.value ? 'Activo' : 'Inactivo' }}
-                                        </span>
-                                    </label>
-                                    <p-toggleswitch formControlName="estado" appErrors>
-                                        <ng-template #handle let-checked>
-                                            <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
-                                        </ng-template>
-                                    </p-toggleswitch>
-                                </div>
+                                <app-toggle-switch label="Estado" id="estado" />
                             </div>
                         </div>
                         <!-- IMAGEN -->

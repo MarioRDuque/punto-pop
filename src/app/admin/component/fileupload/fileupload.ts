@@ -9,7 +9,7 @@ import { FileUploadModule } from 'primeng/fileupload';
   templateUrl: './fileupload.html',
   styleUrl: './fileupload.scss',
 })
-export class Fileupload {
+export class FileuploadComponent {
 
   //IMAGEN
   preview: string | null = null;

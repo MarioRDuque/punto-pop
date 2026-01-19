@@ -1,0 +1,19 @@
+<p-floatlabel variant="on" class="w-full multiselect-float">
+    <p-multiselect [id]="id" class="w-full" [options]="options" [optionLabel]="optionLabel" display="chip"
+        placeholder=" " [showClear]="showClear" [formControl]="control" [name]="id" appErrors>
+        <ng-template pTemplate="selecteditems" let-items>
+            @for (item of items; track item) {
+            <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                {{ getLabel(item) }}
+            </div>
+            }
+        </ng-template>
+        <ng-template pTemplate="item" let-item>
+            <div class="flex items-center">
+                {{ getLabel(item) }}
+            </div>
+        </ng-template>
+    </p-multiselect>
+
+    <label [for]="id">{{ label }}</label>
+</p-floatlabel>
