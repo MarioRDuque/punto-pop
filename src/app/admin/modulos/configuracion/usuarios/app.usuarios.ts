@@ -46,15 +46,15 @@ export class AppUsuarios implements OnInit {
     }
 
     usuarioForm = this.fb.group({
-        apellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        usuario: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
-        correoElectronico: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
-        clave: ['', [Validators.required]],
-        telefono: ['', []],
-        direccion: ['', []],
+        usu_apellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        usu_nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        usu_username: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
+        usu_email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
+        usu_clave: ['', [Validators.required]],
+        usu_telefono: ['', []],
+        usu_direccion: ['', []],
         rol: ['', [Validators.required]],
-        estado: [false, [Validators.required]],
+        usu_estado: [false, [Validators.required]],
     });
 
     registrar() {
