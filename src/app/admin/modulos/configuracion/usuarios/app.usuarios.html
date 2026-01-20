@@ -42,7 +42,7 @@
                     </p-fieldset>
                     <p-fieldset legend="Datos adicionales" [toggleable]="true">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <!-- Rol -->
+                            <!-- Roles -->
                             <div class="field">
                                 <app-multiselect label="Seleccionar rol" [options]="roles" optionLabel="name"
                                     optionValue="code" id="rol" [showClear]="true" />
@@ -52,11 +52,11 @@
                                 <app-toggle-switch label="Estado" id="estado" />
                             </div>
                         </div>
-                        <!-- IMAGEN -->
+                        <!-- Imagen -->
                         <p-fieldset legend="Foto">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                                 <div class="md:col-span-3 w-full">
-                                    <app-fileupload></app-fileupload>
+                                    <app-fileupload />
                                 </div>
                             </div>
                         </p-fieldset>
