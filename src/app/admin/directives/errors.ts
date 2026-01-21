@@ -114,33 +114,35 @@ export class Errors implements OnInit, OnDestroy {
   }
 
   private getFieldNameFromContext(): string {
-  // 1. Buscar el componente app-input padre y obtener su atributo 'label'
-  let currentElement: HTMLElement | null = this.host.nativeElement.parentElement;
-  
-  // Buscar hasta 5 niveles arriba para encontrar app-input
-  for (let i = 0; i < 5 && currentElement; i++) {
-    if (currentElement.tagName.toLowerCase() === 'app-input') {
-      const labelAttr = currentElement.getAttribute('label');
-      if (labelAttr) {
-        return labelAttr; // Retorna "Nombre" directamente
+    // 1. Buscar el componente app-input padre y obtener su atributo 'label'
+    let currentElement: HTMLElement | null = this.host.nativeElement.parentElement;
+
+    // Buscar hasta 5 niveles arriba para encontrar app-input
+    for (let i = 0; i < 5 && currentElement; i++) {
+      const tagName = currentElement.tagName.toLowerCase();
+      if (tagName.startsWith('app-')) {
+        const labelAttr = currentElement.getAttribute('label');
+        if (labelAttr) {
+          return labelAttr; //RETORNA EL NOMBRE DEL CAMPO
+        }
+        break;
       }
-      break;
+      currentElement = currentElement.parentElement;
     }
-    currentElement = currentElement.parentElement;
-  }
 
-  // 2. Buscar label en .p-float-label (para otros componentes PrimeNG)
-  const floatLabel = this.host.nativeElement.closest('.p-float-label');
-  if (floatLabel) {
-    const label = floatLabel.querySelector('label');
-    if (label?.textContent) {
-      return label.textContent.trim();
+
+    // 2. Buscar label en .p-float-label (para otros componentes PrimeNG)
+    const floatLabel = this.host.nativeElement.closest('.p-float-label');
+    if (floatLabel) {
+      const label = floatLabel.querySelector('label');
+      if (label?.textContent) {
+        return label.textContent.trim();
+      }
     }
-  }
 
-  // 3. Fallback
-  return 'Este campo';
-}
+    // 3. Fallback
+    return 'Este campo';
+  }
 
 
   ngOnDestroy() {
