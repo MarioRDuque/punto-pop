@@ -114,19 +114,34 @@ export class Errors implements OnInit, OnDestroy {
   }
 
   private getFieldNameFromContext(): string {
-    const floatLabel = this.host.nativeElement.closest('.p-float-label');
-    if (floatLabel) {
-      const label = floatLabel.querySelector('label');
-      if (label?.textContent) {
-        return label.textContent.trim();
+  // 1. Buscar el componente app-input padre y obtener su atributo 'label'
+  let currentElement: HTMLElement | null = this.host.nativeElement.parentElement;
+  
+  // Buscar hasta 5 niveles arriba para encontrar app-input
+  for (let i = 0; i < 5 && currentElement; i++) {
+    if (currentElement.tagName.toLowerCase() === 'app-input') {
+      const labelAttr = currentElement.getAttribute('label');
+      if (labelAttr) {
+        return labelAttr; // Retorna "Nombre" directamente
       }
+      break;
     }
-    const id = this.host.nativeElement.getAttribute('id');
-    if (id) {
-      return id.charAt(0).toUpperCase() + id.slice(1);
-    }
-    return 'Este campo';
+    currentElement = currentElement.parentElement;
   }
+
+  // 2. Buscar label en .p-float-label (para otros componentes PrimeNG)
+  const floatLabel = this.host.nativeElement.closest('.p-float-label');
+  if (floatLabel) {
+    const label = floatLabel.querySelector('label');
+    if (label?.textContent) {
+      return label.textContent.trim();
+    }
+  }
+
+  // 3. Fallback
+  return 'Este campo';
+}
+
 
   ngOnDestroy() {
     this.subs.forEach(s => s.unsubscribe());
