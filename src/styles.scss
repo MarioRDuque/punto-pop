@@ -3,6 +3,9 @@
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './assets/demo/demo.scss';
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+@import "primeicons/primeicons.css";
 
 .text-primary-contrast {
   font-size: 10px !important;
@@ -14,6 +17,7 @@
 
 .p-panel-header {
   padding-bottom: 5px !important;
+  padding-top: 0 !important;
 }
 
 .pt-15 {
@@ -110,3 +114,7 @@
 }
 
 //FIN
+
+.card {
+  padding: 0 !important;
+}
