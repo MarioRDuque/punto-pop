@@ -1,68 +1,24 @@
 <p-fluid>
     <p-panel value="0">
-        <form [formGroup]="usuarioForm" (ngSubmit)="registrar()" autocomplete="off" novalidate>
-            <app-header-crud [titulo]="titulo" [subtitulo]="subtitulo"></app-header-crud>
-            <div class="flex flex-col md:flex-row gap-4 w-full">
-                <div class="card flex flex-col gap-0 w-full p-0">
-                    <p-fieldset legend="Datos" [toggleable]="true">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <!-- Usuario -->
-                            <div class="field">
-                                <app-input label="Usuario" icon="pi pi-user" id="usu_username" />
-                            </div>
-                            <!-- Nombre -->
-                            <div class="field">
-                                <app-input label="Nombre" id="usu_nombre" />
-                            </div>
-                            <!-- Apellidos -->
-                            <div class="field">
-                                <app-input label="Apellidos" id="usu_apellidos" />
-                            </div>
-                            <!-- Correo -->
-                            <div class="field md:col-span-2">
-                                <app-input label="Correo electrónico" id="usu_email" />
-                            </div>
-                            <!-- Contraseña -->
-                            <div class="field">
-                                <app-password label="Clave" id="usu_clave" />
-                            </div>
-                        </div>
-                    </p-fieldset>
-                    <p-fieldset legend="Contacto" [toggleable]="true">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <!-- Telefono -->
-                            <div class="field">
-                                <app-input label="Teléfono" id="usu_telefono" keyFilter="num" />
-                            </div>
-                            <!-- Dirección -->
-                            <div class="field md:col-span-2">
-                                <app-input label="Dirección" icon="pi pi-map-marker" id="usu_direccion" />
-                            </div>
-                        </div>
-                    </p-fieldset>
-                    <p-fieldset legend="Datos adicionales" [toggleable]="true">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                            <!-- Roles -->
-                            <div class="field">
-                                <app-multiselect label="Seleccionar rol" [options]="roles" optionLabel="name"
-                                    optionValue="code" id="rol" [showClear]="true" />
-                            </div>
-                            <!-- Estado Usuario-->
-                            <div class="flex justify-center">
-                                <app-toggle-switch label="Estado" id="usu_estado" />
-                            </div>
-                        </div>
-                        <!-- Imagen -->
-                        <p-fieldset legend="Foto">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                                <div class="md:col-span-3 w-full">
-                                    <app-fileupload />
-                                </div>
-                            </div>
-                        </p-fieldset>
-                    </p-fieldset>
-                </div>
-            </div>
-        </form>
+        <div class="card">
+            <p-tabs value="0">
+                <p-tablist>
+                    <p-tab value="0"><i class="pi pi-users"></i><span> Listado usuario</span></p-tab>
+                    <p-tab value="1"><i class="pi pi-user-plus"></i><span> Crear usuario</span></p-tab>
+                    <p-tab value="2"><i class="pi pi-user-edit"></i><span> Editar usuario</span></p-tab>
+                </p-tablist>
+                <p-tabpanels>
+                    <p-tabpanel value="0">
+                        <app-usuario-listado></app-usuario-listado>
+                    </p-tabpanel>
+                    <p-tabpanel value="1">
+                        <app-usuario-formulario></app-usuario-formulario>
+                    </p-tabpanel>
+                    <p-tabpanel value="2">
+                        <app-usuario-formulario></app-usuario-formulario>
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
+        </div>
     </p-panel>
 </p-fluid>
