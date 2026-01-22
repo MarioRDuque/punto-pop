@@ -1,7 +1,5 @@
 <app-header-crud [titulo]="titulo" [subtitulo]="subtitulo"></app-header-crud>
 
-<div class="content" style="width: 100%; height: 400px;">
-    <!-- The AG Grid component, with Dimensions, CSS Theme, Row Data, and Column Definition -->
-    <ag-grid-angular class="ag-theme-quartz-dark" style="width: 100%; height: 100%;" [rowData]="rowData"
-        [columnDefs]="colDefs" [defaultColDef]="defaultColDef" />
+<div style="width: 100%; height: 400px;">
+    <ag-grid-angular style="width: 100%; height: 100%;" [theme]="theme" [rowData]="rowData" [columnDefs]="colDefs" />
 </div>

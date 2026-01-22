@@ -34,6 +34,8 @@
     "@primeuix/themes": "^2.0.2",
     "@tailwindcss/postcss": "^4.1.18",
     "ag-grid-angular": "^35.0.0",
+    "ag-grid-community": "^35.0.0",
+    "ag-grid-enterprise": "^35.0.0",
     "chart.js": "^4.5.1",
     "primeclt": "^0.1.5",
     "primeicons": "^7.0.0",
