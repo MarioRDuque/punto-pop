@@ -41,15 +41,15 @@ export class UsuarioFormulario {
     subtitulo = 'Complete la información del nuevo usuario';
 
 usuarioForm = this.fb.group({
-        usu_apellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        usu_nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-        usu_username: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
-        usu_email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
-        usu_clave: ['', [Validators.required]],
-        usu_telefono: ['', []],
-        usu_direccion: ['', []],
+        usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+        usuUsername: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
+        usuEmail: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[A-Za-z]{2,10}$/)]],
+        usuClave: ['', [Validators.required]],
+        usuTelefono: ['', []],
+        usuDireccion: ['', []],
         rol: ['', [Validators.required]],
-        usu_estado: [false, [Validators.required]],
+        usuEstado: [false, [Validators.required]],
     });
 
     registrar() {
