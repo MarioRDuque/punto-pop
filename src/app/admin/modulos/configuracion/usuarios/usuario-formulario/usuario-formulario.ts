@@ -14,21 +14,21 @@ import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
 
 @Component({
-  selector: 'app-usuario-formulario',
-  imports: [
-    FluidModule,
+    selector: 'app-usuario-formulario',
+    imports: [
+        FluidModule,
         PanelModule,
         FieldsetModule,
-     FileuploadComponent,
+        FileuploadComponent,
         ReactiveFormsModule,
         HeaderCrud,
         InputComponent,
         MultiselectComponent,
         ToggleSwitchComponent,
         PasswordComponent,
-  ],
-  templateUrl: './usuario-formulario.html',
-  styleUrl: './usuario-formulario.scss',
+    ],
+    templateUrl: './usuario-formulario.html',
+    styleUrl: './usuario-formulario.scss',
 })
 export class UsuarioFormulario {
     private fb = inject(FormBuilder);
@@ -40,7 +40,7 @@ export class UsuarioFormulario {
     titulo = 'Registro de Usuario';
     subtitulo = 'Complete la información del nuevo usuario';
 
-usuarioForm = this.fb.group({
+    usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuUsername: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
@@ -53,15 +53,15 @@ usuarioForm = this.fb.group({
     });
 
     registrar() {
-        // this.cargando.activar();
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
             this.toast.error('Complete los campos obligatorios!');
             return;
         }
+        this.cargando.activar();
         this.usuariosService.guardar(this.usuarioForm.getRawValue() as any)
             .subscribe({
-                // next: data => this.usuarios = data,
+                next: data => this.cargando.inactivar(),
             });
     }
 

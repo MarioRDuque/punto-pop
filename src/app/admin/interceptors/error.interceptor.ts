@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../service/toast.service';
+import { CargandoService } from '../service/cargando.service';
 
 export const errorInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
@@ -9,6 +10,7 @@ export const errorInterceptor: HttpInterceptorFn = (
 ) => {
 
   const messageService = inject(ToastService);
+  let cargando = inject(CargandoService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -56,7 +58,7 @@ export const errorInterceptor: HttpInterceptorFn = (
           }
           break;
       }
-
+      cargando.inactivar();
       return throwError(() => error);
 
     })
