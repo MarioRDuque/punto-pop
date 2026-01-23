@@ -16,11 +16,16 @@ export const errorInterceptor: HttpInterceptorFn = (
     catchError((error: HttpErrorResponse) => {
 
       switch (error.status) {
+        case 0:
+          messageService.error(
+            'No hay conexión con el servidor.',
+            'Error de Conexión'
+          );
+          break;
         case 400:
           if (error.error?.errors) {
             //mejorar esto en un modal
             let mensaje = Object.values(error.error.errors).join('\n');
-
             messageService.error(
               mensaje,
               error.error?.title || 'Error de Negocio'
