@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -30,15 +30,24 @@ import { CargandoService } from '../../../../service/cargando.service';
     templateUrl: './usuario-formulario.html',
     styleUrl: './usuario-formulario.scss',
 })
-export class UsuarioFormulario {
+export class UsuarioFormulario implements OnInit {
+
+    @Input() esCrear: boolean = false;
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
-
+    public subtitulo: string = "";
     rol: any = null;
-    titulo = 'Registro de Usuario';
-    subtitulo = 'Complete la información del nuevo usuario';
+
+    ngOnInit(): void {
+        if (this.esCrear) {
+            this.subtitulo = 'Complete la información';
+        } else {
+            this.subtitulo = 'Actualización de datos';
+        }
+    }
+
 
     usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],

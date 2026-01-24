@@ -12,10 +12,10 @@
                         <app-usuario-listado></app-usuario-listado>
                     </p-tabpanel>
                     <p-tabpanel value="1">
-                        <app-usuario-formulario></app-usuario-formulario>
+                        <app-usuario-formulario [esCrear]="true"></app-usuario-formulario>
                     </p-tabpanel>
                     <p-tabpanel value="2">
-                        <app-usuario-formulario></app-usuario-formulario>
+                        <app-usuario-formulario [esCrear]="false"></app-usuario-formulario>
                     </p-tabpanel>
                 </p-tabpanels>
             </p-tabs>

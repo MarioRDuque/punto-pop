@@ -1,5 +1,5 @@
 <form [formGroup]="usuarioForm" (ngSubmit)="registrar()" autocomplete="off" novalidate>
-    <app-header-crud [titulo]="titulo" [subtitulo]="subtitulo"></app-header-crud>
+    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
     <div class="flex flex-col md:flex-row gap-4 w-full">
         <div class="card flex flex-col gap-0 w-full p-0">
             <p-fieldset legend="Datos" [toggleable]="true">
