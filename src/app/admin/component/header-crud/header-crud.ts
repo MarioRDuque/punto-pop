@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-header-crud',
-  imports: [ButtonModule, CommonModule, PanelModule],
+  imports: [ButtonModule, CommonModule, PanelModule, TooltipModule],
   templateUrl: './header-crud.html',
   styleUrl: './header-crud.scss',
 })
 export class HeaderCrud {
   @Input() titulo!: string;
   @Input() subtitulo!: string;
+  @Input() esFormulario: boolean = false;
 }

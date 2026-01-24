@@ -1,16 +1,2 @@
-<app-header-crud [subtitulo]="subtitulo"></app-header-crud>
-<div class="mb-2">
-    <p-floatlabel variant="on" class="w-full">
-        <p-iconfield class="w-full">
-            <p-inputicon class="pi pi-search"></p-inputicon>
-            <input pInputText class="w-full" id="filter-text-box" (input)="onFilterTextBoxChanged()" />
-        </p-iconfield>
-        <label for="filter-text-box">Filtrar</label>
-    </p-floatlabel>
-</div>
-<div style="width: 100%; height: 400px;">
-    <ag-grid-angular style="width: 100%; height: 100%;" [localeText]="localeText" [defaultColDef]="defaultColDef"
-        [theme]="theme" [rowData]="rowData" [columnDefs]="colDefs" [autoSizeStrategy]="autoSizeStrategy"
-        (gridReady)="onGridReady($event)" [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems"
- />
-</div>
+<app-header-crud [subtitulo]="subtitulo" [esFormulario]="false"></app-header-crud>
+<app-grid [rowData]="rowData" [colDefs]="colDefs"></app-grid>
