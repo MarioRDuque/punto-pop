@@ -12,5 +12,5 @@
     <ag-grid-angular style="width: 100%; height: 100%;" [localeText]="localeText" [defaultColDef]="defaultColDef"
         [theme]="theme" [rowData]="rowData" [columnDefs]="colDefs" [autoSizeStrategy]="autoSizeStrategy"
         (gridReady)="onGridReady($event)" [enableCellTextSelection]="true"
-        [getContextMenuItems]="getContextMenuItems" />
+        [getContextMenuItems]="getContextMenuItems" (gridSizeChanged)="onGridSizeChanged($event)"/>
 </div>

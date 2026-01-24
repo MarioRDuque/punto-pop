@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
-import { Usuario } from '../../../entities/Usuario';
+import { ConfUsuario } from '../../../entities/ConfUsuario';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +10,11 @@ export class UsuariosService {
   
   private api = inject(ApiService);
 
-  obtenerUsuarios(): Observable<Usuario[]> {
-    return this.api.get<Usuario[]>('configuracion/usuario');
+  listarUsuarios(): Observable<ConfUsuario[]> {
+    return this.api.get<ConfUsuario[]>('configuracion/usuario');
   }
 
-  guardar(usuario: Usuario): Observable<void> {
+  guardar(usuario: ConfUsuario): Observable<void> {
     return this.api.post<void>('configuracion/usuario', usuario);
   }
   
