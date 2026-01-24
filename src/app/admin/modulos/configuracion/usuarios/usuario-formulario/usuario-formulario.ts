@@ -62,15 +62,15 @@ export class UsuarioFormulario implements OnInit {
     });
 
     registrar() {
-        // this.cargando.activar();
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
             this.toast.error('Complete los campos obligatorios!');
             return;
         }
+        this.cargando.activar();
         this.usuariosService.guardar(this.usuarioForm.getRawValue() as any)
             .subscribe({
-                // next: data => this.usuarios = data,
+                next: data => this.cargando.inactivar(),
             });
     }
 
