@@ -5,12 +5,12 @@ import { ToastService } from '../service/toast.service';
 import { CargandoService } from '../service/cargando.service';
 
 export const errorInterceptor: HttpInterceptorFn = (
-  req: HttpRequest<any>,
+  req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) => {
 
   const messageService = inject(ToastService);
-  let cargando = inject(CargandoService);
+  const cargando = inject(CargandoService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -25,7 +25,7 @@ export const errorInterceptor: HttpInterceptorFn = (
         case 400:
           if (error.error?.errors) {
             //mejorar esto en un modal
-            let mensaje = Object.values(error.error.errors).join('\n');
+            const mensaje = Object.values(error.error.errors).join('\n');
             messageService.error(
               mensaje,
               error.error?.title || 'Error de Negocio'

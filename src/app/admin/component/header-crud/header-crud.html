@@ -10,10 +10,13 @@
     <ng-template pTemplate="icons">
         <div class="flex items-center gap-2">
             @if(esFormulario){
-            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" pTooltip="Guardar" tooltipPosition="top" tooltipStyleClass="small-tooltip"/>
+            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" pTooltip="Guardar"
+                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }@else {
-            <p-button icon="pi pi-file-excel" type="submit" [rounded]="true" [raised]="true" severity="success" pTooltip="Exportar" tooltipPosition="top" tooltipStyleClass="small-tooltip"/>
-            <p-button icon="pi pi-print" type="submit" [rounded]="true" [raised]="true" severity="info" pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip"/>
+            <p-button icon="pi pi-file-excel" [rounded]="true" [raised]="true" severity="success" pTooltip="Exportar"
+                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            <p-button icon="pi pi-print" [rounded]="true" [raised]="true" severity="info" pTooltip="Imprimir"
+                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }
         </div>
     </ng-template>

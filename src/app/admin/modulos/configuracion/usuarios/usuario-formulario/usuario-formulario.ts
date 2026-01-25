@@ -12,6 +12,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { ToastService } from '../../../../service/toast.service';
 import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
+import { ConfUsuario } from '../../../../entities/ConfUsuario';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -32,22 +33,13 @@ import { CargandoService } from '../../../../service/cargando.service';
 })
 export class UsuarioFormulario implements OnInit {
 
-    @Input() esCrear: boolean = false;
+    @Input() esCrear = false;
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
-    public subtitulo: string = "";
+    public subtitulo = "";
     rol: any = null;
-
-    ngOnInit(): void {
-        if (this.esCrear) {
-            this.subtitulo = 'Complete la información';
-        } else {
-            this.subtitulo = 'Actualización de datos';
-        }
-    }
-
 
     usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -61,19 +53,6 @@ export class UsuarioFormulario implements OnInit {
         usuEstado: [false, [Validators.required]],
     });
 
-    registrar() {
-        if (this.usuarioForm.invalid) {
-            this.usuarioForm.markAllAsTouched();
-            this.toast.error('Complete los campos obligatorios!');
-            return;
-        }
-        this.cargando.activar();
-        this.usuariosService.guardar(this.usuarioForm.getRawValue() as any)
-            .subscribe({
-                next: data => this.cargando.inactivar(),
-            });
-    }
-
     roles = [
         { name: 'ADMINISTRADOR', code: 'ADM' },
         { name: 'SOPORTE', code: 'SOP' },
@@ -83,5 +62,29 @@ export class UsuarioFormulario implements OnInit {
         { name: 'VENDEDOR', code: 'VEN' }
     ];
 
+    ngOnInit(): void {
+        if (this.esCrear) {
+            this.subtitulo = 'Complete la información';
+        } else {
+            this.subtitulo = 'Actualización de datos';
+        }
+    }
+
+    registrar() {
+        if (this.usuarioForm.invalid) {
+            this.usuarioForm.markAllAsTouched();
+            this.toast.error('Complete los campos obligatorios!');
+            return;
+        }
+        this.cargando.activar();
+        this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
+            .subscribe({
+                next: () => this.despuesDeGuardar(),
+            });
+    }
+
+    despuesDeGuardar() {
+        this.cargando.inactivar();
+    }
 
 }

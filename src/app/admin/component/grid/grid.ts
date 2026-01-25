@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, SizeColumnsToFitGridStrategy } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -14,13 +14,13 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
 })
-export class Grid {
+export class Grid<T> {
 
-  @Input() rowData: any[] = [];
+  @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
-  private gridApi: any;
-  public theme: any = myTheme;
-  public localeText: any = AG_GRID_LOCALE_ES;
+  private gridApi!: GridApi;
+  public theme: Theme = myTheme;
+  public localeText = AG_GRID_LOCALE_ES;
   public autoSizeStrategy: SizeColumnsToFitGridStrategy = {
     type: 'fitGridWidth',
     defaultMinWidth: 100
@@ -41,13 +41,13 @@ export class Grid {
 
   onFilterTextBoxChanged(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.gridApi.setQuickFilter(value);
+    this.gridApi.setGridOption('quickFilterText', value);
   }
 
   onGridSizeChanged(params: GridSizeChangedEvent) {
     params.api.sizeColumnsToFit();
   }
-  
+
   getContextMenuItems = (
     params: GetContextMenuItemsParams,
   ):
@@ -55,15 +55,13 @@ export class Grid {
     | Promise<(DefaultMenuItem | MenuItemDef)[]> => {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
-        // custom item
-        name: "Editar ",
+        name: "Editar",
         icon: '<span class="ag-icon ag-icon-edit"></span>',
         action: () => {
           console.log("Logging about ");
         },
       },
       {
-        // custom item
         name: "Estado",
         subMenu: [
           {
@@ -82,8 +80,7 @@ export class Grid {
         ],
       },
       {
-        // custom item
-        name: "Eliminar ",
+        name: "Eliminar",
         action: () => {
           console.log("Logging about ");
         },

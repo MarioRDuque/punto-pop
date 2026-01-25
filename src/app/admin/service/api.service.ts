@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
@@ -10,13 +10,13 @@ export class ApiService {
 
   private http = inject(HttpClient);
 
-  get<T>(endpoint: string, params?: any): Observable<T> {
+  get<T>(endpoint: string, params?: HttpParams): Observable<T> {
     return this.http.get<T>(`${this.baseUrl}${endpoint}`, {
       params
     });
   }
 
-  post<T>(endpoint: string, body: any): Observable<T> {
+  post<T>(endpoint: string, body: unknown): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}${endpoint}`, body);
   }
 }

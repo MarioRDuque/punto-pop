@@ -13,5 +13,5 @@ import { PanelModule } from 'primeng/panel';
 export class HeaderCrud {
   @Input() titulo!: string;
   @Input() subtitulo!: string;
-  @Input() esFormulario: boolean = false;
+  @Input() esFormulario = false;
 }

@@ -13,12 +13,11 @@ import { ConfUsuario } from '../../../../entities/ConfUsuario';
   styleUrl: './usuario-listado.scss',
 })
 export class UsuarioListado implements OnInit {
+
   private usuariosService = inject(UsuariosService);
   private cargando = inject(CargandoService);
-  public listaUsuarios: Array<ConfUsuario> = new Array;
-
-
-  subtitulo = 'Listado usuarios';
+  public listaUsuarios: ConfUsuario[] = [];
+  public subtitulo = 'Listado usuarios';
 
   ngOnInit(): void {
     this.listarUsuario();
@@ -28,48 +27,36 @@ export class UsuarioListado implements OnInit {
     this.cargando.activar();
     this.usuariosService.listarUsuarios()
       .subscribe({
-        next: data => { this.despuesDeListarUsuarios(data); }
+        next: (data) => this.despuesDeListarUsuarios(data)
       });
-
   }
 
-  despuesDeListarUsuarios(data: any) {
+  despuesDeListarUsuarios(data: ConfUsuario[]) {
     // lo que necesites hacer con la data
     this.listaUsuarios = data;
     this.cargando.inactivar();
   }
 
-  // Column Definitions: Defines the columns to be displayed.
   colDefs: ColDef[] = [
     {
       headerName: "Usuario",
       field: "usuUsername"
-
     },
     {
       headerName: "Nombre",
       field: "usuNombre"
-
     },
     {
       headerName: "Apellidos",
       field: "usuApellidos"
-
     },
     {
       headerName: "E-mail",
       field: "usuEmail"
-
-    },
-    {
-      headerName: "Clave",
-      field: "usuClave"
-
     },
     {
       headerName: "Teléfono",
       field: "usuTelefono"
-
     },
     {
       headerName: "Dirección",

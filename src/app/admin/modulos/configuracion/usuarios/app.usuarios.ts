@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FieldsetModule } from 'primeng/fieldset';
+import { Component } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
@@ -11,21 +9,15 @@ import { UsuarioListado } from "./usuario-listado/usuario-listado";
     selector: 'app-usuarios',
     standalone: true,
     imports: [
-    FluidModule,
-    PanelModule,
-    FieldsetModule,
-    ReactiveFormsModule,
-    TabsModule,
-    UsuarioFormulario,
-    UsuarioListado
-],
+        FluidModule,
+        PanelModule,
+        TabsModule,
+        UsuarioFormulario,
+        UsuarioListado
+    ],
     templateUrl: './app.usuarios.html'
 })
-export class AppUsuarios implements OnInit {
-
-    ngOnInit() {
-
-    }
+export class AppUsuarios {
 
 }
 
