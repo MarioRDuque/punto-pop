@@ -33,32 +33,32 @@ export const errorInterceptor: HttpInterceptorFn = (
           } else {
             messageService.error(
               error.error?.detail || 'Contacte al administrador',
-              'Error de Negocio'
+              error.error?.title || 'Error de Negocio'
             );
           }
           break;
         case 401:
           messageService.warn(
             error.error?.detail || 'Vuelve a iniciar sesión',
-            'Sesión expirada'
+            error.error?.title || 'Sesión expirada'
           );
           break;
         case 403:
           messageService.error(
             error.error?.detail || 'No tienes permisos',
-            'Acceso denegado'
+            error.error?.title || 'Acceso denegado'
           );
           break;
         default:
           if (error.status >= 500) {
             messageService.error(
               error.error?.detail || 'Contacte al administrador',
-              'Error del servidor'
+              error.error?.title || 'Error del servidor'
             );
           } else {
             messageService.error(
               error.error?.detail || 'Contacte al administrador',
-              'Error Desconocido'
+              error.error?.title || 'Error Desconocido'
             );
           }
           break;
