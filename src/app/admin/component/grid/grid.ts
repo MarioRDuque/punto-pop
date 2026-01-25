@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridReadyEvent, MenuItemDef, SizeColumnsToFitGridStrategy } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, SizeColumnsToFitGridStrategy } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
   styleUrl: './grid.scss',
 })
 export class Grid {
-  
+
   @Input() rowData: any[] = [];
   @Input() colDefs: ColDef[] = [];
   private gridApi: any;
@@ -44,6 +44,10 @@ export class Grid {
     this.gridApi.setQuickFilter(value);
   }
 
+  onGridSizeChanged(params: GridSizeChangedEvent) {
+    params.api.sizeColumnsToFit();
+  }
+  
   getContextMenuItems = (
     params: GetContextMenuItemsParams,
   ):

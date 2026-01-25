@@ -1,24 +1,10 @@
-import { Component } from '@angular/core';
-import { AgGridAngular } from "ag-grid-angular";
-import type { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, MenuItemDef, SizeColumnsToFitGridStrategy } from "ag-grid-community";
-import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
+import { Component, inject, OnInit } from '@angular/core';
+import type { ColDef } from "ag-grid-community";
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
-import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
-import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
-import { IconField } from "primeng/iconfield";
-import { InputIcon } from "primeng/inputicon";
-import { FloatLabel } from "primeng/floatlabel";
-import { InputTextModule } from 'primeng/inputtext';
 import { Grid } from "../../../../component/grid/grid";
-
-ModuleRegistry.registerModules([AllCommunityModule]);
-// Row Data Interface
-interface IRow {
-  make: string;
-  model: string;
-  price: number;
-  electric: boolean;
-}
+import { UsuariosService } from '../usuarios.service';
+import { CargandoService } from '../../../../service/cargando.service';
+import { ConfUsuario } from '../../../../entities/ConfUsuario';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -26,23 +12,81 @@ interface IRow {
   templateUrl: './usuario-listado.html',
   styleUrl: './usuario-listado.scss',
 })
-export class UsuarioListado {
+export class UsuarioListado implements OnInit {
+  private usuariosService = inject(UsuariosService);
+  private cargando = inject(CargandoService);
+  public listaUsuarios: Array<ConfUsuario> = new Array;
+
 
   subtitulo = 'Listado usuarios';
 
-  // Row Data: The data to be displayed.
-  rowData = [
-    { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-    { make: "Ford", model: "F-Series", price: 33850, electric: false },
-    { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-  ];
+  ngOnInit(): void {
+    this.listarUsuario();
+  }
+
+  listarUsuario() {
+    this.cargando.activar();
+    this.usuariosService.listarUsuarios()
+      .subscribe({
+        next: data => { this.despuesDeListarUsuarios(data); }
+      });
+
+  }
+
+  despuesDeListarUsuarios(data: any) {
+    // lo que necesites hacer con la data
+    this.listaUsuarios = data;
+    this.cargando.inactivar();
+  }
 
   // Column Definitions: Defines the columns to be displayed.
   colDefs: ColDef[] = [
-    { field: "make" },
-    { field: "model" },
-    { field: "price" },
-    { field: "electric" }
+    {
+      headerName: "Usuario",
+      field: "usuUsername"
+
+    },
+    {
+      headerName: "Nombre",
+      field: "usuNombre"
+
+    },
+    {
+      headerName: "Apellidos",
+      field: "usuApellidos"
+
+    },
+    {
+      headerName: "E-mail",
+      field: "usuEmail"
+
+    },
+    {
+      headerName: "Clave",
+      field: "usuClave"
+
+    },
+    {
+      headerName: "Teléfono",
+      field: "usuTelefono"
+
+    },
+    {
+      headerName: "Dirección",
+      field: "usuDireccion"
+    },
+    {
+      headerName: "Estado",
+      field: "usuEstado",
+      cellRenderer: 'agCheckboxCellRenderer',
+      cellRendererParams: {
+        disabled: true
+      },
+      width: 100,
+      cellStyle: {
+        textAlign: 'center'
+      }
+    }
   ];
 
 }
