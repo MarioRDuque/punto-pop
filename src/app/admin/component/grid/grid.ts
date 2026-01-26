@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -7,6 +7,7 @@ import { AgGridAngular } from "ag-grid-angular";
 import { myTheme } from '../../constantes/ag-grid-theme-builder';
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { InputTextModule } from 'primeng/inputtext';
+import { TabsStateService } from '../../service/tabs.service';
 
 @Component({
   selector: 'app-grid',
@@ -15,6 +16,8 @@ import { InputTextModule } from 'primeng/inputtext';
   styleUrl: './grid.scss',
 })
 export class Grid<T> {
+
+  tabsState = inject(TabsStateService);
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
@@ -58,7 +61,7 @@ export class Grid<T> {
         name: "Editar",
         icon: '<span class="ag-icon ag-icon-edit"></span>',
         action: () => {
-          console.log("Logging about ");
+          this.tabsState.irATab("2");
         },
       },
       {

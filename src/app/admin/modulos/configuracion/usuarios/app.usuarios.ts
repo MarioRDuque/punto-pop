@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
 import { UsuarioFormulario } from "./usuario-formulario/usuario-formulario";
 import { UsuarioListado } from "./usuario-listado/usuario-listado";
+import { TabsStateService } from '../../../service/tabs.service';
 
 @Component({
     selector: 'app-usuarios',
@@ -19,10 +20,10 @@ import { UsuarioListado } from "./usuario-listado/usuario-listado";
 })
 export class AppUsuarios {
 
-    tabActivo = signal('0');
+    tabsState = inject(TabsStateService);
 
     onTabChange(value: string | number | undefined) {
-        this.tabActivo.set(String(value ?? '0'));
+        this.tabsState.irATab(value ?? '0');
     }
 }
 
