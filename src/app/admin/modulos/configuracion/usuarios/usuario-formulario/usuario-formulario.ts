@@ -57,7 +57,6 @@ export class UsuarioFormulario implements OnInit {
         { name: 'ADMINISTRADOR', code: 'ADM' },
         { name: 'SOPORTE', code: 'SOP' },
         { name: 'USUARIO', code: 'USU' },
-        { name: 'PENDEJO', code: 'PEN' },
         { name: 'BASICO', code: 'BAS' },
         { name: 'VENDEDOR', code: 'VEN' }
     ];
@@ -79,12 +78,31 @@ export class UsuarioFormulario implements OnInit {
         this.cargando.activar();
         this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
             .subscribe({
-                next: () => this.despuesDeGuardar(),
+                next: (data) => this.despuesDeGuardar(data),
             });
     }
 
-    despuesDeGuardar() {
+    actualizar() {
+        if (this.usuarioForm.invalid) {
+            this.usuarioForm.markAllAsTouched();
+            this.toast.error('Complete los campos obligatorios!');
+            return;
+        }
+        this.cargando.activar();
+        this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
+            .subscribe({
+                next: (data) => this.despuesDeActualizar(data),
+            });
+    }
+
+    despuesDeGuardar(data: ConfUsuario) {
         this.cargando.inactivar();
+        this.usuariosService.agregarAlGrid(data);
+    }
+
+    despuesDeActualizar(data: ConfUsuario) {
+        this.cargando.inactivar();
+        this.usuariosService.actualizarElGrid(data);
     }
 
 }

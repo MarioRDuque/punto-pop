@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
@@ -19,6 +19,11 @@ import { UsuarioListado } from "./usuario-listado/usuario-listado";
 })
 export class AppUsuarios {
 
+    tabActivo = signal('0');
+
+    onTabChange(value: string | number | undefined) {
+        this.tabActivo.set(String(value ?? '0'));
+    }
 }
 
 

@@ -3,8 +3,6 @@ import type { ColDef } from "ag-grid-community";
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
-import { CargandoService } from '../../../../service/cargando.service';
-import { ConfUsuario } from '../../../../entities/ConfUsuario';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -15,52 +13,49 @@ import { ConfUsuario } from '../../../../entities/ConfUsuario';
 export class UsuarioListado implements OnInit {
 
   private usuariosService = inject(UsuariosService);
-  private cargando = inject(CargandoService);
-  public listaUsuarios: ConfUsuario[] = [];
+  public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
 
   ngOnInit(): void {
-    this.listarUsuario();
-  }
-
-  listarUsuario() {
-    this.cargando.activar();
-    this.usuariosService.listarUsuarios()
-      .subscribe({
-        next: (data) => this.despuesDeListarUsuarios(data)
-      });
-  }
-
-  despuesDeListarUsuarios(data: ConfUsuario[]) {
-    // lo que necesites hacer con la data
-    this.listaUsuarios = data;
-    this.cargando.inactivar();
+    this.usuariosService.cargar();
   }
 
   colDefs: ColDef[] = [
     {
       headerName: "Usuario",
-      field: "usuUsername"
+      field: "usuUsername",
+      width: 120,
+      minWidth: 120
     },
     {
       headerName: "Nombre",
-      field: "usuNombre"
+      field: "usuNombre",
+      width: 120,
+      minWidth: 120
     },
     {
       headerName: "Apellidos",
-      field: "usuApellidos"
+      field: "usuApellidos",
+      width: 250,
+      minWidth: 250
     },
     {
       headerName: "E-mail",
-      field: "usuEmail"
+      field: "usuEmail",
+      width: 200,
+      minWidth: 200
     },
     {
       headerName: "Teléfono",
-      field: "usuTelefono"
+      field: "usuTelefono",
+      width: 100,
+      minWidth: 100
     },
     {
       headerName: "Dirección",
-      field: "usuDireccion"
+      field: "usuDireccion",
+      width: 250,
+      minWidth: 250
     },
     {
       headerName: "Estado",
@@ -70,6 +65,8 @@ export class UsuarioListado implements OnInit {
         disabled: true
       },
       width: 100,
+      minWidth: 100,
+      maxWidth: 100,
       cellStyle: {
         textAlign: 'center'
       }

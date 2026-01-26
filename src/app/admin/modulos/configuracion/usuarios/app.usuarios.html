@@ -1,7 +1,7 @@
 <p-fluid>
     <p-panel value="0">
         <div class="card">
-            <p-tabs value="0">
+            <p-tabs [value]="tabActivo()" (valueChange)="onTabChange($event)">
                 <p-tablist>
                     <p-tab value="0"><i class="pi pi-users"></i><span> Listado usuario</span></p-tab>
                     <p-tab value="1"><i class="pi pi-user-plus"></i><span> Crear usuario</span></p-tab>
