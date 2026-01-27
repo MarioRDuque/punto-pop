@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
 import { UsuarioFormulario } from "./usuario-formulario/usuario-formulario";
 import { UsuarioListado } from "./usuario-listado/usuario-listado";
 import { TabsStateService } from '../../../service/tabs.service';
+import { Tabs } from '../../../enums/Tabs';
 
 @Component({
     selector: 'app-usuarios',
@@ -18,12 +19,17 @@ import { TabsStateService } from '../../../service/tabs.service';
     ],
     templateUrl: './app.usuarios.html'
 })
-export class AppUsuarios {
-
+export class AppUsuarios implements OnInit {
+    Tabs = Tabs;
     tabsState = inject(TabsStateService);
+
+    ngOnInit(): void {
+        this.onTabChange(Tabs.LISTADO);
+    }
 
     onTabChange(value: string | number | undefined) {
         this.tabsState.irATab(value ?? '0');
+        this.tabsState.cambiarEstado(true);
     }
 }
 

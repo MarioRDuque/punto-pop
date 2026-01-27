@@ -3,6 +3,7 @@ import type { ColDef } from "ag-grid-community";
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
+import { TabsStateService } from '../../../../service/tabs.service';
 
 @Component({
   selector: 'app-usuario-listado',

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, effect, inject, Input, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -13,6 +13,7 @@ import { ToastService } from '../../../../service/toast.service';
 import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
 import { ConfUsuario } from '../../../../entities/ConfUsuario';
+import { FormsData } from '../../../../service/forms-data';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -40,6 +41,7 @@ export class UsuarioFormulario implements OnInit {
     private cargando = inject(CargandoService);
     public subtitulo = "";
     rol: any = null;
+    formsData = inject(FormsData);
 
     usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -60,6 +62,17 @@ export class UsuarioFormulario implements OnInit {
         { name: 'BASICO', code: 'BAS' },
         { name: 'VENDEDOR', code: 'VEN' }
     ];
+
+    constructor() {
+        effect(() => {
+            if (this.formsData && this.formsData.objetoSeleccionado() && !this.esCrear) {
+                const usuario = this.formsData.objetoSeleccionado();
+                if (usuario) {
+                    this.usuarioForm.patchValue(this.formsData.objetoSeleccionado());
+                }
+            }
+        });
+    }
 
     ngOnInit(): void {
         if (this.esCrear) {
@@ -96,6 +109,7 @@ export class UsuarioFormulario implements OnInit {
     }
 
     despuesDeGuardar(data: ConfUsuario) {
+        this.toast.success('El usuario se guardó correctamente');
         this.cargando.inactivar();
         this.usuariosService.agregarAlGrid(data);
     }
