@@ -8,6 +8,8 @@ import { myTheme } from '../../constantes/ag-grid-theme-builder';
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsStateService } from '../../service/tabs.service';
+import { Tabs } from '../../enums/Tabs';
+import { FormsData } from '../../service/forms-data';
 
 @Component({
   selector: 'app-grid',
@@ -18,7 +20,8 @@ import { TabsStateService } from '../../service/tabs.service';
 export class Grid<T> {
 
   tabsState = inject(TabsStateService);
-
+  formsData = inject(FormsData);
+  puedeEditar: boolean = false;
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
   private gridApi!: GridApi;
@@ -28,6 +31,7 @@ export class Grid<T> {
     type: 'fitGridWidth',
     defaultMinWidth: 100
   };
+  public objetoSeleccionado: T | null = null;
 
   defaultColDef: ColDef = {
     filter: true,
@@ -60,8 +64,8 @@ export class Grid<T> {
       {
         name: "Editar",
         icon: '<span class="ag-icon ag-icon-edit"></span>',
-        action: () => {
-          this.tabsState.irATab("2");
+        action: (event) => {
+          this.editarUsuario(event?.node?.data);
         },
       },
       {
@@ -96,5 +100,11 @@ export class Grid<T> {
     }
     return result;
   };
+
+  editarUsuario(data: T) {
+    this.tabsState.cambiarEstado(true);
+    this.tabsState.irATab(Tabs.EDITAR);
+    this.formsData.seleccionarObjeto(data);
+  }
 
 }

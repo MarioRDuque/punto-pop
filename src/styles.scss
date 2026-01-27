@@ -116,3 +116,67 @@
 .card {
   padding: 0 !important;
 }
+
+//TOAST
+/* CONTENEDOR GENERAL */
+.p-toast-summary,
+.p-toast-detail {
+    color: #ffffff !important;
+}
+
+/* =============================
+   CONTENEDOR GENERAL
+============================= */
+.p-toast .p-toast-message {
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    color: #ffffff !important; /* BLANCO POR DEFECTO */
+}
+
+/* ICONOS */
+.p-toast-message-icon,
+.p-toast-icon-close {
+    color: #ffffff !important;
+}
+
+/* =============================
+   SUCCESS (color del tema)
+============================= */
+.p-toast .p-toast-message-success {
+    background: var(--primary-color) !important;
+    border-left: 6px solid var(--primary-color) !important;
+    color: #ffffff !important; /* FORZADO A BLANCO */
+}
+
+/* =============================
+   ERROR / DANGER
+============================= */
+.p-toast .p-toast-message-error {
+    background: #dc2626 !important;
+    border-left: 6px solid #991b1b;
+    color: #ffffff !important;
+}
+
+/* =============================
+   WARNING
+============================= */
+.p-toast .p-toast-message-warn {
+    background: #f59e0b !important;
+    border-left: 6px solid #b45309;
+    color: #ffffff !important; /* YA NO OSCURO */
+}
+
+/* =============================
+   INFO (EXCEPCIÓN)
+============================= */
+.p-toast .p-toast-message-info {
+    background: #2563eb !important;
+    border-left: 6px solid #1e40af;
+    color: #e0e7ff !important; /* azul claro, NO blanco */
+}
+
+/* Iconos en INFO */
+.p-toast .p-toast-message-info .p-toast-message-icon,
+.p-toast .p-toast-message-info .p-toast-icon-close {
+    color: #e0e7ff !important;
+}

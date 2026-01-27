@@ -3,18 +3,18 @@
         <div class="card">
             <p-tabs [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
                 <p-tablist>
-                    <p-tab value="0"><i class="pi pi-users"></i><span> Listado usuario</span></p-tab>
-                    <p-tab value="1"><i class="pi pi-user-plus"></i><span> Crear usuario</span></p-tab>
-                    <p-tab value="2"><i class="pi pi-user-edit"></i><span> Editar usuario</span></p-tab>
+                    <p-tab [value]="Tabs.LISTADO"><i class="pi pi-users"></i><span> Listado usuario</span></p-tab>
+                    <p-tab [value]="Tabs.CREAR"><i class="pi pi-user-plus"></i><span> Crear usuario</span></p-tab>
+                    <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i class="pi pi-user-edit"></i><span> Editar usuario</span></p-tab>
                 </p-tablist>
                 <p-tabpanels>
-                    <p-tabpanel value="0">
+                    <p-tabpanel [value]="Tabs.LISTADO">
                         <app-usuario-listado></app-usuario-listado>
                     </p-tabpanel>
-                    <p-tabpanel value="1">
+                    <p-tabpanel [value]="Tabs.CREAR">
                         <app-usuario-formulario [esCrear]="true"></app-usuario-formulario>
                     </p-tabpanel>
-                    <p-tabpanel value="2">
+                    <p-tabpanel [value]="Tabs.EDITAR">
                         <app-usuario-formulario></app-usuario-formulario>
                     </p-tabpanel>
                 </p-tabpanels>
