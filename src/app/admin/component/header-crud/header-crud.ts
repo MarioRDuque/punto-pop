@@ -18,8 +18,8 @@ export class HeaderCrud {
   @Input() esFormulario = false;
   @Output() mostrarFiltro = new EventEmitter;
   tabsState = inject(FormsData);
-  icons: string = "pi pi-filter";
-  tooltipSms: string ="Filtrar";
+  icons = "pi pi-filter";
+  tooltipSms ="Filtrar";
 
 
   cambiarEstado() {

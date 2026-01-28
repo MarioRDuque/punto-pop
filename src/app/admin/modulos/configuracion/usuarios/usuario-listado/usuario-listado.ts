@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import type { ColDef } from "ag-grid-community";
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";

@@ -21,7 +21,7 @@ export class Grid<T> {
 
   tabsState = inject(TabsStateService);
   formsData = inject(FormsData);
-  puedeEditar: boolean = false;
+  puedeEditar = false;
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
   private gridApi!: GridApi;
