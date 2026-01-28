@@ -11,7 +11,7 @@ export class ToastService {
   success(detail: string, summary = 'Éxito') {
     this.messageService.add({
       severity: 'success',
-      summary: 'Éxito',
+      summary,
       detail,
       life: 3000
     });
@@ -20,7 +20,7 @@ export class ToastService {
   error(detail: string, summary = 'Error') {
     this.messageService.add({
       severity: 'error',
-      summary: 'Error',
+      summary,
       detail,
       life: 3000
     });
@@ -29,7 +29,7 @@ export class ToastService {
   warn(detail: string, summary = 'Advertencia') {
     this.messageService.add({
       severity: 'warn',
-      summary: 'Advertencia',
+      summary,
       detail,
       life: 3000
     });
@@ -38,7 +38,7 @@ export class ToastService {
   info(detail: string, summary = 'Información') {
     this.messageService.add({
       severity: 'info',
-      summary: 'Información',
+      summary,
       detail,
       life: 3000
     });
