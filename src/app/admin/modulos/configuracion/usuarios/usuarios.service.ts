@@ -11,8 +11,7 @@ export class UsuariosService {
 
   private api = inject(ApiService);
   private cargando = inject(CargandoService);
-  private readonly _usuarios = signal<ConfUsuario[]>([]);
-  readonly usuarios = this._usuarios.asReadonly();
+  public usuarios = signal<ConfUsuario[]>([]);
 
   listarUsuarios(): Observable<ConfUsuario[]> {
     return this.api.get<ConfUsuario[]>('configuracion/usuario');
@@ -25,23 +24,21 @@ export class UsuariosService {
   cargar() {
     this.cargando.activar();
     this.listarUsuarios().subscribe(
-      {
-        next: (data) => this.despuesDeCargar(data)
-      }
+      { next: (data) => this.despuesDeCargar(data) }
     );
   }
 
   despuesDeCargar(data: ConfUsuario[]) {
-    this._usuarios.set(data);
+    this.usuarios.set(data);
     this.cargando.inactivar();
   }
 
   agregarAlGrid(usuario: ConfUsuario) {
-    this._usuarios.update(list => [...list, usuario]);
+    this.usuarios.update(list => [...list, usuario]);
   }
 
   actualizarElGrid(usuario: ConfUsuario) {
-    this._usuarios.update(list =>
+    this.usuarios.update(list =>
       list.map(u => u.usuUsername === usuario.usuUsername ? usuario : u)
     );
   }

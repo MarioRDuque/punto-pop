@@ -35,15 +35,16 @@ import { FormsData } from '../../../../service/forms-data';
 export class UsuarioFormulario implements OnInit {
 
     @Input() esCrear = false;
+
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
-    public subtitulo = "";
-    rol: any = null;
-    formsData = inject(FormsData);
+    private formsData = inject(FormsData);
 
-    usuarioForm = this.fb.group({
+    public subtitulo = "";
+
+    public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
         usuUsername: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
@@ -55,7 +56,7 @@ export class UsuarioFormulario implements OnInit {
         usuEstado: [false, [Validators.required]],
     });
 
-    roles = [
+    public roles = [
         { name: 'ADMINISTRADOR', code: 'ADM' },
         { name: 'SOPORTE', code: 'SOP' },
         { name: 'USUARIO', code: 'USU' },

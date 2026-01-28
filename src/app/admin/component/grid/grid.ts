@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -21,25 +21,18 @@ export class Grid<T> {
 
   tabsState = inject(TabsStateService);
   formsData = inject(FormsData);
-  puedeEditar = false;
+
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
   private gridApi!: GridApi;
   public theme: Theme = myTheme;
   public localeText = AG_GRID_LOCALE_ES;
-  public autoSizeStrategy: SizeColumnsToFitGridStrategy = {
-    type: 'fitGridWidth',
-    defaultMinWidth: 100
-  };
   public objetoSeleccionado: T | null = null;
 
   defaultColDef: ColDef = {
     filter: true,
-    cellDataType: false,
     resizable: true,
-    sortable: true,
-    flex: 1,
-    suppressMovable: true
+    sortable: true
   };
 
   onGridReady(params: GridReadyEvent) {
@@ -55,9 +48,7 @@ export class Grid<T> {
     params.api.sizeColumnsToFit();
   }
 
-  getContextMenuItems = (
-    params: GetContextMenuItemsParams,
-  ):
+  getContextMenuItems = ():
     | (DefaultMenuItem | MenuItemDef)[]
     | Promise<(DefaultMenuItem | MenuItemDef)[]> => {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
@@ -65,7 +56,7 @@ export class Grid<T> {
         name: "Editar",
         icon: '<span class="ag-icon ag-icon-edit"></span>',
         action: (event) => {
-          this.editarUsuario(event?.node?.data);
+          this.editar(event?.node?.data);
         },
       },
       {
@@ -95,14 +86,11 @@ export class Grid<T> {
       "separator",
       "export",
     ];
-    if (params.column?.getColId() === "country") {
-      return new Promise((res) => setTimeout(() => res(result), 150));
-    }
     return result;
   };
 
-  editarUsuario(data: T) {
-    this.tabsState.cambiarEstado(true);
+  editar(data: T) {
+    this.tabsState.cambiarEstadoTab(false);
     this.tabsState.irATab(Tabs.EDITAR);
     this.formsData.seleccionarObjeto(data);
   }

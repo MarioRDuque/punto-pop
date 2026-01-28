@@ -5,10 +5,8 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class CargandoService {
-  // BehaviorSubject con valor inicial false (no cargando)
-  private _loading = new BehaviorSubject<boolean>(false);
 
-  // Observable público para que otros se suscriban
+  private _loading = new BehaviorSubject<boolean>(false);
   loading$ = this._loading.asObservable();
 
   activar() {

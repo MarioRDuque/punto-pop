@@ -20,6 +20,7 @@ import { Tabs } from '../../../enums/Tabs';
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
+    
     Tabs = Tabs;
     tabsState = inject(TabsStateService);
 
@@ -29,7 +30,7 @@ export class AppUsuarios implements OnInit {
 
     onTabChange(value: string | number | undefined) {
         this.tabsState.irATab(value ?? '0');
-        this.tabsState.cambiarEstado(true);
+        this.tabsState.cambiarEstadoTab(true);
     }
 }
 

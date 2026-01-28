@@ -21,7 +21,6 @@ export class HeaderCrud {
   icons = "pi pi-filter";
   tooltipSms ="Filtrar";
 
-
   cambiarEstado() {
     this.tabsState.cambiarEstado(!this.tabsState.esFiltrar());
     if (this.tabsState.esFiltrar()) {

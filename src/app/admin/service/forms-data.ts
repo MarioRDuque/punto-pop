@@ -4,12 +4,12 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class FormsData <T> {
-  private readonly _objetoSeleccionado = signal<T | null>(null);
-  readonly objetoSeleccionado = this._objetoSeleccionado.asReadonly();
+
+  public objetoSeleccionado = signal<T | null>(null);
   public esFiltrar = signal<boolean>(false);
 
   seleccionarObjeto(objeto: T) {
-    this._objetoSeleccionado.set(objeto);
+    this.objetoSeleccionado.set(objeto);
   }
 
   cambiarEstado(estado: boolean) {

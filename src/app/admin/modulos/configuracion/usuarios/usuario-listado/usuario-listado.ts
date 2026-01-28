@@ -27,13 +27,12 @@ import { FormsData } from '../../../../service/forms-data';
 export class UsuarioListado implements OnInit {
 
   private usuariosService = inject(UsuariosService);
-  public listaUsuarios = this.usuariosService.usuarios;
-  public subtitulo = 'Listado usuarios';
   private fb = inject(FormBuilder);
   tabsState = inject(FormsData);
 
-
-  filtrarUsuario = this.fb.group({
+  public listaUsuarios = this.usuariosService.usuarios;
+  public subtitulo = 'Listado usuarios';
+  public filtrarUsuario = this.fb.group({
     usuApellidos: [''],
     usuNombre: ['']
   });
@@ -43,11 +42,8 @@ export class UsuarioListado implements OnInit {
   }
 
   buscar() {
-
+    this.usuariosService.cargar();
   }
-
-
-
 
   colDefs: ColDef[] = [
     {
