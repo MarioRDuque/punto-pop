@@ -1,13 +1,26 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import type { ColDef } from "ag-grid-community";
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
-import { TabsStateService } from '../../../../service/tabs.service';
+import { Fieldset } from "primeng/fieldset";
+import { InputComponent } from "../../../../component/input/input.component";
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ButtonModule } from "primeng/button";
+import { TooltipModule } from 'primeng/tooltip';
+import { FormsData } from '../../../../service/forms-data';
 
 @Component({
   selector: 'app-usuario-listado',
-  imports: [HeaderCrud, Grid],
+  imports: [
+    HeaderCrud,
+    Grid,
+    Fieldset,
+    InputComponent,
+    ReactiveFormsModule,
+    ButtonModule,
+    TooltipModule
+  ],
   templateUrl: './usuario-listado.html',
   styleUrl: './usuario-listado.scss',
 })
@@ -16,10 +29,25 @@ export class UsuarioListado implements OnInit {
   private usuariosService = inject(UsuariosService);
   public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
+  private fb = inject(FormBuilder);
+  tabsState = inject(FormsData);
+
+
+  filtrarUsuario = this.fb.group({
+    usuApellidos: [''],
+    usuNombre: ['']
+  });
 
   ngOnInit(): void {
     this.usuariosService.cargar();
   }
+
+  buscar() {
+
+  }
+
+
+
 
   colDefs: ColDef[] = [
     {
