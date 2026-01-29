@@ -5,7 +5,7 @@ import { TabsModule } from 'primeng/tabs';
 import { UsuarioFormulario } from "./usuario-formulario/usuario-formulario";
 import { UsuarioListado } from "./usuario-listado/usuario-listado";
 import { TabsStateService } from '../../../service/tabs.service';
-import { Tabs } from '../../../enums/Tabs';
+import { TabsEnum } from '../../../enums/tabs-enum';
 
 @Component({
     selector: 'app-usuarios',
@@ -21,11 +21,11 @@ import { Tabs } from '../../../enums/Tabs';
 })
 export class AppUsuarios implements OnInit {
     
-    Tabs = Tabs;
+    Tabs = TabsEnum;
     tabsState = inject(TabsStateService);
 
     ngOnInit(): void {
-        this.onTabChange(Tabs.LISTADO);
+        this.onTabChange(TabsEnum.LISTADO);
     }
 
     onTabChange(value: string | number | undefined) {

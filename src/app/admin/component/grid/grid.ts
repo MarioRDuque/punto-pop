@@ -8,7 +8,7 @@ import { myTheme } from '../../constantes/ag-grid-theme-builder';
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsStateService } from '../../service/tabs.service';
-import { Tabs } from '../../enums/Tabs';
+import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsData } from '../../service/forms-data';
 
 @Component({
@@ -91,7 +91,7 @@ export class Grid<T> {
 
   editar(data: T) {
     this.tabsState.cambiarEstadoTab(false);
-    this.tabsState.irATab(Tabs.EDITAR);
+    this.tabsState.irATab(TabsEnum.EDITAR);
     this.formsData.seleccionarObjeto(data);
   }
 

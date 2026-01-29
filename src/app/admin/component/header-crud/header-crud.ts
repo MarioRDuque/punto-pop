@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
-import { FormsData } from '../../service/forms-data';
+import { TabsStateService } from '../../service/tabs.service';
+import { TabsEnum } from '../../enums/tabs-enum';
 
 @Component({
   selector: 'app-header-crud',
@@ -16,20 +17,9 @@ export class HeaderCrud {
   @Input() titulo!: string;
   @Input() subtitulo!: string;
   @Input() esFormulario = false;
-  @Output() mostrarFiltro = new EventEmitter;
-  tabsState = inject(FormsData);
-  icons = "pi pi-filter";
-  tooltipSms ="Filtrar";
 
-  cambiarEstado() {
-    this.tabsState.cambiarEstado(!this.tabsState.esFiltrar());
-    if (this.tabsState.esFiltrar()) {
-      this.icons = "pi pi-filter-slash";
-      this.tooltipSms = "Ocultar filtro"
-    } else {
-      this.icons = "pi pi-filter";
-      this.tooltipSms = "Filtrar"
-    }
-  }
+  tabsState = inject(TabsStateService);
+
+  public tabs = TabsEnum;
 
 }
