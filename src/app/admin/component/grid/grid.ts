@@ -12,6 +12,8 @@ import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsData } from '../../service/forms-data';
 import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
 
 @Component({
   selector: 'app-grid',
@@ -25,11 +27,13 @@ import { TooltipModule } from 'primeng/tooltip';
   ],
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
+  providers: [DialogService]
 })
 export class Grid<T> {
 
   tabsState = inject(TabsStateService);
   formsData = inject(FormsData);
+  public dialogService = inject(DialogService)
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
@@ -58,6 +62,7 @@ export class Grid<T> {
     ]
   };
 
+  public consulta: boolean = false;
   constructor() {
     effect(() => {
       this.exportarSignal();
@@ -142,11 +147,21 @@ export class Grid<T> {
     this.formsData.seleccionarObjeto(data);
   }
 
+  ref: any;
+
   consultar(data: T) {
-    //falta llamar modal
-    this.tabsState.cambiarEstadoTab(false);
-    this.tabsState.irATab(TabsEnum.EDITAR);
     this.formsData.seleccionarObjeto(data);
+    this.ref = this.dialogService.open(UsuarioFormulario, {
+      header: 'Consultar Usuario', 
+      modal: true,
+      width: '50vw',
+      closable: true,
+      maximizable:true,
+      contentStyle: { overflow: 'auto' },
+      inputValues: {
+        esConsultar: true
+      },
+    });
   }
 
 }

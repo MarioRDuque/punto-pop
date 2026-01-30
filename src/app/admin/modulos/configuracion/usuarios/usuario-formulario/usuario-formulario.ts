@@ -36,6 +36,7 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 })
 export class UsuarioFormulario implements OnInit {
     @Input() esCrear = false;
+    @Input() esConsultar = false;
 
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
@@ -82,7 +83,12 @@ export class UsuarioFormulario implements OnInit {
         if (this.esCrear) {
             this.subtitulo = 'Complete la información';
         } else {
-            this.subtitulo = 'Actualización de datos';
+            if (this.esConsultar) {
+                this.subtitulo = 'Datos almacenados previamente';
+                this.consultaUsuario();
+            } else {
+                this.subtitulo = 'Actualización de datos';
+            }
         }
     }
 
@@ -106,7 +112,10 @@ export class UsuarioFormulario implements OnInit {
                     next: (data) => this.despuesDeActualizar(data),
                 });
         }
+    }
 
+    consultaUsuario() {
+        this.usuarioForm.disable();
     }
 
     despuesDeGuardar(data: ConfUsuario) {
