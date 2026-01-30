@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
@@ -13,14 +13,20 @@ import { TabsEnum } from '../../enums/tabs-enum';
   styleUrl: './header-crud.scss',
 })
 export class HeaderCrud {
+  
+  tabsState = inject(TabsStateService);
 
   @Input() titulo!: string;
   @Input() subtitulo!: string;
   @Input() esFormulario = false;
   @Input() esCrear = false;
 
-  tabsState = inject(TabsStateService);
-
+  @Output() exportarExcel = new EventEmitter<void>();
+  
   public tabs = TabsEnum;
+  
+  onExportar() {
+    this.exportarExcel.emit();
+  }
 
 }
