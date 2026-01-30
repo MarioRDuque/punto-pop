@@ -1,2 +1,3 @@
 <app-header-crud [subtitulo]="subtitulo" (exportarExcel)="exportarDesdeHeader()"></app-header-crud>
-<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" [colDefs]="colDefs" #gridUsuarios></app-grid>
+<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" [colDefs]="colDefs"
+    [exportarSignal]="exportarSignal"></app-grid>

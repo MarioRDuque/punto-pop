@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
 import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -33,6 +33,7 @@ export class Grid<T> {
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
+  @Input() exportarSignal!: Signal<number>;
 
   @Output() buscarEnBdd = new EventEmitter<string>();
 
@@ -57,6 +58,13 @@ export class Grid<T> {
     ]
   };
 
+  constructor() {
+    effect(() => {
+      this.exportarSignal();
+      this.gridApi?.exportDataAsExcel();
+    });
+  }
+
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
     this.gridApi.setFocusedCell(0, this.gridApi.getAllDisplayedColumns()[0])
@@ -69,12 +77,6 @@ export class Grid<T> {
 
   onFiltroStatusBarChange(value: string) {
     this.buscarEnBdd.emit(value);
-  }
-
-  exportarExcel() {
-    this.gridApi.exportDataAsExcel({
-      fileName: 'usuarios.xlsx'
-    });
   }
 
   buscar(event: Event) {
