@@ -1,5 +1,6 @@
 <p-panel>
     <ng-template pTemplate="header">
+        <!-- TITULO -->
         <div class="flex items-center w-full pl-3 relative">
             <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
             <div class="flex flex-col gap-1">
@@ -10,11 +11,15 @@
     <ng-template pTemplate="icons">
         <div class="flex items-center gap-2">
             @if(esFormulario){
-            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" [pTooltip]="esCrear ? 'Guardar' : 'Actualizar'"
-                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            <!-- BOTON SUBMIT -->
+            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true"
+                [pTooltip]="esCrear ? 'Guardar' : 'Actualizar'" tooltipPosition="top"
+                tooltipStyleClass="small-tooltip" />
             }@else {
+            <!-- BOTON EXPORTAR -->
             <p-button icon="pi pi-file-excel" [rounded]="true" [raised]="true" severity="success" pTooltip="Exportar"
-                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+                tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
+            <!-- BOTON IMPRIMIR -->
             <p-button icon="pi pi-print" [rounded]="true" [raised]="true" severity="info" pTooltip="Imprimir"
                 tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }

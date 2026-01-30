@@ -1,25 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
-import type { ColDef } from "ag-grid-community";
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
-import { Fieldset } from "primeng/fieldset";
-import { InputComponent } from "../../../../component/input/input.component";
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from "primeng/button";
-import { TooltipModule } from 'primeng/tooltip';
 import { FormsData } from '../../../../service/forms-data';
+import { ColDef } from 'ag-grid-enterprise';
+import { ConfUsuario } from '../../../../entities/ConfUsuario';
 
 @Component({
   selector: 'app-usuario-listado',
   imports: [
     HeaderCrud,
-    Grid,
-    Fieldset,
-    InputComponent,
-    ReactiveFormsModule,
-    ButtonModule,
-    TooltipModule
+    Grid
   ],
   templateUrl: './usuario-listado.html',
   styleUrl: './usuario-listado.scss',
@@ -27,23 +18,24 @@ import { FormsData } from '../../../../service/forms-data';
 export class UsuarioListado implements OnInit {
 
   private usuariosService = inject(UsuariosService);
-  private fb = inject(FormBuilder);
-  tabsState = inject(FormsData);
+  public tabsState = inject(FormsData);
+
+  @ViewChild('gridUsuarios') grid!: Grid<ConfUsuario>;
 
   public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
-  public filtrarUsuario = this.fb.group({
-    usuApellidos: [''],
-    usuNombre: ['']
-  });
 
   ngOnInit(): void {
     this.usuariosService.cargar();
   }
 
-  buscar(event?:string) {
+  buscar(event?: string) {
     console.log(event);
     this.usuariosService.cargar();
+  }
+
+  exportarDesdeHeader() {
+    this.grid.exportarExcel();
   }
 
   colDefs: ColDef[] = [

@@ -71,6 +71,12 @@ export class Grid<T> {
     this.buscarEnBdd.emit(value);
   }
 
+  exportarExcel() {
+    this.gridApi.exportDataAsExcel({
+      fileName: 'usuarios.xlsx'
+    });
+  }
+
   buscar(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.buscarEnBdd.emit(value);
