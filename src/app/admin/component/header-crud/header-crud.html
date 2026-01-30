@@ -10,7 +10,7 @@
     <ng-template pTemplate="icons">
         <div class="flex items-center gap-2">
             @if(esFormulario){
-            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" pTooltip="Guardar"
+            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true" [pTooltip]="esCrear ? 'Guardar' : 'Actualizar'"
                 tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }@else {
             <p-button icon="pi pi-file-excel" [rounded]="true" [raised]="true" severity="success" pTooltip="Exportar"

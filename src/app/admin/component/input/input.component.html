@@ -4,14 +4,14 @@
 
     <p-iconfield class="w-full">
         <p-inputicon [class]="icon"></p-inputicon>
-        <input pInputText class="w-full" [id]="id" [pKeyFilter]="keyFilter" [formControl]="control"
-            [autocomplete]="autocomplete" appErrors />
+        <input pInputText class="w-full" pSize="small" [id]="id" [pKeyFilter]="keyFilter" [formControl]="control"
+            [autocomplete]="autocomplete" [appUppercase]="uppercase" appErrors />
     </p-iconfield>
 
     } @else {
 
-    <input pInputText class="w-full" [id]="id" [pKeyFilter]="keyFilter" [formControl]="control"
-        [autocomplete]="autocomplete" appErrors />
+    <input pInputText class="w-full" pSize="small" [id]="id" [pKeyFilter]="keyFilter" [formControl]="control"
+        [autocomplete]="autocomplete" [appUppercase]="uppercase" appErrors />
 
     }
 

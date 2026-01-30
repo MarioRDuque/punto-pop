@@ -6,6 +6,7 @@ import { InputIcon } from "primeng/inputicon";
 import { InputTextModule } from 'primeng/inputtext';
 import { Errors } from '../../directives/errors';
 import { KeyFilter, KeyFilterPattern } from "primeng/keyfilter";
+import { Uppercase } from "../../directives/uppercase";
 
 @Component({
   selector: 'app-input',
@@ -16,8 +17,9 @@ import { KeyFilter, KeyFilterPattern } from "primeng/keyfilter";
     ReactiveFormsModule,
     InputTextModule,
     Errors,
-    KeyFilter
-  ],
+    KeyFilter,
+    Uppercase
+],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
   viewProviders: [
@@ -34,6 +36,7 @@ export class InputComponent {
   @Input() keyFilter?: RegExp | KeyFilterPattern | null;
   @Input() id!: string;
   @Input() autocomplete = 'off';
+  @Input() uppercase: boolean = true;
 
   @Optional() private controlContainer = inject(ControlContainer)
 

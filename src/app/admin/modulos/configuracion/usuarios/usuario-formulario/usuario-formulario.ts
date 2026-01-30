@@ -14,6 +14,8 @@ import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
 import { ConfUsuario } from '../../../../entities/ConfUsuario';
 import { FormsData } from '../../../../service/forms-data';
+import { TabsStateService } from '../../../../service/tabs.service';
+import { TabsEnum } from '../../../../enums/tabs-enum';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -33,7 +35,6 @@ import { FormsData } from '../../../../service/forms-data';
     styleUrl: './usuario-formulario.scss',
 })
 export class UsuarioFormulario implements OnInit {
-
     @Input() esCrear = false;
 
     private fb = inject(FormBuilder);
@@ -41,6 +42,7 @@ export class UsuarioFormulario implements OnInit {
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
     private formsData = inject(FormsData);
+    tabsState = inject(TabsStateService);
 
     public subtitulo = "";
 
@@ -66,7 +68,8 @@ export class UsuarioFormulario implements OnInit {
 
     constructor() {
         effect(() => {
-            if (this.formsData && this.formsData.objetoSeleccionado() && !this.esCrear) {
+            if (this.formsData && this.formsData.objetoSeleccionado()) {
+                this.usuarioForm.controls.usuUsername.disable();
                 const usuario = this.formsData.objetoSeleccionado();
                 if (usuario) {
                     this.usuarioForm.patchValue(this.formsData.objetoSeleccionado());
@@ -83,30 +86,27 @@ export class UsuarioFormulario implements OnInit {
         }
     }
 
-    registrar() {
+    realizarAccion() {
         if (this.usuarioForm.invalid) {
             this.usuarioForm.markAllAsTouched();
             this.toast.error('Complete los campos obligatorios!');
             return;
         }
         this.cargando.activar();
-        this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
-            .subscribe({
-                next: (data) => this.despuesDeGuardar(data),
-            });
-    }
+        if (this.esCrear) {
+            //INSERTAR
+            this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
+                .subscribe({
+                    next: (data) => this.despuesDeGuardar(data),
+                });
+        } else {
+            //ACTUALIZAR
+            this.usuariosService.actualizar(this.usuarioForm.getRawValue() as ConfUsuario)
+                .subscribe({
+                    next: (data) => this.despuesDeActualizar(data),
+                });
+        }
 
-    actualizar() {
-        if (this.usuarioForm.invalid) {
-            this.usuarioForm.markAllAsTouched();
-            this.toast.error('Complete los campos obligatorios!');
-            return;
-        }
-        this.cargando.activar();
-        this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
-            .subscribe({
-                next: (data) => this.despuesDeActualizar(data),
-            });
     }
 
     despuesDeGuardar(data: ConfUsuario) {
@@ -116,8 +116,10 @@ export class UsuarioFormulario implements OnInit {
     }
 
     despuesDeActualizar(data: ConfUsuario) {
+        this.toast.success('El usuario se actualizó correctamente');
         this.cargando.inactivar();
         this.usuariosService.actualizarElGrid(data);
+        this.tabsState.irATab(TabsEnum.LISTADO);
     }
 
 }

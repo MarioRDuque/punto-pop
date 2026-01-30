@@ -21,6 +21,10 @@ export class UsuariosService {
     return this.api.post<ConfUsuario>('configuracion/usuario', usuario);
   }
 
+  actualizar(usuario: ConfUsuario): Observable<ConfUsuario> {
+    return this.api.put<ConfUsuario>('configuracion/usuario/'+usuario.usuUsername, usuario);
+  }
+
   cargar() {
     this.cargando.activar();
     this.listarUsuarios().subscribe(

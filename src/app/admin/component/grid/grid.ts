@@ -54,9 +54,16 @@ export class Grid<T> {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
         name: "Editar",
-        icon: '<span class="ag-icon ag-icon-edit"></span>',
+        icon: '<i class="pi pi-pen-to-square text-xs"></i>',
         action: (event) => {
           this.editar(event?.node?.data);
+        },
+      },
+      {
+        name: "Consultar",
+        icon: '<i class="pi pi-search text-xs"></i>',
+        action: (event) => {
+          this.consultar(event?.node?.data);
         },
       },
       {
@@ -90,6 +97,13 @@ export class Grid<T> {
   };
 
   editar(data: T) {
+    this.tabsState.cambiarEstadoTab(false);
+    this.tabsState.irATab(TabsEnum.EDITAR);
+    this.formsData.seleccionarObjeto(data);
+  }
+
+  consultar(data: T) {
+    //falta llamar modal
     this.tabsState.cambiarEstadoTab(false);
     this.tabsState.irATab(TabsEnum.EDITAR);
     this.formsData.seleccionarObjeto(data);
