@@ -20,7 +20,7 @@ import { TabsEnum } from '../../../enums/tabs-enum';
     templateUrl: './app.usuarios.html'
 })
 export class AppUsuarios implements OnInit {
-    
+
     Tabs = TabsEnum;
     tabsState = inject(TabsStateService);
 

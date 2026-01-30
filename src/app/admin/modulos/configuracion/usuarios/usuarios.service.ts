@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
 import { ConfUsuario } from '../../../entities/ConfUsuario';
 import { CargandoService } from '../../../service/cargando.service';
+import { ColDef } from 'ag-grid-enterprise';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class UsuariosService {
   }
 
   actualizar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.put<ConfUsuario>('configuracion/usuario/'+usuario.usuUsername, usuario);
+    return this.api.put<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername, usuario);
   }
 
   cargar() {
@@ -45,6 +46,61 @@ export class UsuariosService {
     this.usuarios.update(list =>
       list.map(u => u.usuUsername === usuario.usuUsername ? usuario : u)
     );
+  }
+
+  generarColumnasListado(): ColDef[] {
+    return [
+      {
+        headerName: "Usuario",
+        field: "usuUsername",
+        width: 120,
+        minWidth: 120
+      },
+      {
+        headerName: "Nombre",
+        field: "usuNombre",
+        width: 120,
+        minWidth: 120
+      },
+      {
+        headerName: "Apellidos",
+        field: "usuApellidos",
+        width: 250,
+        minWidth: 250
+      },
+      {
+        headerName: "E-mail",
+        field: "usuEmail",
+        width: 200,
+        minWidth: 200
+      },
+      {
+        headerName: "Teléfono",
+        field: "usuTelefono",
+        width: 100,
+        minWidth: 100
+      },
+      {
+        headerName: "Dirección",
+        field: "usuDireccion",
+        width: 250,
+        minWidth: 250
+      },
+      {
+        headerName: "Estado",
+        field: "usuEstado",
+        cellRenderer: 'agCheckboxCellRenderer',
+        cellRendererParams: {
+          disabled: true
+        },
+        width: 100,
+        minWidth: 100,
+        maxWidth: 100,
+        cellStyle: {
+          textAlign: 'center'
+        }
+      }
+    ];
   }
 
 }
