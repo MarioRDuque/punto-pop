@@ -43,7 +43,7 @@ export class UsuarioFormulario implements OnInit {
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
     private formsData = inject(FormsData);
-    tabsState = inject(TabsStateService);
+    public tabsState = inject(TabsStateService);
 
     public subtitulo = "";
 
