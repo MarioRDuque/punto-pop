@@ -41,7 +41,8 @@ export class UsuarioListado implements OnInit {
     this.usuariosService.cargar();
   }
 
-  buscar() {
+  buscar(event?:string) {
+    console.log(event);
     this.usuariosService.cargar();
   }
 

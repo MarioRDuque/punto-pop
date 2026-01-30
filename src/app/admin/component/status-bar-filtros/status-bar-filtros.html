@@ -1,0 +1,7 @@
+<div class="grid-footer">
+    <div class="right">
+        <label for="opciones">Mostrar:</label>
+        <p-select [options]="opciones" [(ngModel)]="seleccionado" optionLabel="name" placeholder="Select a City"
+            size="small" appendTo="body" class="w-full md:w-56" id="opciones" (onChange)="cambiarSeleccionado()"/>
+    </div>
+</div>

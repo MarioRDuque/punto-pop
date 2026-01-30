@@ -1,4 +1,4 @@
-<app-header-crud [subtitulo]="subtitulo" ></app-header-crud>
+<app-header-crud [subtitulo]="subtitulo"></app-header-crud>
 <form [formGroup]="filtrarUsuario" (ngSubmit)="buscar()" autocomplete="off" novalidate>
     @if (tabsState.esFiltrar()) {
     <p-fieldset legend="Filtrar por:">
@@ -9,14 +9,14 @@
             </div>
             <!-- Nombre -->
             <div class="field">
-                <app-input label="Nombre"  id="usuNombre" />
+                <app-input label="Nombre" id="usuNombre" />
             </div>
             <div class="field">
                 <p-button icon="pi pi-search" [rounded]="true" [raised]="true" severity="secondary" pTooltip="Buscar"
-                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+                    tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             </div>
         </div>
     </p-fieldset>
     }
 </form>
-<app-grid [rowData]="listaUsuarios()" [colDefs]="colDefs"></app-grid>
+<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" [colDefs]="colDefs"></app-grid>

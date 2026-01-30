@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -10,10 +10,19 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TabsStateService } from '../../service/tabs.service';
 import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsData } from '../../service/forms-data';
+import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-grid',
-  imports: [FloatLabel, IconField, InputIcon, AgGridAngular, InputTextModule],
+  imports: [
+    FloatLabel,
+    IconField,
+    InputIcon,
+    AgGridAngular,
+    InputTextModule,
+    TooltipModule
+  ],
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
 })
@@ -24,24 +33,47 @@ export class Grid<T> {
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
+
+  @Output() buscarEnBdd = new EventEmitter<string>();
+
+  public objetoSeleccionado: T | null = null;
+
+  //Grid
   private gridApi!: GridApi;
   public theme: Theme = myTheme;
   public localeText = AG_GRID_LOCALE_ES;
-  public objetoSeleccionado: T | null = null;
-
+  gridContext = {
+    parent: this
+  };
   defaultColDef: ColDef = {
     filter: true,
     resizable: true,
     sortable: true
   };
 
+  statusBar = {
+    statusPanels: [
+      { statusPanel: StatusBarFiltros }
+    ]
+  };
+
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    this.gridApi.setFocusedCell(0, this.gridApi.getAllDisplayedColumns()[0])
   }
 
   onFilterTextBoxChanged(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.gridApi.setGridOption('quickFilterText', value);
+  }
+
+  onFiltroStatusBarChange(value: string) {
+    this.buscarEnBdd.emit(value);
+  }
+
+  buscar(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.buscarEnBdd.emit(value);
   }
 
   onGridSizeChanged(params: GridSizeChangedEvent) {

@@ -1,16 +1,19 @@
 <div class="mb-2 mt-2">
+    <!-- INPUT FLOTANTE PARA FILTRAR -->
     <p-floatlabel variant="on" class="w-full">
         <p-iconfield class="w-full">
             <p-inputicon class="pi pi-search"></p-inputicon>
-            <input pInputText class="w-full" id="filter-text-box" (input)="onFilterTextBoxChanged($event)" />
+            <!-- INPUT FILTRAR -->
+            <input pInputText class="w-full" pSize="small" id="filter-text-box" (input)="onFilterTextBoxChanged($event)"
+                (keyup.enter)="buscar($event)" placeholder="Filtrar" />
+            <!-- ICONO CLICK BUSCAR -->
+            <p-inputicon class="pi pi-cloud-download search" pTooltip="Cargas mas datos" tooltipPosition="top"
+                tooltipStyleClass="small-tooltip" (click)="buscar($event)" />
         </p-iconfield>
-        <label for="filter-text-box">Filtrar</label>
     </p-floatlabel>
 </div>
 
-<div style="width: 100%; height: 700px;">
-    <ag-grid-angular style="width: 100%; height: 100%;" [localeText]="localeText" [defaultColDef]="defaultColDef"
-        [theme]="theme" [rowData]="rowData" [columnDefs]="colDefs" 
-        (gridReady)="onGridReady($event)" [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems"
-        (gridSizeChanged)="onGridSizeChanged($event)" />
-</div>
+<ag-grid-angular style="width: 100%; height: calc(100vh - 275px);" [localeText]="localeText" [context]="gridContext"
+    [defaultColDef]="defaultColDef" [theme]="theme" [statusBar]="statusBar" [rowData]="rowData" [columnDefs]="colDefs"
+    [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems" (gridReady)="onGridReady($event)"
+    (gridSizeChanged)="onGridSizeChanged($event)" />
