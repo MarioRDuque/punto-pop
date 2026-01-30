@@ -2,7 +2,7 @@ import { Component, inject, Input, Optional } from '@angular/core';
 import { FloatLabelModule } from "primeng/floatlabel";
 import { MultiSelectModule } from "primeng/multiselect";
 import { Errors } from '../../directives/errors';
-import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { ControlContainer, FormControl, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-multiselect',
@@ -10,7 +10,7 @@ import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule 
     MultiSelectModule,
     FloatLabelModule,
     Errors,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './multiselect.html',
   styleUrl: './multiselect.scss',

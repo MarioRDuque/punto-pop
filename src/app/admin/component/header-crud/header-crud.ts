@@ -17,6 +17,7 @@ export class HeaderCrud {
   @Input() titulo!: string;
   @Input() subtitulo!: string;
   @Input() esFormulario = false;
+  @Input() esCrear = false;
 
   tabsState = inject(TabsStateService);
 

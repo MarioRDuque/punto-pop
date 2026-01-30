@@ -1,12 +1,12 @@
-<form [formGroup]="usuarioForm" (ngSubmit)="registrar()" autocomplete="off" novalidate>
-    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
+<form [formGroup]="usuarioForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
+    <app-header-crud [subtitulo]="subtitulo" [esCrear]="esCrear" [esFormulario]="true"></app-header-crud>
     <div class="flex flex-col md:flex-row gap-4 w-full">
         <div class="card flex flex-col gap-0 w-full p-0">
             <p-fieldset legend="Datos" [toggleable]="true">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Usuario -->
                     <div class="field">
-                        <app-input label="Usuario" icon="pi pi-user" id="usuUsername" />
+                        <app-input label="Usuario" icon="pi pi-user" id="usuUsername" [uppercase]="false"/>
                     </div>
                     <!-- Nombre -->
                     <div class="field">
@@ -18,11 +18,11 @@
                     </div>
                     <!-- Correo -->
                     <div class="field md:col-span-2">
-                        <app-input label="Correo electrónico" id="usuEmail" />
+                        <app-input label="Correo electrónico" id="usuEmail" [uppercase]="false"/>
                     </div>
                     <!-- Contraseña -->
                     <div class="field">
-                        <app-password label="Clave" id="usuClave" />
+                        <app-password label="Clave" id="usuClave" [uppercase]="false"/>
                     </div>
                 </div>
             </p-fieldset>
