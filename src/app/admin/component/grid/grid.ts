@@ -33,8 +33,8 @@ import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 })
 export class Grid<T> {
 
-  tabsState = inject(TabsStateService);
-  formsData = inject(FormsData);
+  public tabsState = inject(TabsStateService);
+  public formsData = inject(FormsData);
   public dialogService = inject(DialogService)
 
   @Input() rowData: T[] = [];
@@ -49,22 +49,20 @@ export class Grid<T> {
   private gridApi!: GridApi;
   public theme: Theme = myTheme;
   public localeText = AG_GRID_LOCALE_ES;
-  gridContext = {
+  public gridContext = {
     parent: this
   };
-  defaultColDef: ColDef = {
+  public defaultColDef: ColDef = {
     filter: true,
     resizable: true,
     sortable: true
   };
-
-  statusBar = {
+  public statusBar = {
     statusPanels: [
       { statusPanel: StatusBarFiltros }
     ]
   };
 
-  public consulta = false;
   constructor() {
     effect(() => {
       this.exportarSignal();
