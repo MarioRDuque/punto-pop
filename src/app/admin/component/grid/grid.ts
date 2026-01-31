@@ -9,13 +9,14 @@ import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsStateService } from '../../service/tabs.service';
 import { TabsEnum } from '../../enums/tabs-enum';
-import { FormsData } from '../../service/forms-data';
+import { FormsService } from '../../service/forms-service';
 import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
+import { AccionEnum } from '../../enums/accion-enum';
 
 @Component({
   selector: 'app-grid',
@@ -34,7 +35,7 @@ import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 export class Grid<T> {
 
   public tabsState = inject(TabsStateService);
-  public formsData = inject(FormsData);
+  public formsService = inject(FormsService);
   public dialogService = inject(DialogService)
 
   @Input() rowData: T[] = [];
@@ -152,23 +153,22 @@ export class Grid<T> {
   editar(data: T) {
     this.tabsState.cambiarEstadoTab(false);
     this.tabsState.irATab(TabsEnum.EDITAR);
-    this.formsData.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.EDITAR);
+    this.formsService.seleccionarObjeto(data);
   }
 
   ref: DynamicDialogRef<UsuarioFormulario> | null = null;
 
   consultar(data: T) {
-    this.formsData.seleccionarObjeto(data);
+    this.formsService.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.CONSULTAR);
     this.ref = this.dialogService.open(UsuarioFormulario, {
       header: 'Consultar Usuario',
       modal: true,
       width: '50vw',
       closable: true,
       maximizable: true,
-      contentStyle: { overflow: 'auto' },
-      inputValues: {
-        esConsultar: true
-      },
+      contentStyle: { overflow: 'auto' }
     });
   }
 

@@ -13,7 +13,7 @@
             @if(esFormulario){
             <!-- BOTON SUBMIT -->
             <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true"
-                [pTooltip]="esCrear ? 'Guardar' : 'Actualizar'" tooltipPosition="top"
+                [pTooltip]="formsService.accion() == accionEnum.CREAR ? 'Guardar' : 'Actualizar'" tooltipPosition="top"
                 tooltipStyleClass="small-tooltip" />
             }@else {
             <!-- BOTON EXPORTAR -->

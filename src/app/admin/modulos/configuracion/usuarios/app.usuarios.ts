@@ -6,6 +6,8 @@ import { UsuarioFormulario } from "./usuario-formulario/usuario-formulario";
 import { UsuarioListado } from "./usuario-listado/usuario-listado";
 import { TabsStateService } from '../../../service/tabs.service';
 import { TabsEnum } from '../../../enums/tabs-enum';
+import { FormsService } from '../../../service/forms-service';
+import { AccionEnum } from '../../../enums/accion-enum';
 
 @Component({
     selector: 'app-usuarios',
@@ -23,6 +25,7 @@ export class AppUsuarios implements OnInit {
 
     Tabs = TabsEnum;
     tabsState = inject(TabsStateService);
+    formsService = inject(FormsService);
 
     ngOnInit(): void {
         this.onTabChange(TabsEnum.LISTADO);
@@ -30,6 +33,9 @@ export class AppUsuarios implements OnInit {
 
     onTabChange(value: string | number | undefined) {
         this.tabsState.irATab(value ?? '0');
+        if (value == this.Tabs.CREAR){
+            this.formsService.accion.set(AccionEnum.CREAR);
+        }
         this.tabsState.cambiarEstadoTab(true);
     }
 }

@@ -13,9 +13,10 @@ import { ToastService } from '../../../../service/toast.service';
 import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
 import { ConfUsuario } from '../../../../entities/ConfUsuario';
-import { FormsData } from '../../../../service/forms-data';
+import { FormsService } from '../../../../service/forms-service';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { AccionEnum } from '../../../../enums/accion-enum';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -29,23 +30,23 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
         InputComponent,
         MultiselectComponent,
         ToggleSwitchComponent,
-        PasswordComponent,
+        PasswordComponent
     ],
     templateUrl: './usuario-formulario.html',
     styleUrl: './usuario-formulario.scss',
 })
 export class UsuarioFormulario implements OnInit {
-    @Input() esCrear = false;
-    @Input() esConsultar = false;
 
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
-    private formsData = inject(FormsData);
+    private formsService = inject(FormsService);
     public tabsState = inject(TabsStateService);
 
     public subtitulo = "";
+    public accion = this.formsService.accion;
+    public accionEnum = AccionEnum;
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -69,26 +70,33 @@ export class UsuarioFormulario implements OnInit {
 
     constructor() {
         effect(() => {
-            if (this.formsData && this.formsData.objetoSeleccionado()) {
+            if (this.formsService.objetoSeleccionado() && this.accion() != AccionEnum.CREAR) {
                 this.usuarioForm.controls.usuUsername.disable();
-                const usuario = this.formsData.objetoSeleccionado();
+                const usuario = this.formsService.objetoSeleccionado();
                 if (usuario) {
-                    this.usuarioForm.patchValue(this.formsData.objetoSeleccionado());
+                    this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
                 }
+            } else {
+                this.usuarioForm.enable();
+                this.usuarioForm.reset();
             }
         });
     }
 
     ngOnInit(): void {
-        if (this.esCrear) {
-            this.subtitulo = 'Complete la información';
-        } else {
-            if (this.esConsultar) {
+        switch (this.accion()) {
+            case AccionEnum.CREAR:
+                this.subtitulo = 'Complete la información';
+                break;
+            case AccionEnum.CONSULTAR:
                 this.subtitulo = 'Datos almacenados previamente';
                 this.consultaUsuario();
-            } else {
+                break;
+            case AccionEnum.EDITAR:
                 this.subtitulo = 'Actualización de datos';
-            }
+                break;
+            default:
+                break;
         }
     }
 
@@ -99,7 +107,7 @@ export class UsuarioFormulario implements OnInit {
             return;
         }
         this.cargando.activar();
-        if (this.esCrear) {
+        if (this.accion() == AccionEnum.CREAR) {
             //INSERTAR
             this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
                 .subscribe({

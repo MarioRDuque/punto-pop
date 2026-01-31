@@ -5,6 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { TabsStateService } from '../../service/tabs.service';
 import { TabsEnum } from '../../enums/tabs-enum';
+import { FormsService } from '../../service/forms-service';
+import { AccionEnum } from '../../enums/accion-enum';
 
 @Component({
   selector: 'app-header-crud',
@@ -15,15 +17,16 @@ import { TabsEnum } from '../../enums/tabs-enum';
 export class HeaderCrud {
   
   tabsState = inject(TabsStateService);
+  formsService = inject(FormsService);
 
   @Input() titulo!: string;
   @Input() subtitulo!: string;
   @Input() esFormulario = false;
-  @Input() esCrear = false;
 
   @Output() exportarExcel = new EventEmitter<void>();
   
-  public tabs = TabsEnum;
+  public tabEnum = TabsEnum;
+  public accionEnum = AccionEnum;
   
   onExportar() {
     this.exportarExcel.emit();
