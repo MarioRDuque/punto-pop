@@ -3,12 +3,7 @@ import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
 import { ColDef } from 'ag-grid-enterprise';
-import { TipoFiltro } from '../../../../enums/tipo-filtro';
-
-export type BuscarEvent ={
-  filtro?: TipoFiltro,
-  texto?:string
-};
+import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -34,7 +29,7 @@ export class UsuarioListado implements OnInit {
     this.colDefs = this.usuariosService.generarColumnasListado();
   }
 
-  buscar(event: BuscarEvent) {
+  buscar(event: EventCrudBusqueda) {
     if (event.filtro) {
       this.usuariosService.cargar(event.filtro, undefined);
     } else {

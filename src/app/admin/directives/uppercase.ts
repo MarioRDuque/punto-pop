@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -7,32 +7,27 @@ import { Subscription } from 'rxjs';
 })
 export class Uppercase implements OnInit, OnDestroy {
 
+  private control = inject(NgControl);
+  private el = inject(ElementRef<HTMLInputElement>);
+
   @Input('appUppercase') uppercase = false;
 
   private sub!: Subscription;
 
-  constructor(
-    private control: NgControl,
-    private el: ElementRef<HTMLInputElement>
-  ) {}
-
   ngOnInit(): void {
     if (!this.uppercase || !this.control?.control) return;
-
-    // 🔥 Escucha valores que vienen de afuera (edit / patchValue / export)
+    // Escucha valores que vienen de afuera (edit / patchValue / export)
     this.sub = this.control.control.valueChanges.subscribe(value => {
       if (value && value !== value.toUpperCase()) {
         const upper = value.toUpperCase();
-
         // actualiza input
         this.el.nativeElement.value = upper;
-
         // actualiza formControl sin loop
         this.control.control?.setValue(upper, { emitEvent: false });
       }
     });
 
-    // 👉 Caso inicial (cuando carga el formulario)
+    // Caso inicial (cuando carga el formulario)
     const initialValue = this.control.control.value;
     if (initialValue) {
       const upper = initialValue.toUpperCase();

@@ -15,7 +15,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
 import { TipoFiltro } from '../../enums/tipo-filtro';
-import { BuscarEvent } from '../../modulos/configuracion/usuarios/usuario-listado/usuario-listado';
+import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 
 @Component({
   selector: 'app-grid',
@@ -41,7 +41,7 @@ export class Grid<T> {
   @Input() colDefs: ColDef[] = [];
   @Input() exportarSignal!: Signal<number>;
 
-  @Output() buscarEnBdd = new EventEmitter<BuscarEvent>();
+  @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
 
   public objetoSeleccionado: T | null = null;
 
@@ -119,15 +119,18 @@ export class Grid<T> {
       },
       {
         name: "Estado",
+        icon: '<i class="pi pi-check-circle text-xs"></i>',
         subMenu: [
           {
             name: "Activar",
+            icon: '<i class="pi pi-check text-xs"></i>',
             action: () => {
               console.log("Niall was pressed");
             },
           },
           {
             name: "Inactivar",
+            icon: '<i class="pi pi-times text-xs"></i>',
             disabled: true,
             action: () => {
               console.log("Sean was pressed");

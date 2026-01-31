@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { MenuItem, MessageService } from 'primeng/api';
-import { SplitButtonModule } from 'primeng/splitbutton';
-import { Button, ButtonModule } from "primeng/button";
+import { ButtonModule } from "primeng/button";
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-accion-button',
   imports: [
-    SplitButtonModule,
-    ButtonModule
+    ButtonModule,
+    TooltipModule
 ],
   templateUrl: './accion-button.html',
   styleUrl: './accion-button.scss',
