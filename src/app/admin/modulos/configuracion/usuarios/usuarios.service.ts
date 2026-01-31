@@ -4,6 +4,8 @@ import { ApiService } from '../../../service/api.service';
 import { ConfUsuario } from '../../../entities/ConfUsuario';
 import { CargandoService } from '../../../service/cargando.service';
 import { ColDef } from 'ag-grid-enterprise';
+import { TipoFiltro } from '../../../enums/tipo-filtro';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -26,11 +28,18 @@ export class UsuariosService {
     return this.api.put<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername, usuario);
   }
 
-  cargar() {
+  cargar(filtro?: TipoFiltro, q?: string) {
     this.cargando.activar();
-    this.listarUsuarios().subscribe(
+    let params: HttpParams = new HttpParams();
+    if (filtro) {
+      params = params.set('filtro', filtro);
+    }
+    if (q && q.trim().length > 0) {
+      params = params.set('q', q.trim());
+    }
+    return this.api.get<ConfUsuario[]>('configuracion/usuario/filtrar', params).subscribe(
       { next: (data) => this.despuesDeCargar(data) }
-    );
+    );;
   }
 
   despuesDeCargar(data: ConfUsuario[]) {

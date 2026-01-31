@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { IStatusPanelAngularComp } from 'ag-grid-angular';
 import { IStatusPanelParams } from 'ag-grid-enterprise';
 import { SelectModule } from "primeng/select";
+import { TipoFiltro } from '../../enums/tipo-filtro';
 
 interface Combo {
   name: string;
@@ -24,9 +25,9 @@ export class StatusBarFiltros implements IStatusPanelAngularComp {
   agInit(params: IStatusPanelParams): void {
     this.params = params;
     this.opciones = [
-      { name: '50 Registros', code: '50' },
-      { name: 'Todos', code: 'T' },
-      { name: 'Incluir Inactivos', code: 'II' }
+      { name: '50 Registros', code: TipoFiltro.TOP_50 },
+      { name: 'Todos', code: TipoFiltro.TODOS },
+      { name: 'Incluir Inactivos', code: TipoFiltro.INCLUIR_INACTIVOS }
     ];
     this.seleccionado = this.opciones[0];
   }

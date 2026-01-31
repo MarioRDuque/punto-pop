@@ -22,7 +22,7 @@ export class PasswordComponent {
   @Input() label!: string;
   @Input() id!: string;
   @Optional() private controlContainer = inject(ControlContainer)
-  @Input() uppercase: boolean = true;
+  @Input() uppercase = true;
 
   get control(): FormControl {
     return this.controlContainer

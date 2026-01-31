@@ -36,7 +36,7 @@ export class InputComponent {
   @Input() keyFilter?: RegExp | KeyFilterPattern | null;
   @Input() id!: string;
   @Input() autocomplete = 'off';
-  @Input() uppercase: boolean = true;
+  @Input() uppercase = true;
 
   @Optional() private controlContainer = inject(ControlContainer)
 

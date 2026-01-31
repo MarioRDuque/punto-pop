@@ -12,8 +12,10 @@ import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsData } from '../../service/forms-data';
 import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
+import { TipoFiltro } from '../../enums/tipo-filtro';
+import { BuscarEvent } from '../../modulos/configuracion/usuarios/usuario-listado/usuario-listado';
 
 @Component({
   selector: 'app-grid',
@@ -39,7 +41,7 @@ export class Grid<T> {
   @Input() colDefs: ColDef[] = [];
   @Input() exportarSignal!: Signal<number>;
 
-  @Output() buscarEnBdd = new EventEmitter<string>();
+  @Output() buscarEnBdd = new EventEmitter<BuscarEvent>();
 
   public objetoSeleccionado: T | null = null;
 
@@ -62,7 +64,7 @@ export class Grid<T> {
     ]
   };
 
-  public consulta: boolean = false;
+  public consulta = false;
   constructor() {
     effect(() => {
       this.exportarSignal();
@@ -80,13 +82,17 @@ export class Grid<T> {
     this.gridApi.setGridOption('quickFilterText', value);
   }
 
-  onFiltroStatusBarChange(value: string) {
-    this.buscarEnBdd.emit(value);
+  onFiltroStatusBarChange(value: TipoFiltro) {
+    this.buscarEnBdd.emit({
+      filtro: value
+    });
   }
 
   buscar(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.buscarEnBdd.emit(value);
+    const value: string = (event.target as HTMLInputElement).value;
+    this.buscarEnBdd.emit({
+      texto: value
+    });
   }
 
   onGridSizeChanged(params: GridSizeChangedEvent) {
@@ -152,11 +158,11 @@ export class Grid<T> {
   consultar(data: T) {
     this.formsData.seleccionarObjeto(data);
     this.ref = this.dialogService.open(UsuarioFormulario, {
-      header: 'Consultar Usuario', 
+      header: 'Consultar Usuario',
       modal: true,
       width: '50vw',
       closable: true,
-      maximizable:true,
+      maximizable: true,
       contentStyle: { overflow: 'auto' },
       inputValues: {
         esConsultar: true
