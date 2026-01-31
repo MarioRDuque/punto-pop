@@ -4,6 +4,7 @@ import { ApiService } from '../../../service/api.service';
 import { ConfUsuario } from '../../../entities/ConfUsuario';
 import { CargandoService } from '../../../service/cargando.service';
 import { ColDef } from 'ag-grid-enterprise';
+import { AccionButton } from '../../../component/accion-button/accion-button';
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +99,20 @@ export class UsuariosService {
         maxWidth: 100,
         cellStyle: {
           textAlign: 'center'
+        }
+      },
+      {
+        colId: "actions",
+        headerName: "Opciones",
+        cellRenderer: AccionButton,
+        width: 70,
+        minWidth: 70,
+        maxWidth: 70,
+        cellStyle: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0'
         }
       }
     ];
