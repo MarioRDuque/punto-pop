@@ -137,6 +137,7 @@ export class Grid<T> {
       },
       {
         name: "Eliminar",
+        icon: '<i class="pi pi-trash text-xs"></i>',
         action: () => {
           console.log("Logging about ");
         },
