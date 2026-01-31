@@ -12,7 +12,7 @@ import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsData } from '../../service/forms-data';
 import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
@@ -155,7 +155,7 @@ export class Grid<T> {
     this.formsData.seleccionarObjeto(data);
   }
 
-  ref: any;
+  ref: DynamicDialogRef<UsuarioFormulario> | null = null;
 
   consultar(data: T) {
     this.formsData.seleccionarObjeto(data);
