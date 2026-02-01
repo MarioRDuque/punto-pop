@@ -6,7 +6,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Usuario -->
                     <div class="field">
-                        <app-input label="Usuario" icon="pi pi-user" id="usuUsername" [uppercase]="false" />
+                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuUsername" [uppercase]="false" />
                     </div>
                     <!-- Nombre -->
                     <div class="field">
@@ -34,7 +34,7 @@
                     </div>
                     <!-- Dirección -->
                     <div class="field md:col-span-2">
-                        <app-input label="Dirección" icon="pi pi-map-marker" id="usuDireccion" />
+                        <app-input label="Dirección" [icon]="ICONSCONSTANT.MAPA" id="usuDireccion" />
                     </div>
                 </div>
             </p-fieldset>

@@ -11,17 +11,27 @@
     <ng-template pTemplate="icons">
         <div class="flex items-center gap-2">
             @if(esFormulario){
+            @switch (formsService.accion()) {
+            @case (accionEnum.CREAR) {
             <!-- BOTON SUBMIT -->
-            <p-button icon="pi pi-save" type="submit" [rounded]="true" [raised]="true"
-                [pTooltip]="formsService.accion() == accionEnum.CREAR ? 'Guardar' : 'Actualizar'" tooltipPosition="top"
-                tooltipStyleClass="small-tooltip" />
+            <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
+                [pTooltip]="'Guardar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            }
+            @case (accionEnum.EDITAR) {
+            <!-- BOTON SUBMIT -->
+            <p-button [icon]="ICONSCONSTANT.REGRESAR" (click)="regresar()" [rounded]="true" [raised]="true"
+                [pTooltip]="'Regresar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" severity="secondary" />
+            <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
+                [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            }
+            }
             }@else {
             <!-- BOTON EXPORTAR -->
-            <p-button icon="pi pi-file-excel" [rounded]="true" [raised]="true" severity="success" pTooltip="Exportar"
-                tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
+            <p-button [icon]="ICONSCONSTANT.EXCEL" [rounded]="true" [raised]="true" severity="success"
+                pTooltip="Exportar" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
             <!-- BOTON IMPRIMIR -->
-            <p-button icon="pi pi-print" [rounded]="true" [raised]="true" severity="info" pTooltip="Imprimir"
-                tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            <p-button [icon]="ICONSCONSTANT.IMPRIMIR" [rounded]="true" [raised]="true" severity="info"
+                pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }
         </div>
     </ng-template>

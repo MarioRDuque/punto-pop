@@ -2,13 +2,13 @@
     <!-- INPUT FLOTANTE PARA FILTRAR -->
     <p-floatlabel variant="on" class="w-full">
         <p-iconfield class="w-full">
-            <p-inputicon class="pi pi-search"></p-inputicon>
+            <p-inputicon class="{{ICONSCONSTANT.BUSCAR}}"></p-inputicon>
             <!-- INPUT FILTRAR -->
             <input pInputText class="w-full" pSize="small" id="filter-text-box" (input)="onFilterTextBoxChanged($event)"
                 (keyup.enter)="buscar($event)" placeholder="Filtrar" />
             <!-- ICONO CLICK BUSCAR -->
-            <p-inputicon class="pi pi-cloud-download search" pTooltip="Cargas mas datos" tooltipPosition="top"
-                tooltipStyleClass="small-tooltip" (click)="buscar($event)" />
+            <p-inputicon class="{{ICONSCONSTANT.NUBE_DESCARGAR}} search" pTooltip="Cargas mas datos"
+                tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="buscar($event)" />
         </p-iconfield>
     </p-floatlabel>
 </div>

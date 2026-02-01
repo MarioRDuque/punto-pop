@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
-import { AgEvent, ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, MenuItemDef, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -17,6 +17,7 @@ import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
+import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-grid',
@@ -45,6 +46,7 @@ export class Grid<T> {
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
 
   public objetoSeleccionado: T | null = null;
+  ICONSCONSTANT = ICONSCONSTANT;
 
   //Grid
   private gridApi!: GridApi;
@@ -104,32 +106,32 @@ export class Grid<T> {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
         name: "Editar",
-        icon: '<i class="pi pi-pen-to-square text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.EDITAR} text-xs"></i>`,
         action: (event) => {
           this.editar(event?.node?.data);
         },
       },
       {
         name: "Consultar",
-        icon: '<i class="pi pi-search text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.BUSCAR} text-xs"></i>`,
         action: (event) => {
           this.consultar(event?.node?.data);
         },
       },
       {
         name: "Estado",
-        icon: '<i class="pi pi-check-circle text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.CHECK_CIRCULAR} text-xs"></i>`,
         subMenu: [
           {
             name: "Activar",
-            icon: '<i class="pi pi-check text-xs"></i>',
+            icon: `<i class="${ICONSCONSTANT.CHECK} text-xs"></i>`,
             action: () => {
               console.log("Niall was pressed");
             },
           },
           {
             name: "Inactivar",
-            icon: '<i class="pi pi-times text-xs"></i>',
+            icon: `<i class="${ICONSCONSTANT.CLOSE} text-xs"></i>`,
             disabled: true,
             action: () => {
               console.log("Sean was pressed");
@@ -139,7 +141,7 @@ export class Grid<T> {
       },
       {
         name: "Eliminar",
-        icon: '<i class="pi pi-trash text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.ELIMINAR} text-xs"></i>`,
         action: () => {
           console.log("Logging about ");
         },
@@ -150,14 +152,14 @@ export class Grid<T> {
     return result;
   };
 
-  mostrarOpciones(event: MouseEvent, params: ICellRendererParams) {
-    const agEvent = {
-      type: 'cellContextMenu',
-      node: params.node,
-      column: params.column,
-      event
-    } as unknown as AgEvent;
-    this.gridApi.dispatchEvent(agEvent);
+  mostrarOpciones(params: ICellRendererParams) {
+    const contextParams: IContextMenuParams = {
+      rowNode: params.node!,
+      column: params.column!,
+      value: params.value,
+      source: 'api'
+    };
+    this.gridApi.showContextMenu(contextParams);
   }
 
   editar(data: T) {

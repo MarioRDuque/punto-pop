@@ -3,6 +3,7 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { ButtonModule } from "primeng/button";
 import { TooltipModule } from 'primeng/tooltip';
+import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-accion-button',
@@ -19,6 +20,7 @@ export class AccionButton implements ICellRendererAngularComp {
 
   private params!: ICellRendererParams;
   company = signal('');
+  ICONSCONSTANT = ICONSCONSTANT;
 
   agInit(params: ICellRendererParams): void {
     this.params = params;
@@ -30,9 +32,8 @@ export class AccionButton implements ICellRendererAngularComp {
     return true;
   }
 
-  mostrarOpciones(event: MouseEvent) {
-    event.stopPropagation();
-    this.params.context.parent.mostrarOpciones(event, this.params);
+  mostrarOpciones() {
+    this.params.context.parent.mostrarOpciones(this.params);
   }
 
 }

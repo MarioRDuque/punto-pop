@@ -3,10 +3,12 @@
         <div class="card">
             <p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
                 <p-tablist>
-                    <p-tab [value]="Tabs.LISTADO"><i class="pi pi-users"></i><span> Lista de usuarios</span></p-tab>
-                    <p-tab [value]="Tabs.CREAR"><i class="pi pi-user-plus"></i><span> Crear usuario</span></p-tab>
+                    <p-tab [value]="Tabs.LISTADO"><i class="{{ICONSCONSTANT.USERS}}"></i><span> Lista de
+                            usuarios</span></p-tab>
+                    <p-tab [value]="Tabs.CREAR"><i class="{{ICONSCONSTANT.AGREGAR_USER}}"></i><span> Crear
+                            usuario</span></p-tab>
                     <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i
-                            class="pi pi-user-edit"></i><span> Editar usuario</span></p-tab>
+                            class="{{ICONSCONSTANT.EDITAR_USUARIO}}"></i><span> Editar usuario</span></p-tab>
                 </p-tablist>
                 <p-tabpanels>
                     <p-tabpanel [value]="Tabs.LISTADO">
