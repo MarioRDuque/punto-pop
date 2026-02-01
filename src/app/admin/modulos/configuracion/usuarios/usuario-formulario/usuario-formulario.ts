@@ -59,7 +59,7 @@ export class UsuarioFormulario implements OnInit {
         usuTelefono: ['', []],
         usuDireccion: ['', []],
         rol: ['', [Validators.required]],
-        usuEstado: [false, [Validators.required]],
+        usuEstado: [true, [Validators.required]],
     });
 
     public roles = [
@@ -81,6 +81,7 @@ export class UsuarioFormulario implements OnInit {
             } else {
                 this.usuarioForm.enable();
                 this.usuarioForm.reset();
+                this.usuarioForm.controls.usuEstado.setValue(true);
             }
         });
     }
