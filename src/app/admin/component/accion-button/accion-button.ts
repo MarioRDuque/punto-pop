@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { MenuItem, MessageService } from 'primeng/api';
 import { ButtonModule } from "primeng/button";
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -10,7 +9,7 @@ import { TooltipModule } from 'primeng/tooltip';
   imports: [
     ButtonModule,
     TooltipModule
-],
+  ],
   templateUrl: './accion-button.html',
   styleUrl: './accion-button.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,11 +17,11 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class AccionButton implements ICellRendererAngularComp {
 
-  data: any;
+  private params!: ICellRendererParams;
   company = signal('');
 
   agInit(params: ICellRendererParams): void {
-    this.data = params.data;
+    this.params = params;
     this.refresh(params);
   }
 
@@ -31,41 +30,9 @@ export class AccionButton implements ICellRendererAngularComp {
     return true;
   }
 
-  buttonClicked() {
-    console.log('Software Launched');
+  mostrarOpciones(event: MouseEvent) {
+    event.stopPropagation();
+    this.params.context.parent.mostrarOpciones(event, this.params);
   }
-
-  private messageService = inject(MessageService);
-
-  items: MenuItem[];
-
-    constructor() {
-        this.items = [
-                    {
-                        label: 'Update',
-                        icon: 'pi pi-refresh',
-                        command: () => {
-                            this.messageService.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 });
-                        }
-                    },
-                    {
-                        label: 'Delete',
-                        icon: 'pi pi-times',
-                        command: () => {
-                            this.messageService.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 });
-                        }
-                    },
-                    {
-                        separator: true
-                    },
-                    {
-                        label: 'Quit',
-                        icon: 'pi pi-power-off',
-                        command: () => {
-                            window.open('https://angular.io/', '_blank');
-                        }
-                    }
-                ];
-    }
 
 }

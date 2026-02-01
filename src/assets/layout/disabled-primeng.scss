@@ -1,0 +1,36 @@
+/* ===== PrimeNG disabled override (solo visual) ===== */
+
+.p-disabled,
+.p-component:disabled,
+.p-inputtext:disabled,
+.p-dropdown.p-disabled,
+.p-multiselect.p-disabled,
+.p-inputswitch.p-disabled,
+.p-password.p-disabled {
+    opacity: 1 !important;
+}
+
+/* Inputs */
+.p-inputtext:disabled,
+.p-password-input:disabled {
+    background: var(--p-inputtext-background) !important;
+    color: var(--p-inputtext-color) !important;
+    border-color: var(--p-inputtext-border-color) !important;
+}
+
+/* Dropdown / Multiselect */
+.p-dropdown.p-disabled,
+.p-multiselect.p-disabled {
+    background: var(--p-inputtext-background) !important;
+    border-color: var(--p-inputtext-border-color) !important;
+}
+
+/* Toggle / Switch */
+.p-inputswitch.p-disabled {
+    opacity: 1 !important;
+}
+
+/* FileUpload */
+.p-fileupload.p-disabled {
+    opacity: 1 !important;
+}

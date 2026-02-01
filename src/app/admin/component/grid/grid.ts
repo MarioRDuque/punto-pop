@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
-import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, Theme } from 'ag-grid-community';
+import { AgEvent, ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -149,6 +149,16 @@ export class Grid<T> {
     ];
     return result;
   };
+
+  mostrarOpciones(event: MouseEvent, params: ICellRendererParams) {
+    const agEvent = {
+      type: 'cellContextMenu',
+      node: params.node,
+      column: params.column,
+      event
+    } as unknown as AgEvent;
+    this.gridApi.dispatchEvent(agEvent);
+  }
 
   editar(data: T) {
     this.tabsState.cambiarEstadoTab(false);
