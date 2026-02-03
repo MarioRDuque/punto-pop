@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
-import { ColDef, DefaultMenuItem, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -17,6 +17,10 @@ import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
+import { UsuariosService } from '../../modulos/configuracion/usuarios/usuarios.service';
+import { ToastService } from '../../service/toast.service';
+import { ConfUsuario } from '../../entities/ConfUsuario';
+import { CargandoService } from '../../service/cargando.service';
 import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
@@ -37,7 +41,11 @@ export class Grid<T> {
 
   public tabsState = inject(TabsStateService);
   public formsService = inject(FormsService);
-  public dialogService = inject(DialogService)
+  public dialogService = inject(DialogService);
+  private usuariosService = inject(UsuariosService);
+  private toast = inject(ToastService);
+  private cargando = inject(CargandoService);
+
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
@@ -100,22 +108,22 @@ export class Grid<T> {
     params.api.sizeColumnsToFit();
   }
 
-  getContextMenuItems = ():
+  getContextMenuItems = (params: GetContextMenuItemsParams):
     | (DefaultMenuItem | MenuItemDef)[]
     | Promise<(DefaultMenuItem | MenuItemDef)[]> => {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
         name: "Editar",
         icon: `<i class="${ICONSCONSTANT.EDITAR} text-xs"></i>`,
-        action: (event) => {
-          this.editar(event?.node?.data);
+        action: () => {
+          this.editar(params?.node?.data);
         },
       },
       {
         name: "Consultar",
         icon: `<i class="${ICONSCONSTANT.BUSCAR} text-xs"></i>`,
-        action: (event) => {
-          this.consultar(event?.node?.data);
+        action: () => {
+          this.consultar(params?.node?.data);
         },
       },
       {
@@ -125,16 +133,17 @@ export class Grid<T> {
           {
             name: "Activar",
             icon: `<i class="${ICONSCONSTANT.CHECK} text-xs"></i>`,
+            disabled: params?.node?.data?.usuEstado,
             action: () => {
-              console.log("Niall was pressed");
+              this.cambiarEstado(params?.node?.data, true);
             },
           },
           {
             name: "Inactivar",
             icon: `<i class="${ICONSCONSTANT.CLOSE} text-xs"></i>`,
-            disabled: true,
+            disabled: !params?.node?.data?.usuEstado,
             action: () => {
-              console.log("Sean was pressed");
+              this.cambiarEstado(params?.node?.data, false);
             },
           },
         ],
@@ -167,6 +176,25 @@ export class Grid<T> {
     this.tabsState.irATab(TabsEnum.EDITAR);
     this.formsService.accion.set(AccionEnum.EDITAR);
     this.formsService.seleccionarObjeto(data);
+  }
+
+  cambiarEstado(data: T, estadoUsu: boolean) {
+    this.cargando.activar();
+    this.formsService.seleccionarObjeto(data);
+    const usuario = this.formsService.objetoSeleccionado();
+    if (usuario) {
+      usuario.usuEstado = estadoUsu;
+      this.usuariosService.actualizar(usuario)
+        .subscribe({
+          next: (estado) => this.despuesDeCambiarEstado(estado),
+        });
+    }
+  }
+
+  despuesDeCambiarEstado(estado: ConfUsuario) {
+    this.toast.success("El usuario "+ estado.usuUsername +" ha sido ➔ " + (estado.usuEstado ? "ACTIVADO" : "INACTIVADO"));
+    this.usuariosService.actualizarElGrid(estado);
+    this.cargando.inactivar();
   }
 
   ref: DynamicDialogRef<UsuarioFormulario> | null = null;
