@@ -17,10 +17,6 @@ import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
-import { UsuariosService } from '../../modulos/configuracion/usuarios/usuarios.service';
-import { ToastService } from '../../service/toast.service';
-import { ConfUsuario } from '../../entities/ConfUsuario';
-import { CargandoService } from '../../service/cargando.service';
 import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
@@ -42,16 +38,15 @@ export class Grid<T> {
   public tabsState = inject(TabsStateService);
   public formsService = inject(FormsService);
   public dialogService = inject(DialogService);
-  private usuariosService = inject(UsuariosService);
-  private toast = inject(ToastService);
-  private cargando = inject(CargandoService);
 
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
   @Input() exportarSignal!: Signal<number>;
+  @Input() campoEstado!: string;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
+  @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
 
   public objetoSeleccionado: T | null = null;
   ICONSCONSTANT = ICONSCONSTANT;
@@ -111,6 +106,9 @@ export class Grid<T> {
   getContextMenuItems = (params: GetContextMenuItemsParams):
     | (DefaultMenuItem | MenuItemDef)[]
     | Promise<(DefaultMenuItem | MenuItemDef)[]> => {
+    const estadoField = this.campoEstado; // Default 'estado'
+    const data = params?.node?.data;
+    const estadoActual = data?.[estadoField];
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
         name: "Editar",
@@ -133,7 +131,7 @@ export class Grid<T> {
           {
             name: "Activar",
             icon: `<i class="${ICONSCONSTANT.CHECK} text-xs"></i>`,
-            disabled: params?.node?.data?.usuEstado,
+            disabled: estadoActual,
             action: () => {
               this.cambiarEstado(params?.node?.data, true);
             },
@@ -141,7 +139,7 @@ export class Grid<T> {
           {
             name: "Inactivar",
             icon: `<i class="${ICONSCONSTANT.CLOSE} text-xs"></i>`,
-            disabled: !params?.node?.data?.usuEstado,
+            disabled: !estadoActual,
             action: () => {
               this.cambiarEstado(params?.node?.data, false);
             },
@@ -178,23 +176,11 @@ export class Grid<T> {
     this.formsService.seleccionarObjeto(data);
   }
 
-  cambiarEstado(data: T, estadoUsu: boolean) {
-    this.cargando.activar();
-    this.formsService.seleccionarObjeto(data);
-    const usuario = this.formsService.objetoSeleccionado();
-    if (usuario) {
-      usuario.usuEstado = estadoUsu;
-      this.usuariosService.actualizar(usuario)
-        .subscribe({
-          next: (estado) => this.despuesDeCambiarEstado(estado),
-        });
-    }
-  }
-
-  despuesDeCambiarEstado(estado: ConfUsuario) {
-    this.toast.success("El usuario "+ estado.usuUsername +" ha sido ➔ " + (estado.usuEstado ? "ACTIVADO" : "INACTIVADO"));
-    this.usuariosService.actualizarElGrid(estado);
-    this.cargando.inactivar();
+  cambiarEstado(data: T, estado: boolean) {
+    this.cambiarEstados.emit({
+      data: data,
+      estado: estado
+    });
   }
 
   ref: DynamicDialogRef<UsuarioFormulario> | null = null;

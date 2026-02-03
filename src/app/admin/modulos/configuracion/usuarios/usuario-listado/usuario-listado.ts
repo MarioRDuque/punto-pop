@@ -4,6 +4,9 @@ import { Grid } from "../../../../component/grid/grid";
 import { UsuariosService } from '../usuarios.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
+import { ConfUsuario } from '../../../../entities/ConfUsuario';
+import { ToastService } from '../../../../service/toast.service';
+import { CargandoService } from '../../../../service/cargando.service';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -17,6 +20,8 @@ import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 export class UsuarioListado implements OnInit {
 
   private usuariosService = inject(UsuariosService);
+  private toast = inject(ToastService);
+  private cargando = inject(CargandoService);
 
   public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
@@ -39,6 +44,23 @@ export class UsuarioListado implements OnInit {
 
   exportarDesdeHeader() {
     this.exportarSignal.update(v => v + 1);
+  }
+
+  cambiarEstados(event: { data: ConfUsuario; estado: boolean }) {
+    this.cargando.activar();
+    if (event.data) {
+      event.data.usuEstado = event.estado;
+      this.usuariosService.actualizar(event.data)
+        .subscribe({
+          next: (estado) => this.despuesDeCambiarEstado(estado),
+        });
+    }
+  }
+
+  despuesDeCambiarEstado(estado: ConfUsuario) {
+    this.toast.success("El usuario " + estado.usuUsername + " ha sido ➔ " + (estado.usuEstado ? "ACTIVADO" : "INACTIVADO"));
+    this.usuariosService.actualizarElGrid(estado);
+    this.cargando.inactivar();
   }
 
 }
