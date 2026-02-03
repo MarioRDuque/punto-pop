@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, MenuItemDef, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -21,6 +21,7 @@ import { UsuariosService } from '../../modulos/configuracion/usuarios/usuarios.s
 import { ToastService } from '../../service/toast.service';
 import { ConfUsuario } from '../../entities/ConfUsuario';
 import { CargandoService } from '../../service/cargando.service';
+import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-grid',
@@ -53,6 +54,7 @@ export class Grid<T> {
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
 
   public objetoSeleccionado: T | null = null;
+  ICONSCONSTANT = ICONSCONSTANT;
 
   //Grid
   private gridApi!: GridApi;
@@ -112,25 +114,25 @@ export class Grid<T> {
     const result: (DefaultMenuItem | MenuItemDef)[] = [
       {
         name: "Editar",
-        icon: '<i class="pi pi-pen-to-square text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.EDITAR} text-xs"></i>`,
         action: () => {
           this.editar(params?.node?.data);
         },
       },
       {
         name: "Consultar",
-        icon: '<i class="pi pi-search text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.BUSCAR} text-xs"></i>`,
         action: () => {
           this.consultar(params?.node?.data);
         },
       },
       {
         name: "Estado",
-        icon: '<i class="pi pi-check-circle text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.CHECK_CIRCULAR} text-xs"></i>`,
         subMenu: [
           {
             name: "Activar",
-            icon: '<i class="pi pi-check text-xs"></i>',
+            icon: `<i class="${ICONSCONSTANT.CHECK} text-xs"></i>`,
             disabled: params?.node?.data?.usuEstado,
             action: () => {
               this.cambiarEstado(params?.node?.data, true);
@@ -138,7 +140,7 @@ export class Grid<T> {
           },
           {
             name: "Inactivar",
-            icon: '<i class="pi pi-times text-xs"></i>',
+            icon: `<i class="${ICONSCONSTANT.CLOSE} text-xs"></i>`,
             disabled: !params?.node?.data?.usuEstado,
             action: () => {
               this.cambiarEstado(params?.node?.data, false);
@@ -148,7 +150,7 @@ export class Grid<T> {
       },
       {
         name: "Eliminar",
-        icon: '<i class="pi pi-trash text-xs"></i>',
+        icon: `<i class="${ICONSCONSTANT.ELIMINAR} text-xs"></i>`,
         action: () => {
           console.log("Logging about ");
         },
@@ -158,6 +160,16 @@ export class Grid<T> {
     ];
     return result;
   };
+
+  mostrarOpciones(params: ICellRendererParams) {
+    const contextParams: IContextMenuParams = {
+      rowNode: params.node!,
+      column: params.column!,
+      value: params.value,
+      source: 'api'
+    };
+    this.gridApi.showContextMenu(contextParams);
+  }
 
   editar(data: T) {
     this.tabsState.cambiarEstadoTab(false);

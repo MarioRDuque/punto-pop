@@ -7,6 +7,7 @@ import { TabsStateService } from '../../service/tabs.service';
 import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsService } from '../../service/forms-service';
 import { AccionEnum } from '../../enums/accion-enum';
+import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-header-crud',
@@ -15,7 +16,7 @@ import { AccionEnum } from '../../enums/accion-enum';
   styleUrl: './header-crud.scss',
 })
 export class HeaderCrud {
-  
+
   tabsState = inject(TabsStateService);
   formsService = inject(FormsService);
 
@@ -24,12 +25,17 @@ export class HeaderCrud {
   @Input() esFormulario = false;
 
   @Output() exportarExcel = new EventEmitter<void>();
-  
+
   public tabEnum = TabsEnum;
   public accionEnum = AccionEnum;
-  
+  ICONSCONSTANT = ICONSCONSTANT;
+
   onExportar() {
     this.exportarExcel.emit();
+  }
+
+  regresar() {
+    this.tabsState.irATab(this.tabEnum.LISTADO);
   }
 
 }

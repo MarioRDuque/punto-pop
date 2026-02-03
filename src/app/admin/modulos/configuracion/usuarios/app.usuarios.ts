@@ -8,6 +8,7 @@ import { TabsStateService } from '../../../service/tabs.service';
 import { TabsEnum } from '../../../enums/tabs-enum';
 import { FormsService } from '../../../service/forms-service';
 import { AccionEnum } from '../../../enums/accion-enum';
+import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 
 @Component({
     selector: 'app-usuarios',
@@ -26,6 +27,7 @@ export class AppUsuarios implements OnInit {
     Tabs = TabsEnum;
     tabsState = inject(TabsStateService);
     formsService = inject(FormsService);
+    ICONSCONSTANT = ICONSCONSTANT;
 
     ngOnInit(): void {
         this.onTabChange(TabsEnum.LISTADO);
@@ -33,7 +35,7 @@ export class AppUsuarios implements OnInit {
 
     onTabChange(value: string | number | undefined) {
         this.tabsState.irATab(value ?? '0');
-        if (value == this.Tabs.CREAR){
+        if (value == this.Tabs.CREAR) {
             this.formsService.accion.set(AccionEnum.CREAR);
         }
         this.tabsState.cambiarEstadoTab(true);

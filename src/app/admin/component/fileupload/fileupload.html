@@ -4,7 +4,7 @@
     <!-- ZONA PERSONALIZADA -->
     <ng-template pTemplate="empty">
         <button class="upload-box" (click)="fileUploader.choose()" type="button">
-            <i class="pi pi-camera upload-icon"></i>
+            <i class="{{ICONSCONSTANT.CAMARA}} upload-icon"></i>
             <p class="upload-title">Subir foto</p>
             <small>Click o arrastre aquí</small>
         </button>
@@ -16,7 +16,7 @@
             <img [src]="preview" class="avatar-img" alt=""/>
             <!-- BOTÓN ELIMINAR -->
             <button type="button" class="remove-btn" (click)="removeImage(fileUploader)">
-                <i class="pi pi-times"></i>
+                <i class="{{ICONSCONSTANT.CLOSE}}"></i>
             </button>
         </div>
         }

@@ -1,4 +1,4 @@
-import { Component, effect, inject, Input, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -17,6 +17,8 @@ import { FormsService } from '../../../../service/forms-service';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { AccionEnum } from '../../../../enums/accion-enum';
+import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
+import { UtilService } from '../../../../service/util.service';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -42,11 +44,13 @@ export class UsuarioFormulario implements OnInit {
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
     private formsService = inject(FormsService);
+    private utilService = inject(UtilService);
     public tabsState = inject(TabsStateService);
 
     public subtitulo = "";
     public accion = this.formsService.accion;
     public accionEnum = AccionEnum;
+    ICONSCONSTANT = ICONSCONSTANT;
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -57,7 +61,7 @@ export class UsuarioFormulario implements OnInit {
         usuTelefono: ['', []],
         usuDireccion: ['', []],
         rol: ['', [Validators.required]],
-        usuEstado: [false, [Validators.required]],
+        usuEstado: [true, [Validators.required]],
     });
 
     public roles = [
@@ -77,8 +81,7 @@ export class UsuarioFormulario implements OnInit {
                     this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
                 }
             } else {
-                this.usuarioForm.enable();
-                this.usuarioForm.reset();
+                this.initForm();
             }
         });
     }
@@ -100,12 +103,14 @@ export class UsuarioFormulario implements OnInit {
         }
     }
 
+    initForm() {
+        this.usuarioForm.enable();
+        this.usuarioForm.reset();
+        this.usuarioForm.controls.usuEstado.setValue(true);
+    }
+
     realizarAccion() {
-        if (this.usuarioForm.invalid) {
-            this.usuarioForm.markAllAsTouched();
-            this.toast.error('Complete los campos obligatorios!');
-            return;
-        }
+        if (!this.utilService.validarFormulario(this.usuarioForm)) return;
         this.cargando.activar();
         if (this.accion() == AccionEnum.CREAR) {
             //INSERTAR
@@ -130,6 +135,7 @@ export class UsuarioFormulario implements OnInit {
         this.toast.success('El usuario se guardó correctamente');
         this.cargando.inactivar();
         this.usuariosService.agregarAlGrid(data);
+        this.usuarioForm.reset();
     }
 
     despuesDeActualizar(data: ConfUsuario) {

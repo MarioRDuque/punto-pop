@@ -1,0 +1,20 @@
+export const ICONSCONSTANT = {
+    CLOSE: 'pi pi-times',
+    OPCIONES: 'pi pi-objects-column',
+    CAMARA: 'pi pi-camera',
+    BUSCAR: 'pi pi-search',
+    NUBE_DESCARGAR: 'pi pi-cloud-download',
+    EDITAR: 'pi pi-pen-to-square',
+    REGRESAR: 'pi pi-arrow-circle-left',
+    CHECK_CIRCULAR: 'pi pi-check-circle',
+    CHECK: 'pi pi-check',
+    ELIMINAR: 'pi pi-trash',
+    GUARDAR: 'pi pi-save',
+    EXCEL: 'pi pi-file-excel',
+    IMPRIMIR: 'pi pi-print',
+    USER: 'pi pi-user',
+    USERS: 'pi pi-users',
+    AGREGAR_USER: 'pi pi-user-plus',
+    EDITAR_USUARIO: 'pi pi-user-edit',
+    MAPA: 'pi pi-map-marker'
+} as const;

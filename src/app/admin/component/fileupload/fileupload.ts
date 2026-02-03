@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FileUpload } from 'primeng/fileupload';
 import { FileSelectEvent } from 'primeng/fileupload';
+import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-fileupload',
@@ -16,6 +17,7 @@ export class FileuploadComponent {
   //IMAGEN
   preview: string | null = null;
   selectedFile: File | null = null;
+  ICONSCONSTANT = ICONSCONSTANT;
 
   onSelectImage(event: FileSelectEvent) {
     const file: File = event.files?.[0];
