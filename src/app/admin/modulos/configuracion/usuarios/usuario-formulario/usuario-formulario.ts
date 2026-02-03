@@ -18,6 +18,7 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
+import { UtilService } from '../../../../service/util.service';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -43,6 +44,7 @@ export class UsuarioFormulario implements OnInit {
     private usuariosService = inject(UsuariosService);
     private cargando = inject(CargandoService);
     private formsService = inject(FormsService);
+    private utilService = inject(UtilService);
     public tabsState = inject(TabsStateService);
 
     public subtitulo = "";
@@ -79,9 +81,7 @@ export class UsuarioFormulario implements OnInit {
                     this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
                 }
             } else {
-                this.usuarioForm.enable();
-                this.usuarioForm.reset();
-                this.usuarioForm.controls.usuEstado.setValue(true);
+                this.initForm();
             }
         });
     }
@@ -103,12 +103,14 @@ export class UsuarioFormulario implements OnInit {
         }
     }
 
+    initForm() {
+        this.usuarioForm.enable();
+        this.usuarioForm.reset();
+        this.usuarioForm.controls.usuEstado.setValue(true);
+    }
+
     realizarAccion() {
-        if (this.usuarioForm.invalid) {
-            this.usuarioForm.markAllAsTouched();
-            this.toast.error('Complete los campos obligatorios!');
-            return;
-        }
+        if (!this.utilService.validarFormulario(this.usuarioForm)) return;
         this.cargando.activar();
         if (this.accion() == AccionEnum.CREAR) {
             //INSERTAR
