@@ -7,6 +7,10 @@ import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 import { ConfUsuario } from '../../../../entities/ConfUsuario';
 import { ToastService } from '../../../../service/toast.service';
 import { CargandoService } from '../../../../service/cargando.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { UsuarioFormulario } from '../usuario-formulario/usuario-formulario';
+import { FormsService } from '../../../../service/forms-service';
+import { AccionEnum } from '../../../../enums/accion-enum';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -16,12 +20,15 @@ import { CargandoService } from '../../../../service/cargando.service';
   ],
   templateUrl: './usuario-listado.html',
   styleUrl: './usuario-listado.scss',
+  providers: [DialogService]
 })
 export class UsuarioListado implements OnInit {
 
   private usuariosService = inject(UsuariosService);
   private toast = inject(ToastService);
   private cargando = inject(CargandoService);
+  public formsService = inject(FormsService);
+  public dialogService = inject(DialogService);
 
   public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
@@ -44,6 +51,21 @@ export class UsuarioListado implements OnInit {
 
   exportarDesdeHeader() {
     this.exportarSignal.update(v => v + 1);
+  }
+
+  ref: DynamicDialogRef<UsuarioFormulario> | null = null;
+
+  consultarObj(data: ConfUsuario) {
+    this.formsService.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.CONSULTAR);
+    this.ref = this.dialogService.open(UsuarioFormulario, {
+      header: 'Consultar Usuario',
+      modal: true,
+      width: '50vw',
+      closable: true,
+      maximizable: true,
+      contentStyle: { overflow: 'auto' }
+    });
   }
 
   cambiarEstados(event: { data: ConfUsuario; estado: boolean }) {
