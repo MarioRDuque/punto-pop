@@ -12,8 +12,6 @@ import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsService } from '../../service/forms-service';
 import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { UsuarioFormulario } from '../../modulos/configuracion/usuarios/usuario-formulario/usuario-formulario';
 import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
@@ -31,14 +29,11 @@ import { ICONSCONSTANT } from '../../constantes/icons-constants';
   ],
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
-  providers: [DialogService]
 })
 export class Grid<T> {
 
   public tabsState = inject(TabsStateService);
   public formsService = inject(FormsService);
-  public dialogService = inject(DialogService);
-
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
@@ -47,6 +42,7 @@ export class Grid<T> {
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
   @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
+  @Output() consultarObj = new EventEmitter<T>();
 
   public objetoSeleccionado: T | null = null;
   ICONSCONSTANT = ICONSCONSTANT;
@@ -183,19 +179,8 @@ export class Grid<T> {
     });
   }
 
-  ref: DynamicDialogRef<UsuarioFormulario> | null = null;
-
   consultar(data: T) {
-    this.formsService.seleccionarObjeto(data);
-    this.formsService.accion.set(AccionEnum.CONSULTAR);
-    this.ref = this.dialogService.open(UsuarioFormulario, {
-      header: 'Consultar Usuario',
-      modal: true,
-      width: '50vw',
-      closable: true,
-      maximizable: true,
-      contentStyle: { overflow: 'auto' }
-    });
+    this.consultarObj.emit(data);
   }
 
 }
