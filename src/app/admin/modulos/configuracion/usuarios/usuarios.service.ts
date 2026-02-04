@@ -29,6 +29,10 @@ export class UsuariosService {
     return this.api.put<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername, usuario);
   }
 
+  eliminar(usuario: ConfUsuario): Observable<ConfUsuario> {
+    return this.api.delete<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername);
+  }
+
   cargar(filtro?: TipoFiltro, q?: string) {
     this.cargando.activar();
     let params: HttpParams = new HttpParams();
@@ -57,6 +61,12 @@ export class UsuariosService {
       list.map(u => u.usuUsername === usuario.usuUsername ? usuario : u)
     );
   }
+
+  eliminarDelGrid(usuario: ConfUsuario) {
+  this.usuarios.update(list =>
+    list.filter(u => u.usuUsername !== usuario.usuUsername)
+  );
+}
 
   generarColumnasListado(): ColDef[] {
     return [

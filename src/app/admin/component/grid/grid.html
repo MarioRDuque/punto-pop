@@ -17,3 +17,7 @@
     [defaultColDef]="defaultColDef" [theme]="theme" [statusBar]="statusBar" [rowData]="rowData" [columnDefs]="colDefs"
     [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems" (gridReady)="onGridReady($event)"
     (gridSizeChanged)="onGridSizeChanged($event)" (cellDoubleClicked)="consultar($event.node.data)" />
+
+<div class="card flex justify-center gap-2">
+    <p-confirmdialog />
+</div>
