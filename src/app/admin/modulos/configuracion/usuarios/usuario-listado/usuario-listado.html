@@ -1,3 +1,7 @@
-<app-header-crud [subtitulo]="subtitulo" (exportarExcel)="exportarDesdeHeader()"></app-header-crud>
-<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" (consultarObj)="consultarObj($event)" (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)"
- [colDefs]="colDefs" [exportarSignal]="exportarSignal" [campoEstado]="'usuEstado'"></app-grid>
+<!-- HEADER -->
+<app-header-crud [subtitulo]="subtitulo" (exportar)="exportarDesdeHeader()"
+    (imprimir)="imprimirDesdeHeader()"></app-header-crud>
+<!-- COMPONENTE GRID CRUD -->
+<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" (consultarObj)="consultarObj($event)"
+    (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)" [colDefs]="colDefs"
+    [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal" [campoEstado]="'usuEstado'"></app-grid>

@@ -20,18 +20,22 @@ export class HeaderCrud {
   tabsState = inject(TabsStateService);
   formsService = inject(FormsService);
 
-  @Input() titulo!: string;
   @Input() subtitulo!: string;
   @Input() esFormulario = false;
 
-  @Output() exportarExcel = new EventEmitter<void>();
+  @Output() exportar = new EventEmitter<void>();
+  @Output() imprimir = new EventEmitter<void>();
 
   public tabEnum = TabsEnum;
   public accionEnum = AccionEnum;
   ICONSCONSTANT = ICONSCONSTANT;
 
   onExportar() {
-    this.exportarExcel.emit();
+    this.exportar.emit();
+  }
+
+  onImprimir() {
+    this.imprimir.emit();
   }
 
   regresar() {

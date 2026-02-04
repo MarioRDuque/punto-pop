@@ -25,13 +25,13 @@
                 [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }
             }
-            }@else {
+            } @else {
             <!-- BOTON EXPORTAR -->
             <p-button [icon]="ICONSCONSTANT.EXCEL" [rounded]="true" [raised]="true" severity="success"
                 pTooltip="Exportar" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
             <!-- BOTON IMPRIMIR -->
             <p-button [icon]="ICONSCONSTANT.IMPRIMIR" [rounded]="true" [raised]="true" severity="info"
-                pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+                pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onImprimir()" />
             }
         </div>
     </ng-template>

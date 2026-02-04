@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Input, Output, Signal, WritableSignal } from '@angular/core';
 import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -41,10 +41,12 @@ export class Grid<T> {
   public tabsState = inject(TabsStateService);
   public formsService = inject(FormsService);
   public utilService = inject(UtilService);
+  private confirmationService = inject(ConfirmationService);
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
-  @Input() exportarSignal!: Signal<number>;
+  @Input({ required: true }) exportarSignal!: WritableSignal<boolean>;
+  @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
@@ -73,12 +75,16 @@ export class Grid<T> {
     ]
   };
 
-  constructor(
-    private confirmationService: ConfirmationService
-  ) {
+  constructor() {
     effect(() => {
-      this.exportarSignal();
-      this.exportar();
+      if (this.exportarSignal()) {
+        this.exportar();
+        this.exportarSignal.set(false);
+      }
+      if (this.imprimirSignal()) {
+        this.imprimir();
+        this.imprimirSignal.set(false);
+      }
     });
   }
 
@@ -109,7 +115,6 @@ export class Grid<T> {
         };
       });
   }
-
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;

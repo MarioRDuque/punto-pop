@@ -33,8 +33,10 @@ export class UsuarioListado implements OnInit {
   public listaUsuarios = this.usuariosService.usuarios;
   public subtitulo = 'Listado usuarios';
   public colDefs: ColDef[] = [];
+  public ref: DynamicDialogRef<UsuarioFormulario> | null = null;
 
-  public exportarSignal = signal(0);
+  public exportarSignal = signal(false);
+  public imprimirSignal = signal(false);
 
   ngOnInit(): void {
     this.usuariosService.cargar();
@@ -50,10 +52,12 @@ export class UsuarioListado implements OnInit {
   }
 
   exportarDesdeHeader() {
-    this.exportarSignal.update(v => v + 1);
+    this.exportarSignal.set(true);
   }
 
-  ref: DynamicDialogRef<UsuarioFormulario> | null = null;
+  imprimirDesdeHeader() {
+    this.imprimirSignal.set(true);
+  }
 
   consultarObj(data: ConfUsuario) {
     this.formsService.seleccionarObjeto(data);
