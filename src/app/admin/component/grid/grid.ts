@@ -102,7 +102,10 @@ export class Grid<T> {
   }
 
   exportar() {
-    this.gridApi?.exportDataAsExcel();
+    this.gridApi?.exportDataAsExcel({
+      fileName: this.subtitulo + '.xlsx',
+      exportAsExcelTable: true
+    });
   }
 
   getPrintProperties() {
