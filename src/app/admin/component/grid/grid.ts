@@ -16,6 +16,8 @@ import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../constantes/icons-constants';
+import printJS from 'print-js';
+import { UtilService } from '../../service/util.service';
 
 @Component({
   selector: 'app-grid',
@@ -34,6 +36,7 @@ export class Grid<T> {
 
   public tabsState = inject(TabsStateService);
   public formsService = inject(FormsService);
+  public utilService = inject(UtilService);
 
   @Input() rowData: T[] = [];
   @Input() colDefs: ColDef[] = [];
@@ -68,9 +71,38 @@ export class Grid<T> {
   constructor() {
     effect(() => {
       this.exportarSignal();
-      this.gridApi?.exportDataAsExcel();
+      this.exportar();
     });
   }
+
+  imprimir() {
+    if (this.gridApi) {
+      printJS({
+        printable: this.rowData,
+        type: 'json',
+        properties: this.getPrintProperties(),
+        header: '<h3>Listado de Usuarios</h3>',
+        style: this.utilService.getAgGridPrintStyle()
+      });
+    }
+  }
+
+  exportar() {
+    this.gridApi?.exportDataAsExcel();
+  }
+
+  getPrintProperties() {
+    return this.colDefs
+      .filter(col => col.field)
+      .map(col => {
+        const def = col;
+        return {
+          field: def.field as string,
+          displayName: def.headerName || def.field
+        };
+      });
+  }
+
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
