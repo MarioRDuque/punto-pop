@@ -7,6 +7,7 @@ export const ICONSCONSTANT = {
     EDITAR: 'pi pi-pen-to-square',
     REGRESAR: 'pi pi-arrow-circle-left',
     CHECK_CIRCULAR: 'pi pi-check-circle',
+    INFO_CIRCULAR: 'pi pi-info-circle',
     CHECK: 'pi pi-check',
     ELIMINAR: 'pi pi-trash',
     GUARDAR: 'pi pi-save',

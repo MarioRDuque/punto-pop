@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, Input, Output, Signal, WritableSignal } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
 import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -48,6 +48,7 @@ export class Grid<T> {
   @Input({ required: true }) exportarSignal!: WritableSignal<boolean>;
   @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
+  @Input() subtitulo!: string;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
   @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
@@ -94,7 +95,7 @@ export class Grid<T> {
         printable: this.rowData,
         type: 'json',
         properties: this.getPrintProperties(),
-        header: '<h3>Listado de Usuarios</h3>',
+        header: '<h3>' + this.subtitulo + '</h3>',
         style: this.utilService.getAgGridPrintStyle()
       });
     }
@@ -229,11 +230,11 @@ export class Grid<T> {
 
   confirmarEliminacion(data: T) {
     this.confirmationService.confirm({
-      message: '¿Esta seguro que desea eliminar?',
+      message: '¿Está seguro que desea eliminar?',
       header: 'Eliminar',
       closable: true,
       closeOnEscape: true,
-      icon: 'pi pi-info-circle',
+      icon: ICONSCONSTANT.INFO_CIRCULAR,
       rejectButtonProps: {
         label: 'Cancelar',
         severity: 'secondary',

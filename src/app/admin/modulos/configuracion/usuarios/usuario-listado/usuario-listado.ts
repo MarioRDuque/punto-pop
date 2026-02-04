@@ -31,7 +31,7 @@ export class UsuarioListado implements OnInit {
   public dialogService = inject(DialogService);
 
   public listaUsuarios = this.usuariosService.usuarios;
-  public subtitulo = 'Listado usuarios';
+  public subtitulo = 'Listado de usuarios';
   public colDefs: ColDef[] = [];
   public ref: DynamicDialogRef<UsuarioFormulario> | null = null;
 
