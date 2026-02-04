@@ -85,4 +85,20 @@ export class UsuarioListado implements OnInit {
     this.cargando.inactivar();
   }
 
+  eliminarObj(data: ConfUsuario) {
+    this.cargando.activar();
+    if (data) {
+      this.usuariosService.eliminar(data)
+        .subscribe({
+          next: () => this.despuesDeEliminar(data),
+        });
+    }
+  }
+
+  despuesDeEliminar(data: ConfUsuario) {
+    this.toast.success("El usuario ha sido eliminado.");
+    this.usuariosService.eliminarDelGrid(data);
+    this.cargando.inactivar();
+  }
+
 }

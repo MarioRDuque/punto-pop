@@ -18,6 +18,8 @@ import { AccionEnum } from '../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../constantes/icons-constants';
 import printJS from 'print-js';
 import { UtilService } from '../../service/util.service';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-grid',
@@ -27,10 +29,12 @@ import { UtilService } from '../../service/util.service';
     InputIcon,
     AgGridAngular,
     InputTextModule,
-    TooltipModule
+    TooltipModule,
+    ConfirmDialog
   ],
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
+  providers: [ConfirmationService]
 })
 export class Grid<T> {
 
@@ -46,6 +50,7 @@ export class Grid<T> {
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
   @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
   @Output() consultarObj = new EventEmitter<T>();
+  @Output() eliminarObj = new EventEmitter<T>();
 
   public objetoSeleccionado: T | null = null;
   ICONSCONSTANT = ICONSCONSTANT;
@@ -68,7 +73,9 @@ export class Grid<T> {
     ]
   };
 
-  constructor() {
+  constructor(
+    private confirmationService: ConfirmationService
+  ) {
     effect(() => {
       this.exportarSignal();
       this.exportar();
@@ -178,7 +185,7 @@ export class Grid<T> {
         name: "Eliminar",
         icon: `<i class="${ICONSCONSTANT.ELIMINAR} text-xs"></i>`,
         action: () => {
-          console.log("Logging about ");
+          this.confirmarEliminacion(params?.node?.data);
         },
       },
       "separator",
@@ -213,6 +220,28 @@ export class Grid<T> {
 
   consultar(data: T) {
     this.consultarObj.emit(data);
+  }
+
+  confirmarEliminacion(data: T) {
+    this.confirmationService.confirm({
+      message: '¿Esta seguro que desea eliminar?',
+      header: 'Eliminar',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Eliminar',
+        severity: 'danger'
+      },
+      accept: () => {
+        this.eliminarObj.emit(data);
+      }
+    });
   }
 
 }
