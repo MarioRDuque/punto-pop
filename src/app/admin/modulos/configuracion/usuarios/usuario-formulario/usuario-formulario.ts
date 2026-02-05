@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -37,7 +37,7 @@ import { UtilService } from '../../../../service/util.service';
     templateUrl: './usuario-formulario.html',
     styleUrl: './usuario-formulario.scss',
 })
-export class UsuarioFormulario implements OnInit {
+export class UsuarioFormulario implements AfterViewInit {
 
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
@@ -86,7 +86,7 @@ export class UsuarioFormulario implements OnInit {
         });
     }
 
-    ngOnInit(): void {
+    ngAfterViewInit() {
         switch (this.accion()) {
             case AccionEnum.CREAR:
                 this.subtitulo = 'Complete la información';
