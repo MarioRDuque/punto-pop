@@ -122,7 +122,15 @@ export class Grid<T> {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.gridApi.setFocusedCell(0, this.gridApi.getAllDisplayedColumns()[0])
+  }
+
+  onFirstDataRendered() {
+    const firstCol = this.gridApi
+      .getDisplayedCenterColumns()
+      .find(col => col.isVisible());
+    if (firstCol) {
+      this.gridApi.setFocusedCell(0, firstCol);
+    }
   }
 
   onFilterTextBoxChanged(event: Event) {
