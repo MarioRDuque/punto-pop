@@ -15,12 +15,12 @@
                         <app-usuario-listado></app-usuario-listado>
                     </p-tabpanel>
                     <p-tabpanel [value]="Tabs.CREAR">
-                        @if (tabsState.tabActivo() == Tabs.CREAR) {
+                        @if (tabsState.tabActivo() === Tabs.CREAR) {
                         <app-usuario-formulario></app-usuario-formulario>
                         }
                     </p-tabpanel>
                     <p-tabpanel [value]="Tabs.EDITAR">
-                        @if (tabsState.tabActivo() == Tabs.EDITAR) {
+                        @if (tabsState.tabActivo() === Tabs.EDITAR) {
                         <app-usuario-formulario></app-usuario-formulario>
                         }
                     </p-tabpanel>

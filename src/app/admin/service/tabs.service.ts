@@ -1,9 +1,10 @@
 import { Injectable, signal } from '@angular/core';
+import { TabsEnum } from '../enums/tabs-enum';
 
 @Injectable({ providedIn: 'root' })
 export class TabsStateService {
 
-  public tabActivo = signal<string>('0');
+  public tabActivo = signal<string>(TabsEnum.LISTADO);
   public tabDeshabilitado = signal<boolean>(true);
 
   irATab(tab: string | number) {
@@ -15,7 +16,7 @@ export class TabsStateService {
   }
 
   reset() {
-    this.tabActivo.set('0');
+    this.tabActivo.set(TabsEnum.LISTADO);
     this.tabDeshabilitado.set(false);
   }
 }

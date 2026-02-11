@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, effect, inject } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
