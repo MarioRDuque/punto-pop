@@ -27,7 +27,7 @@ export class RolListado implements OnInit {
   public formsService = inject(FormsService);
   public dialogService = inject(DialogService);
 
-  public listaRol = this.rolService.rol;
+  public listaRol = this.rolService.listaRoles;
   public subtitulo = 'Listado de rols';
   public colDefs: ColDef[] = [];
   public ref: DynamicDialogRef<RolFormulario> | null = null;

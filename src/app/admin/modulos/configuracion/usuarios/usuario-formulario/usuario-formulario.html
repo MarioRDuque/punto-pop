@@ -42,8 +42,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Roles -->
                     <div class="field">
-                        <app-multiselect label="Seleccionar rol" [options]="roles" optionLabel="rolDescripcion" optionValue="rolCodigo"
-                            id="rol" [showClear]="true" />
+                        <app-multiselect label="Seleccionar rol" [options]="roles()" optionLabel="rolDescripcion"
+                            optionValue="rolCodigo" id="rol" [showClear]="true" />
                     </div>
                     <!-- Estado Usuario-->
                     <div class="flex justify-center">

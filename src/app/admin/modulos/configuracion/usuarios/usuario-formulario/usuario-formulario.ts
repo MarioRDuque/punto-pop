@@ -53,7 +53,7 @@ export class UsuarioFormulario implements OnInit {
     public accion = this.formsService.accion;
     public accionEnum = AccionEnum;
     ICONSCONSTANT = ICONSCONSTANT;
-    public roles: any[] = [];
+    public roles: any = this.rolService.listaRoles;
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -68,6 +68,7 @@ export class UsuarioFormulario implements OnInit {
     });
 
     ngOnInit() {
+        this.rolService.cargar();
         switch (this.accion()) {
             case AccionEnum.CREAR:
                 this.subtitulo = 'Complete la información';
@@ -92,7 +93,6 @@ export class UsuarioFormulario implements OnInit {
         this.usuarioForm.enable();
         this.usuarioForm.reset();
         this.usuarioForm.controls.usuEstado.setValue(true);
-        this.listarRoles();
     }
 
     realizarAccion() {
@@ -132,17 +132,6 @@ export class UsuarioFormulario implements OnInit {
         this.cargando.inactivar();
         this.usuariosService.actualizarElGrid(data);
         this.tabsState.irATab(TabsEnum.LISTADO);
-    }
-
-    listarRoles() {
-        this.rolService.listarRol().subscribe({
-            next: (data) => {
-                this.roles = data;
-            },
-            error: (err) => {
-                this.toast.error('Error al cargar roles', err);
-            }
-        });
     }
 
 }

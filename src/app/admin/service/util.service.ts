@@ -7,7 +7,7 @@ import { AccionButton } from '../component/accion-button/accion-button';
 @Injectable({
   providedIn: 'root',
 })
-export class UtilService<T> {
+export class UtilService {
 
   private toast = inject(ToastService);
 
@@ -75,10 +75,10 @@ export class UtilService<T> {
     };
   }
 
-  sanitizeForPrint<T>(data: T[]): any[] {
+  sanitizeForPrint<T>(data: T[]): object[] {
     return data.map(row =>
       Object.fromEntries(
-        Object.entries(row as any).map(([key, value]) => {
+        Object.entries(row as object).map(([key, value]) => {
           if (typeof value === 'boolean') {
             return [key, value ? 'ACTIVO' : 'INACTIVO'];
           }
