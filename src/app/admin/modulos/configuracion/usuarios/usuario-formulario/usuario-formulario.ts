@@ -19,6 +19,8 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
 import { UtilService } from '../../../../service/util.service';
+import { RolService } from '../../rol/rol.service';
+import { ConfRol } from '../../../../entities/ConfRol';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -46,11 +48,13 @@ export class UsuarioFormulario implements AfterViewInit {
     private formsService = inject(FormsService);
     private utilService = inject(UtilService);
     public tabsState = inject(TabsStateService);
+    private rolService = inject(RolService);
 
     public subtitulo = "";
     public accion = this.formsService.accion;
     public accionEnum = AccionEnum;
     ICONSCONSTANT = ICONSCONSTANT;
+    public roles: any[] = [];
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -63,14 +67,6 @@ export class UsuarioFormulario implements AfterViewInit {
         rol: ['', [Validators.required]],
         usuEstado: [true, [Validators.required]],
     });
-
-    public roles = [
-        { name: 'ADMINISTRADOR', code: 'ADM' },
-        { name: 'SOPORTE', code: 'SOP' },
-        { name: 'USUARIO', code: 'USU' },
-        { name: 'BASICO', code: 'BAS' },
-        { name: 'VENDEDOR', code: 'VEN' }
-    ];
 
     constructor() {
         effect(() => {
@@ -107,6 +103,7 @@ export class UsuarioFormulario implements AfterViewInit {
         this.usuarioForm.enable();
         this.usuarioForm.reset();
         this.usuarioForm.controls.usuEstado.setValue(true);
+        this.listarRoles();
     }
 
     realizarAccion() {
@@ -143,6 +140,17 @@ export class UsuarioFormulario implements AfterViewInit {
         this.cargando.inactivar();
         this.usuariosService.actualizarElGrid(data);
         this.tabsState.irATab(TabsEnum.LISTADO);
+    }
+
+    listarRoles() {
+        this.rolService.listarRol().subscribe({
+            next: (data) => {
+                this.roles = data;
+            },
+            error: (err) => {
+                this.toast.error('Error al cargar roles', err);
+            }
+        });
     }
 
 }
