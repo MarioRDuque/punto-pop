@@ -92,7 +92,7 @@ export class Grid<T> {
   imprimir() {
     if (this.gridApi) {
       printJS({
-        printable: this.rowData,
+        printable: this.utilService.sanitizeForPrint(this.rowData),
         type: 'json',
         properties: this.getPrintProperties(),
         header: '<h3>' + this.subtitulo + '</h3>',

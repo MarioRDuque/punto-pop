@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -37,7 +37,7 @@ import { UtilService } from '../../../../service/util.service';
     templateUrl: './usuario-formulario.html',
     styleUrl: './usuario-formulario.scss',
 })
-export class UsuarioFormulario implements AfterViewInit {
+export class UsuarioFormulario implements OnInit {
 
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
@@ -72,31 +72,21 @@ export class UsuarioFormulario implements AfterViewInit {
         { name: 'VENDEDOR', code: 'VEN' }
     ];
 
-    constructor() {
-        effect(() => {
-            if (this.formsService.objetoSeleccionado() && this.accion() != AccionEnum.CREAR) {
-                this.usuarioForm.controls.usuUsername.disable();
-                const usuario = this.formsService.objetoSeleccionado();
-                if (usuario) {
-                    this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
-                }
-            } else {
-                this.initForm();
-            }
-        });
-    }
-
-    ngAfterViewInit() {
+    ngOnInit() {
         switch (this.accion()) {
             case AccionEnum.CREAR:
                 this.subtitulo = 'Complete la información';
+                this.initForm();
                 break;
             case AccionEnum.CONSULTAR:
                 this.subtitulo = 'Datos almacenados previamente';
                 this.consultaUsuario();
+                this.usuarioForm.disable();
                 break;
             case AccionEnum.EDITAR:
                 this.subtitulo = 'Actualización de datos';
+                this.consultaUsuario();
+                this.usuarioForm.controls.usuUsername.disable();
                 break;
             default:
                 break;
@@ -128,7 +118,10 @@ export class UsuarioFormulario implements AfterViewInit {
     }
 
     consultaUsuario() {
-        this.usuarioForm.disable();
+        const usuario = this.formsService.objetoSeleccionado();
+        if (usuario) {
+            this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
+        }
     }
 
     despuesDeGuardar(data: ConfUsuario) {

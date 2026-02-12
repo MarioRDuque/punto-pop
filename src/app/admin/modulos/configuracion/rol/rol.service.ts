@@ -6,7 +6,7 @@ import { CargandoService } from '../../../service/cargando.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { TipoFiltro } from '../../../enums/tipo-filtro';
 import { HttpParams } from '@angular/common/http';
-import { AccionButton } from '../../../component/accion-button/accion-button';
+import { UtilService } from '../../../service/util.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +15,7 @@ export class RolService {
 
   private api = inject(ApiService);
   private cargando = inject(CargandoService);
+  private utilService = inject(UtilService);
   public rol = signal<ConfRol[]>([]);
 
   listarRol(): Observable<ConfRol[]> {
@@ -63,10 +64,10 @@ export class RolService {
   }
 
   eliminarDelGrid(rol: ConfRol) {
-  this.rol.update(list =>
-    list.filter(u => u.rolCodigo !== rol.rolCodigo)
-  );
-}
+    this.rol.update(list =>
+      list.filter(u => u.rolCodigo !== rol.rolCodigo)
+    );
+  }
 
   generarColumnasListado(): ColDef[] {
     return [
@@ -96,20 +97,7 @@ export class RolService {
           textAlign: 'center'
         }
       },
-      {
-        colId: "actions",
-        headerName: "Opciones",
-        cellRenderer: AccionButton,
-        width: 70,
-        minWidth: 70,
-        maxWidth: 70,
-        cellStyle: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '0'
-        }
-      }
+      this.utilService.getColumnaAcciones()
     ];
   }
 
