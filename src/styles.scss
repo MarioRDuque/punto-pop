@@ -195,3 +195,148 @@
 .layout-main {
   width: 100% !important;
 }
+
+//SIDE BAR
+.layout-sidebar {
+  min-height: 100vh !important;
+  top: 56px !important;
+  left: 0 !important;
+}
+
+// El contenedor principal debe compensar el sidebar fijo
+.layout-main-container {
+  flex: 1 !important;
+  min-width: 0 !important;
+  min-height: 100vh !important;
+}
+
+@media screen and (max-width: 991px) {
+  
+  .layout-sidebar {
+    min-height: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  // Overlay oscuro detrás del sidebar en móvil
+  .layout-mask {
+    backdrop-filter: blur(2px) !important;
+  }
+}
+
+// ===== MENU LISTA =====
+.layout-menu {
+  padding: 8px 10px !important;
+
+  // ===== LABEL DE SECCIÓN =====
+  .layout-root-menuitem {
+    > .layout-menuitem-root-text {
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      letter-spacing: 1.2px !important;
+      text-transform: uppercase !important;
+      color: #334155 !important;
+      padding: 16px 10px 6px !important;
+    }
+  }
+
+  // ===== ITEM DEL MENÚ =====
+  li {
+    a {
+      border-radius: 8px !important;
+      padding: 9px 10px !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      transition: all 0.2s ease !important;
+      margin-bottom: 2px !important;
+
+      // Icono
+      .layout-menuitem-icon {
+        font-size: 14px !important;
+        margin-right: 10px !important;
+        transition: color 0.2s !important;
+      }
+
+      // Texto
+      .layout-menuitem-text {
+        transition: color 0.2s !important;
+      }
+
+      // Flecha submenu
+      .layout-submenu-toggler {
+        color: #475569 !important;
+      }
+
+      // ===== HOVER =====
+      &:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+
+        .layout-menuitem-icon {
+          color: #737b84 !important;
+        }
+
+        .layout-menuitem-text {
+          color: #7b838d !important;
+        }
+      }
+
+      // ===== ACTIVO =====
+      &.active-route,
+      &.router-link-active {
+        background: color-mix(in srgb, var(--primary-color) 15%, transparent) !important;
+        color: var(--primary-color) !important;
+
+        .layout-menuitem-icon {
+          color: var(--primary-color) !important;
+        }
+
+        .layout-menuitem-text {
+          color: var(--primary-color) !important;
+          font-weight: 600 !important;
+        }
+
+        // Punto indicador activo
+        &::after {
+          content: '';
+          display: block;
+          width: 6px;
+          height: 6px;
+          background: var(--p-panel-background);
+          border-radius: 50%;
+          margin-left: auto;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    // ===== SUBMENU =====
+    .layout-submenu {
+      background: transparent !important;
+      padding-left: 12px !important;
+
+      li a {
+        font-size: 12.5px !important;
+        padding: 7px 10px !important;
+        color: #64748B !important;
+
+        &:hover {
+          color: #94A3B8 !important;
+          background: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        &.active-route,
+        &.router-link-active {
+          color: var(--primary-color) !important;
+        background: color-mix(in srgb, var(--primary-color) 15%, transparent) !important;
+        }
+      }
+    }
+  }
+}
+
+// ===== SEPARADOR =====
+.menu-separator {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  margin: 8px 0 !important;
+}

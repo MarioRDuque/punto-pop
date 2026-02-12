@@ -64,7 +64,7 @@ export class UsuarioFormulario implements AfterViewInit {
         usuClave: ['', [Validators.required]],
         usuTelefono: ['', []],
         usuDireccion: ['', []],
-        rol: ['', [Validators.required]],
+        rol: [[], [Validators.required]],
         usuEstado: [true, [Validators.required]],
     });
 
