@@ -63,7 +63,7 @@ export class UsuarioFormulario implements OnInit {
         usuClave: ['', [Validators.required]],
         usuTelefono: ['', []],
         usuDireccion: ['', []],
-        rol: ['', [Validators.required]],
+        rol: [[], [Validators.required]],
         usuEstado: [true, [Validators.required]],
     });
 
