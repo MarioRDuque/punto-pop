@@ -6,11 +6,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Usuario -->
                     <div class="field">
-                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuUsername" [uppercase]="false" />
+                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuUsername" [uppercase]="false"
+                            [autofocus]="accion() === accionEnum.CREAR" />
                     </div>
                     <!-- Nombre -->
                     <div class="field">
-                        <app-input label="Nombre" id="usuNombre" />
+                        <app-input label="Nombre" id="usuNombre" [autofocus]="accion() === accionEnum.EDITAR" />
                     </div>
                     <!-- Apellidos -->
                     <div class="field">
@@ -42,8 +43,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Roles -->
                     <div class="field">
-                        <app-multiselect label="Seleccionar rol" [options]="roles" optionLabel="rolDescripcion" optionValue="rolCodigo"
-                            id="rol" [showClear]="true" />
+                        <app-multiselect label="Seleccionar rol" [options]="roles()" optionLabel="rolDescripcion"
+                            optionValue="rolCodigo" id="rol" [showClear]="true" />
                     </div>
                     <!-- Estado Usuario-->
                     <div class="flex justify-center">

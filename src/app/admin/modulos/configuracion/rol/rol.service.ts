@@ -6,7 +6,7 @@ import { CargandoService } from '../../../service/cargando.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { TipoFiltro } from '../../../enums/tipo-filtro';
 import { HttpParams } from '@angular/common/http';
-import { AccionButton } from '../../../component/accion-button/accion-button';
+import { UtilService } from '../../../service/util.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,8 @@ export class RolService {
 
   private api = inject(ApiService);
   private cargando = inject(CargandoService);
-  public rol = signal<ConfRol[]>([]);
+  private utilService = inject(UtilService);
+  public listaRoles = signal<ConfRol[]>([]);
 
   listarRol(): Observable<ConfRol[]> {
     return this.api.get<ConfRol[]>('configuracion/rol');
@@ -48,25 +49,25 @@ export class RolService {
   }
 
   despuesDeCargar(data: ConfRol[]) {
-    this.rol.set(data);
+    this.listaRoles.set(data);
     this.cargando.inactivar();
   }
 
   agregarAlGrid(rol: ConfRol) {
-    this.rol.update(list => [...list, rol]);
+    this.listaRoles.update(list => [...list, rol]);
   }
 
   actualizarElGrid(rol: ConfRol) {
-    this.rol.update(list =>
+    this.listaRoles.update(list =>
       list.map(u => u.rolCodigo === rol.rolCodigo ? rol : u)
     );
   }
 
   eliminarDelGrid(rol: ConfRol) {
-  this.rol.update(list =>
-    list.filter(u => u.rolCodigo !== rol.rolCodigo)
-  );
-}
+    this.listaRoles.update(list =>
+      list.filter(u => u.rolCodigo !== rol.rolCodigo)
+    );
+  }
 
   generarColumnasListado(): ColDef[] {
     return [
@@ -96,20 +97,7 @@ export class RolService {
           textAlign: 'center'
         }
       },
-      {
-        colId: "actions",
-        headerName: "Opciones",
-        cellRenderer: AccionButton,
-        width: 70,
-        minWidth: 70,
-        maxWidth: 70,
-        cellStyle: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '0'
-        }
-      }
+      this.utilService.getColumnaAcciones()
     ];
   }
 

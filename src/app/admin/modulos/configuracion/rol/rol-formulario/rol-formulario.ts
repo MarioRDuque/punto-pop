@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { AccionEnum } from '../../../../enums/accion-enum';
@@ -19,7 +19,7 @@ import { TabsStateService } from '../../../../service/tabs.service';
   templateUrl: './rol-formulario.html',
   styleUrl: './rol-formulario.scss',
 })
-export class RolFormulario implements AfterViewInit {
+export class RolFormulario implements OnInit {
 
   private fb = inject(FormBuilder);
   private formsService = inject(FormsService);
@@ -33,38 +33,27 @@ export class RolFormulario implements AfterViewInit {
   public accion = this.formsService.accion;
   public accionEnum = AccionEnum;
 
-
   public rolForm = this.fb.group({
     rolCodigo: ['', [Validators.required]],
     rolDescripcion: ['', [Validators.required]],
     rolEstado: [true, [Validators.required]],
   });
 
-  constructor() {
-    effect(() => {
-      if (this.formsService.objetoSeleccionado() && this.accion() != AccionEnum.CREAR) {
-        this.rolForm.controls.rolCodigo.disable();
-        const rol = this.formsService.objetoSeleccionado();
-        if (rol) {
-          this.rolForm.patchValue(this.formsService.objetoSeleccionado());
-        }
-      } else {
-        this.initForm();
-      }
-    });
-  }
-
-  ngAfterViewInit() {
+  ngOnInit() {
     switch (this.accion()) {
       case AccionEnum.CREAR:
         this.subtitulo = 'Complete la información';
+        this.initForm();
         break;
       case AccionEnum.CONSULTAR:
         this.subtitulo = 'Datos almacenados previamente';
         this.consultaRol();
+        this.rolForm.disable();
         break;
       case AccionEnum.EDITAR:
         this.subtitulo = 'Actualización de datos';
+        this.consultaRol();
+        this.rolForm.controls.rolCodigo.disable();
         break;
       default:
         break;
@@ -96,7 +85,10 @@ export class RolFormulario implements AfterViewInit {
   }
 
   consultaRol() {
-    this.rolForm.disable();
+    const rol = this.formsService.objetoSeleccionado();
+    if (rol) {
+      this.rolForm.patchValue(this.formsService.objetoSeleccionado());
+    }
   }
 
   despuesDeGuardar(data: ConfRol) {

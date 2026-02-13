@@ -27,7 +27,7 @@ export class RolListado implements OnInit {
   public formsService = inject(FormsService);
   public dialogService = inject(DialogService);
 
-  public listaRol = this.rolService.rol;
+  public listaRol = this.rolService.listaRoles;
   public subtitulo = 'Listado de rols';
   public colDefs: ColDef[] = [];
   public ref: DynamicDialogRef<RolFormulario> | null = null;
@@ -40,67 +40,66 @@ export class RolListado implements OnInit {
     this.colDefs = this.rolService.generarColumnasListado();
   }
 
+  buscar(event: EventCrudBusqueda) {
+    if (event.filtro) {
+      this.rolService.cargar(event.filtro, undefined);
+    } else {
+      this.rolService.cargar(undefined, event.texto);
+    }
+  }
 
-    buscar(event: EventCrudBusqueda) {
-      if (event.filtro) {
-        this.rolService.cargar(event.filtro, undefined);
-      } else {
-        this.rolService.cargar(undefined, event.texto);
-      }
+  exportarDesdeHeader() {
+    this.exportarSignal.set(true);
+  }
+
+  imprimirDesdeHeader() {
+    this.imprimirSignal.set(true);
+  }
+
+  consultarObj(data: ConfRol) {
+    this.formsService.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.CONSULTAR);
+    this.ref = this.dialogService.open(RolFormulario, {
+      header: 'Consultar Rol',
+      modal: true,
+      width: '50vw',
+      closable: true,
+      maximizable: true,
+      contentStyle: { overflow: 'auto' }
+    });
+  }
+
+  cambiarEstados(event: { data: ConfRol; estado: boolean }) {
+    this.cargando.activar();
+    if (event.data) {
+      event.data.rolEstado = event.estado;
+      this.rolService.actualizar(event.data)
+        .subscribe({
+          next: (estado) => this.despuesDeCambiarEstado(estado),
+        });
     }
-  
-    exportarDesdeHeader() {
-      this.exportarSignal.set(true);
+  }
+
+  despuesDeCambiarEstado(estado: ConfRol) {
+    this.toast.success("El rol " + estado.rolCodigo + " ha sido ➔ " + (estado.rolEstado ? "ACTIVADO" : "INACTIVADO"));
+    this.rolService.actualizarElGrid(estado);
+    this.cargando.inactivar();
+  }
+
+  eliminarObj(data: ConfRol) {
+    this.cargando.activar();
+    if (data) {
+      this.rolService.eliminar(data)
+        .subscribe({
+          next: () => this.despuesDeEliminar(data),
+        });
     }
-  
-    imprimirDesdeHeader() {
-      this.imprimirSignal.set(true);
-    }
-  
-    consultarObj(data: ConfRol) {
-      this.formsService.seleccionarObjeto(data);
-      this.formsService.accion.set(AccionEnum.CONSULTAR);
-      this.ref = this.dialogService.open(RolFormulario, {
-        header: 'Consultar Rol',
-        modal: true,
-        width: '50vw',
-        closable: true,
-        maximizable: true,
-        contentStyle: { overflow: 'auto' }
-      });
-    }
-  
-    cambiarEstados(event: { data: ConfRol; estado: boolean }) {
-      this.cargando.activar();
-      if (event.data) {
-        event.data.rolEstado = event.estado;
-        this.rolService.actualizar(event.data)
-          .subscribe({
-            next: (estado) => this.despuesDeCambiarEstado(estado),
-          });
-      }
-    }
-  
-    despuesDeCambiarEstado(estado: ConfRol) {
-      this.toast.success("El rol " + estado.rolCodigo + " ha sido ➔ " + (estado.rolEstado ? "ACTIVADO" : "INACTIVADO"));
-      this.rolService.actualizarElGrid(estado);
-      this.cargando.inactivar();
-    }
-  
-    eliminarObj(data: ConfRol) {
-      this.cargando.activar();
-      if (data) {
-        this.rolService.eliminar(data)
-          .subscribe({
-            next: () => this.despuesDeEliminar(data),
-          });
-      }
-    }
-  
-    despuesDeEliminar(data: ConfRol) {
-      this.toast.success("El rol ha sido eliminado.");
-      this.rolService.eliminarDelGrid(data);
-      this.cargando.inactivar();
-    }
+  }
+
+  despuesDeEliminar(data: ConfRol) {
+    this.toast.success("El rol ha sido eliminado.");
+    this.rolService.eliminarDelGrid(data);
+    this.cargando.inactivar();
+  }
 
 }

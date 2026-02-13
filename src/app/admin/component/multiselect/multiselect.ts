@@ -21,17 +21,17 @@ import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule 
     }
   ]
 })
-export class MultiselectComponent<T extends Record<string, unknown>> {
+export class MultiselectComponent<T extends object> {
 
   @Input({ required: true }) label!: string;
   @Input({ required: true }) options!: T[];
-  @Input() id!: string;
+  @Input({ required: true }) id!: string;
 
-  @Input({ required: true }) optionLabel!: string;
-  @Input() optionValue?: string;
-  @Input() showClear?: boolean = false;
+  @Input({ required: true }) optionLabel!: Extract<keyof T, string>;
+  @Input() optionValue?: Extract<keyof T, string>;
+  @Input() showClear = false;
 
-  @Optional() private controlContainer = inject(ControlContainer)
+  @Optional() private controlContainer = inject(ControlContainer);
 
   getLabel(item: T): string {
     return String(item[this.optionLabel]);
@@ -42,5 +42,4 @@ export class MultiselectComponent<T extends Record<string, unknown>> {
       .control
       ?.get(this.id) as FormControl;
   }
-
 }

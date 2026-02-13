@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ToastService } from './toast.service';
+import { ColDef } from 'ag-grid-community';
+import { AccionButton } from '../component/accion-button/accion-button';
 
 @Injectable({
   providedIn: 'root',
@@ -62,5 +64,31 @@ export class UtilService {
     `;
   }
 
+  getColumnaAcciones(): ColDef {
+    return {
+      colId: "acciones",
+      headerName: "Opciones",
+      cellRenderer: AccionButton,
+      width: 70,
+      minWidth: 70,
+      maxWidth: 70
+    };
+  }
+
+  sanitizeForPrint<T>(data: T[]): object[] {
+    return data.map(row =>
+      Object.fromEntries(
+        Object.entries(row as object).map(([key, value]) => {
+          if (typeof value === 'boolean') {
+            return [key, value ? 'ACTIVO' : 'INACTIVO'];
+          }
+          if (value === null || value === undefined) {
+            return [key, ''];
+          }
+          return [key, value];
+        })
+      )
+    );
+  }
 
 }

@@ -15,12 +15,12 @@
                         <app-rol-listado></app-rol-listado>
                     </p-tabpanel>
                     <p-tabpanel [value]="Tabs.CREAR">
-                        @if (tabsState.tabActivo() == Tabs.CREAR) {
+                        @if (tabsState.tabActivo() === Tabs.CREAR) {
                         <app-rol-formulario></app-rol-formulario>
                         }
                     </p-tabpanel>
                     <p-tabpanel [value]="Tabs.EDITAR">
-                        @if (tabsState.tabActivo() == Tabs.EDITAR) {
+                        @if (tabsState.tabActivo() === Tabs.EDITAR) {
                         <app-rol-formulario></app-rol-formulario>
                         }
                     </p-tabpanel>

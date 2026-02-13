@@ -23,17 +23,20 @@ import { AccionEnum } from '../../../enums/accion-enum';
   styleUrl: './app.rol.scss',
 })
 export class AppRol implements OnInit {
+
   Tabs = TabsEnum;
   tabsState = inject(TabsStateService);
   formsService = inject(FormsService);
   ICONSCONSTANT = ICONSCONSTANT;
 
   ngOnInit(): void {
-    this.onTabChange(TabsEnum.LISTADO);
+    if (this.tabsState.tabActivo() === TabsEnum.EDITAR) {
+      this.onTabChange(TabsEnum.LISTADO);
+    }
   }
 
   onTabChange(value: string | number | undefined) {
-    this.tabsState.irATab(value ?? '0');
+    this.tabsState.irATab(value ?? TabsEnum.LISTADO);
     if (value == this.Tabs.CREAR) {
       this.formsService.accion.set(AccionEnum.CREAR);
     }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -20,7 +20,6 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
 import { UtilService } from '../../../../service/util.service';
 import { RolService } from '../../rol/rol.service';
-import { ConfRol } from '../../../../entities/ConfRol';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -39,7 +38,7 @@ import { ConfRol } from '../../../../entities/ConfRol';
     templateUrl: './usuario-formulario.html',
     styleUrl: './usuario-formulario.scss',
 })
-export class UsuarioFormulario implements AfterViewInit {
+export class UsuarioFormulario implements OnInit {
 
     private fb = inject(FormBuilder);
     private toast = inject(ToastService);
@@ -54,7 +53,7 @@ export class UsuarioFormulario implements AfterViewInit {
     public accion = this.formsService.accion;
     public accionEnum = AccionEnum;
     ICONSCONSTANT = ICONSCONSTANT;
-    public roles: any[] = [];
+    public roles = this.rolService.listaRoles;
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
@@ -68,31 +67,22 @@ export class UsuarioFormulario implements AfterViewInit {
         usuEstado: [true, [Validators.required]],
     });
 
-    constructor() {
-        effect(() => {
-            if (this.formsService.objetoSeleccionado() && this.accion() != AccionEnum.CREAR) {
-                this.usuarioForm.controls.usuUsername.disable();
-                const usuario = this.formsService.objetoSeleccionado();
-                if (usuario) {
-                    this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
-                }
-            } else {
-                this.initForm();
-            }
-        });
-    }
-
-    ngAfterViewInit() {
+    ngOnInit() {
+        this.rolService.cargar();
         switch (this.accion()) {
             case AccionEnum.CREAR:
                 this.subtitulo = 'Complete la información';
+                this.initForm();
                 break;
             case AccionEnum.CONSULTAR:
                 this.subtitulo = 'Datos almacenados previamente';
                 this.consultaUsuario();
+                this.usuarioForm.disable();
                 break;
             case AccionEnum.EDITAR:
                 this.subtitulo = 'Actualización de datos';
+                this.consultaUsuario();
+                this.usuarioForm.controls.usuUsername.disable();
                 break;
             default:
                 break;
@@ -103,7 +93,6 @@ export class UsuarioFormulario implements AfterViewInit {
         this.usuarioForm.enable();
         this.usuarioForm.reset();
         this.usuarioForm.controls.usuEstado.setValue(true);
-        this.listarRoles();
     }
 
     realizarAccion() {
@@ -125,7 +114,10 @@ export class UsuarioFormulario implements AfterViewInit {
     }
 
     consultaUsuario() {
-        this.usuarioForm.disable();
+        const usuario = this.formsService.objetoSeleccionado();
+        if (usuario) {
+            this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
+        }
     }
 
     despuesDeGuardar(data: ConfUsuario) {
@@ -140,17 +132,6 @@ export class UsuarioFormulario implements AfterViewInit {
         this.cargando.inactivar();
         this.usuariosService.actualizarElGrid(data);
         this.tabsState.irATab(TabsEnum.LISTADO);
-    }
-
-    listarRoles() {
-        this.rolService.listarRol().subscribe({
-            next: (data) => {
-                this.roles = data;
-            },
-            error: (err) => {
-                this.toast.error('Error al cargar roles', err);
-            }
-        });
     }
 
 }

@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Errors } from '../../directives/errors';
 import { KeyFilter, KeyFilterPattern } from "primeng/keyfilter";
 import { Uppercase } from "../../directives/uppercase";
+import { AutoFocusModule } from 'primeng/autofocus';
 
 @Component({
   selector: 'app-input',
@@ -18,7 +19,8 @@ import { Uppercase } from "../../directives/uppercase";
     InputTextModule,
     Errors,
     KeyFilter,
-    Uppercase
+    Uppercase,
+    AutoFocusModule
 ],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
@@ -37,6 +39,7 @@ export class InputComponent {
   @Input() id!: string;
   @Input() autocomplete = 'off';
   @Input() uppercase = true;
+  @Input() autofocus = false;
 
   @Optional() private controlContainer = inject(ControlContainer)
 
