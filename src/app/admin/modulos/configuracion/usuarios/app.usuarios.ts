@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
@@ -22,12 +22,18 @@ import { ICONSCONSTANT } from '../../../constantes/icons-constants';
     ],
     templateUrl: './app.usuarios.html'
 })
-export class AppUsuarios {
+export class AppUsuarios implements OnInit {
 
     Tabs = TabsEnum;
     tabsState = inject(TabsStateService);
     formsService = inject(FormsService);
     ICONSCONSTANT = ICONSCONSTANT;
+
+    ngOnInit(): void {
+        if (this.tabsState.tabActivo() === TabsEnum.EDITAR) {
+            this.onTabChange(TabsEnum.LISTADO);
+        }
+    }
 
     onTabChange(value: string | number | undefined) {
         this.tabsState.irATab(value ?? TabsEnum.LISTADO);
