@@ -1,4 +1,4 @@
-@if (cargando.loading$ | async) {
+@if (cargando.loading()) {
 <app-cargando></app-cargando>
 }
 <p-toast position="bottom-left" (click)=" this.toast.clear()"></p-toast>

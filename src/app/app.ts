@@ -4,11 +4,10 @@ import { Toast } from 'primeng/toast';
 import { ToastService } from './admin/service/toast.service';
 import { Cargando } from "./admin/component/cargando/cargando";
 import { CargandoService } from './admin/service/cargando.service';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Toast, Cargando, AsyncPipe],
+  imports: [RouterOutlet, Toast, Cargando],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
