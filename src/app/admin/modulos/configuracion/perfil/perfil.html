@@ -1,0 +1,67 @@
+<div class="grid">
+    <!-- ===== COLUMNA IZQUIERDA ===== -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- PERFIL HERO -->
+        <div class="card fade-up delay-1">
+            <div class="profile-hero">
+                <div class="avatar-wrap">
+                    <div class="avatar-ring"></div>
+                    <div class="avatar">JC</div>
+                    <div class="avatar-edit">✏️</div>
+                </div>
+                <div class="profile-name">Joel Camacho</div>
+                <div class="profile-username">@admin</div>
+                <div class="profile-role-badge">
+                    <div class="role-dot"></div>
+                    Administrador
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Usuarios</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Roles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">✓</div>
+                        <div class="stat-label">Activo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFO LIST -->
+            <div class="info-list">
+                <!-- ROLES -->
+                <div class="card card-alto fade-up delay-2">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-title-icon">🎭</div>
+                            Roles asignados
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="roles-wrap">
+                            <div class="role-tag role-admin">🛡️ Administrador</div>
+                            <div class="role-tag role-user">👤 Usuario</div>
+                            <div class="role-tag role-editor">✏️ Editor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- ===== COLUMNA DERECHA ===== -->
+    <div class="right-col">
+        <!-- EDITAR INFORMACIÓN -->
+        <div class="card fade-up delay-2">
+            <div class="card-body">
+                <app-usuario-formulario></app-usuario-formulario>
+            </div>
+        </div>
+    </div>
+</div>
