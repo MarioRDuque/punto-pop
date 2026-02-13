@@ -6,11 +6,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <!-- Usuario -->
                     <div class="field">
-                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuUsername" [uppercase]="false" />
+                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuUsername" [uppercase]="false"
+                            [autofocus]="accion() === accionEnum.CREAR" />
                     </div>
                     <!-- Nombre -->
                     <div class="field">
-                        <app-input label="Nombre" id="usuNombre" />
+                        <app-input label="Nombre" id="usuNombre" [autofocus]="accion() === accionEnum.EDITAR" />
                     </div>
                     <!-- Apellidos -->
                     <div class="field">

@@ -53,7 +53,7 @@ export class UsuarioFormulario implements OnInit {
     public accion = this.formsService.accion;
     public accionEnum = AccionEnum;
     ICONSCONSTANT = ICONSCONSTANT;
-    public roles: any = this.rolService.listaRoles;
+    public roles = this.rolService.listaRoles;
 
     public usuarioForm = this.fb.group({
         usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
