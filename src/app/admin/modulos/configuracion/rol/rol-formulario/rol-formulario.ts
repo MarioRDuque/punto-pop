@@ -77,10 +77,15 @@ export class RolFormulario implements OnInit {
         });
     } else {
       //ACTUALIZAR
-      this.rolService.actualizar(this.rolForm.getRawValue() as ConfRol)
-        .subscribe({
-          next: (data) => this.despuesDeActualizar(data),
-        });
+      if (JSON.stringify(this.rolForm.getRawValue()) != JSON.stringify(this.formsService.objetoSeleccionado())) {
+        this.rolService.actualizar(this.rolForm.getRawValue() as ConfRol)
+          .subscribe({
+            next: (data) => this.despuesDeActualizar(data),
+          });
+      } else {
+        this.cargando.inactivar();
+        this.toast.info('NO HUBO CAMBIOS');
+      }
     }
   }
 

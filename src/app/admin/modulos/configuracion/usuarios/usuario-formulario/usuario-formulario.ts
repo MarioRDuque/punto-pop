@@ -111,10 +111,15 @@ export class UsuarioFormulario implements OnInit {
                 });
         } else {
             //ACTUALIZAR
-            this.usuariosService.actualizar(this.usuarioForm.getRawValue() as ConfUsuario)
-                .subscribe({
-                    next: (data) => this.despuesDeActualizar(data),
-                });
+            if (JSON.stringify(this.usuarioForm.getRawValue()) != JSON.stringify(this.formsService.objetoSeleccionado())) {
+                this.usuariosService.actualizar(this.usuarioForm.getRawValue() as ConfUsuario)
+                    .subscribe({
+                        next: (data) => this.despuesDeActualizar(data),
+                    });
+            } else {
+                this.cargando.inactivar();
+                this.toast.info('NO HUBO CAMBIOS');
+            }
         }
     }
 
