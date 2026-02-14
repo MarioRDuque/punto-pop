@@ -1,5 +1,6 @@
 export class ConfUsuario {
     usuUsername: string;
+    usuNombre: string;
     usuApellidos: string;
     usuEmail: string;
     usuClave: string;
@@ -9,6 +10,7 @@ export class ConfUsuario {
 
     constructor(values: Partial<ConfUsuario> = {}) {
         this.usuUsername = values.usuUsername ?? '';
+        this.usuNombre = values.usuNombre ?? '';
         this.usuApellidos = values.usuApellidos ?? '';
         this.usuEmail = values.usuEmail ?? '';
         this.usuClave = values.usuClave ?? '';
