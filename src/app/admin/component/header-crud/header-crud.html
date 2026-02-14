@@ -13,14 +13,19 @@
             @if(esFormulario){
             @switch (formsService.accion()) {
             @case (accionEnum.CREAR) {
-            <!-- BOTON SUBMIT -->
+            <!-- BOTON CREAR -->
             <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
                 [pTooltip]="'Guardar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }
             @case (accionEnum.EDITAR) {
-            <!-- BOTON SUBMIT -->
+            <!-- BOTON EDITAR -->
             <p-button [icon]="ICONSCONSTANT.REGRESAR" (click)="regresar()" [rounded]="true" [raised]="true"
                 [pTooltip]="'Regresar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" severity="secondary" />
+            <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
+                [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+            }
+            @case (accionEnum.PERFIL) {
+            <!-- BOTON PERFIL -->
             <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
                 [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
             }
