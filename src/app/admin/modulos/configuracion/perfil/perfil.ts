@@ -18,7 +18,7 @@ export class Perfil implements OnInit {
   cargando = inject(CargandoService);
   usuariosService = inject(UsuariosService);
 
-  public usuario: ConfUsuario = new ConfUsuario();
+  public usuario= this.formsService.objetoSeleccionado;
 
   public subtitulo = 'Perfil';
   public mostrarPerfil = false;
@@ -37,9 +37,9 @@ export class Perfil implements OnInit {
   }
 
   despuesDeObtenerUsuario(data: ConfUsuario) {
-    this.usuario = data;
+    this.usuario.set(data);
     this.formsService.objetoSeleccionado.set(data);
-    this.formsService.accion.set(AccionEnum.EDITAR);
+    this.formsService.accion.set(AccionEnum.PERFIL);
     this.cargando.inactivar();
     this.mostrarPerfil = true;
   }

@@ -84,6 +84,11 @@ export class UsuarioFormulario implements OnInit {
                 this.consultaUsuario();
                 this.usuarioForm.controls.usuUsername.disable();
                 break;
+            case AccionEnum.PERFIL:
+                this.subtitulo = 'Perfil';
+                this.consultaUsuario();
+                this.usuarioForm.controls.usuUsername.disable();
+                break;
             default:
                 break;
         }
@@ -129,9 +134,13 @@ export class UsuarioFormulario implements OnInit {
 
     despuesDeActualizar(data: ConfUsuario) {
         this.toast.success('El usuario se actualizó correctamente');
+        if (this.accion() == AccionEnum.PERFIL) {
+            this.formsService.objetoSeleccionado.set(data);
+        } else {
+            this.usuariosService.actualizarElGrid(data);
+            this.tabsState.irATab(TabsEnum.LISTADO);
+        }
         this.cargando.inactivar();
-        this.usuariosService.actualizarElGrid(data);
-        this.tabsState.irATab(TabsEnum.LISTADO);
     }
 
 }
