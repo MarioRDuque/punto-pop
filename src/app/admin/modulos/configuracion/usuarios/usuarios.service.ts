@@ -27,7 +27,7 @@ export class UsuariosService {
   }
 
   guardar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.post<ConfUsuario>('configuracion/usuario', usuario);
+    return this.api.post<ConfUsuario>('configuracion/usuario/guardar', usuario);
   }
 
   actualizar(usuario: ConfUsuario): Observable<ConfUsuario> {
