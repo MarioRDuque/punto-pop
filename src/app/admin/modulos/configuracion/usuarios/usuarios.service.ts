@@ -22,6 +22,10 @@ export class UsuariosService {
     return this.api.get<ConfUsuario[]>('configuracion/usuario');
   }
 
+  obtenerUsuario(usuario: string): Observable<ConfUsuario> {
+    return this.api.get<ConfUsuario>('configuracion/usuario/' + usuario);
+  }
+
   guardar(usuario: ConfUsuario): Observable<ConfUsuario> {
     return this.api.post<ConfUsuario>('configuracion/usuario', usuario);
   }

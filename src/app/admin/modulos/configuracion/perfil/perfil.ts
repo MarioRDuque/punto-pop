@@ -1,21 +1,47 @@
-import { Component } from '@angular/core';
-import { StatsWidget } from './components/statswidget';
-import { RecentSalesWidget } from './components/recentsaleswidget';
-import { BestSellingWidget } from './components/bestsellingwidget';
+import { Component, inject, OnInit } from '@angular/core';
+import { UsuarioFormulario } from "../usuarios/usuario-formulario/usuario-formulario";
+import { FormsService } from '../../../service/forms-service';
+import { AccionEnum } from '../../../enums/accion-enum';
+import { UsuariosService } from '../usuarios/usuarios.service';
+import { ConfUsuario } from '../../../entities/ConfUsuario';
+import { CargandoService } from '../../../service/cargando.service';
 
 @Component({
-    selector: 'app-perfil',
-    imports: [StatsWidget, RecentSalesWidget, BestSellingWidget],
-    template: `
-        <div class="grid grid-cols-12 gap-8">
-            <app-stats-widget class="contents" />
-            <div class="col-span-12 xl:col-span-6">
-                <app-best-selling-widget />
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <app-recent-sales-widget />
-            </div>
-        </div>
-    `
+  selector: 'app-perfil',
+  imports: [UsuarioFormulario],
+  templateUrl: './perfil.html',
+  styleUrl: './perfil.scss',
 })
-export class Perfil {}
+export class Perfil implements OnInit {
+
+  formsService = inject(FormsService);
+  cargando = inject(CargandoService);
+  usuariosService = inject(UsuariosService);
+
+  public usuario: ConfUsuario = new ConfUsuario();
+
+  public subtitulo = 'Perfil';
+  public mostrarPerfil = false;
+
+
+  ngOnInit(): void {
+    this.obtenerUsuario();
+  }
+
+  obtenerUsuario() {
+    this.cargando.activar();
+      this.usuariosService.obtenerUsuario("admin")
+        .subscribe({
+          next: (data) => this.despuesDeObtenerUsuario(data),
+        });
+  }
+
+  despuesDeObtenerUsuario(data: ConfUsuario) {
+    this.usuario = data;
+    this.formsService.objetoSeleccionado.set(data);
+    this.formsService.accion.set(AccionEnum.EDITAR);
+    this.cargando.inactivar();
+    this.mostrarPerfil = true;
+  }
+
+}

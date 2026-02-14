@@ -1,0 +1,352 @@
+/* ===== ANIMACIONES ===== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.fade-up {
+    animation: fadeUp 0.4s ease both;
+}
+
+.delay-1 {
+    animation-delay: 0.05s;
+}
+
+.delay-2 {
+    animation-delay: 0.10s;
+}
+
+.delay-3 {
+    animation-delay: 0.15s;
+}
+
+.delay-4 {
+    animation-delay: 0.20s;
+}
+
+/* ===== LAYOUT ===== */
+.grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== CARD ===== */
+.card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: 0px;
+}
+
+.card-alto {
+    height: calc(-110px + 100vh);
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-title-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* ===== PERFIL HERO ===== */
+.profile-hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, var(--primary-color) 200%);
+    padding: 32px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--primary-color) 20%, transparent), transparent 70%);
+    pointer-events: none;
+}
+
+.profile-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--primary-color) 10%, transparent), transparent 70%);
+    pointer-events: none;
+}
+
+/* ===== AVATAR ===== */
+.avatar-wrap {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.avatar-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+    animation: pulse-ring 2.5s ease-out infinite;
+}
+
+.avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #0ECFA0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary-color) 40%, transparent);
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.avatar:hover {
+    transform: scale(1.04);
+}
+
+/* ===== PROFILE TEXT ===== */
+.profile-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+}
+
+.profile-username {
+    font-size: 13px;
+    color: #64748B;
+    margin-bottom: 12px;
+}
+
+.profile-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--primary-color) 30%, transparent) !important;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.role-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+/* ===== STATS ===== */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 20px;
+}
+
+.stat-item {
+    padding: 14px 8px;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stat-item:last-child {
+    border-right: none;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+.stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* ===== INFO LIST ===== */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    height: 270px;
+}
+
+/* ===== ROLES TAGS ===== */
+.roles-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 0 4px;
+}
+
+.role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid;
+}
+
+.role-admin {
+    background: #EFF6FF;
+    color: #2563EB;
+    border-color: #BFDBFE;
+}
+
+.role-user {
+    background: #E6F7F2;
+    color: #0BAB7C;
+    border-color: #A7F3D0;
+}
+
+.role-editor {
+    background: #FFF7ED;
+    color: #EA580C;
+    border-color: #FED7AA;
+}
+
+/* ===== ACTIVITY ===== */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item:hover {
+    background: var(--surface-2);
+}
+
+.activity-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.activity-line {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    margin-top: 4px;
+    min-height: 20px;
+}
+
+.activity-item:last-child .activity-line {
+    display: none;
+}
+
+/* ===== RIGHT COL ===== */
+.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
