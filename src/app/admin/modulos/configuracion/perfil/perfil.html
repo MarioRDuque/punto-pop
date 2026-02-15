@@ -7,7 +7,7 @@
             <div class="profile-hero">
                 <div class="avatar-wrap">
                     <div class="avatar-ring"></div>
-                    <div class="avatar">JC</div>
+                    <div class="avatar">{{ usuario().usuNombre?.trim()?.[0]?.toUpperCase() }}{{ usuario().usuApellidos?.trim()?.[0]?.toUpperCase() }}</div>
                 </div>
                 <div class="profile-name">{{usuario().usuNombre}} {{usuario().usuApellidos}}</div>
                 <div class="profile-username">@{{usuario().usuUsername}}</div>

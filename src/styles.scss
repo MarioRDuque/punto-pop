@@ -208,6 +208,13 @@
   flex: 1 !important;
   min-width: 0 !important;
   min-height: 100vh !important;
+  overflow-x: hidden !important;
+}
+
+.layout-topbar {
+    top: 0 !important;
+    z-index: 1000 !important;
+    width: 100% !important;
 }
 
 @media screen and (max-width: 991px) {

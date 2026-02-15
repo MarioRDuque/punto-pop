@@ -55,24 +55,25 @@
 
 /* ===== LAYOUT ===== */
 .grid {
-    display: flex;          // ← Usar flex en lugar de grid
+    display: flex;
     gap: 20px;
     align-items: start;
     width: 100%;
     min-width: 0;
+    overflow: hidden; /* ← evita desbordamiento */
 }
 
-/* Columna izquierda fija */
+/* Columna izquierda */
 .grid > div:first-child {
     width: 320px;
     min-width: 320px;
     flex-shrink: 0;
 }
 
-/* Columna derecha flexible */
+/* Columna derecha */
 .right-col {
     flex: 1;
-    min-width: 0;           // ← Importante para que flexbox encoja correctamente
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
