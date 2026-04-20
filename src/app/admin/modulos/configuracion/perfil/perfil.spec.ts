@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { Perfil } from './perfil';
 
 describe('Perfil', () => {
@@ -8,7 +11,13 @@ describe('Perfil', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Perfil]
+      imports: [Perfil],
+      providers: [
+        MessageService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideZonelessChangeDetection()
+      ]
     })
     .compileComponents();
 

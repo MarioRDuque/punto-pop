@@ -55,7 +55,10 @@
                 <p-fieldset legend="Foto">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                         <div class="md:col-span-3 w-full">
-                            <app-fileupload />
+                            <app-fileupload
+                                [fotoActual]="usuarioForm.get('usuFoto')?.value"
+                                [readonly]="accion() === accionEnum.CONSULTAR"
+                                (fotoSeleccionada)="usuarioForm.get('usuFoto')?.setValue($event)" />
                         </div>
                     </div>
                 </p-fieldset>

@@ -1,8 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
 import { ConfUsuario } from '../../../entities/ConfUsuario';
 import { CargandoService } from '../../../service/cargando.service';
+import { CacheService } from '../../../service/cache.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { TipoFiltro } from '../../../enums/tipo-filtro';
 import { HttpParams } from '@angular/common/http';
@@ -15,27 +16,34 @@ export class UsuariosService {
 
   private api = inject(ApiService);
   private cargando = inject(CargandoService);
+  private cache = inject(CacheService);
   private utilService = inject(UtilService);
   public usuarios = signal<ConfUsuario[]>([]);
 
   listarUsuarios(): Observable<ConfUsuario[]> {
-    return this.api.get<ConfUsuario[]>('configuracion/usuario');
+    return this.api.get<ConfUsuario[]>('/configuracion/usuario');
   }
 
   obtenerUsuario(usuario: string): Observable<ConfUsuario> {
-    return this.api.get<ConfUsuario>('configuracion/usuario/' + usuario);
+    return this.api.get<ConfUsuario>('/configuracion/usuario/' + usuario);
   }
 
   guardar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.post<ConfUsuario>('configuracion/usuario/guardar', usuario);
+    return this.api.post<ConfUsuario>('/configuracion/usuario/guardar', usuario).pipe(
+      tap(() => this.cache.invalidar('usuarios'))
+    );
   }
 
   actualizar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.put<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername, usuario);
+    return this.api.put<ConfUsuario>('/configuracion/usuario/' + usuario.usuUsername, usuario).pipe(
+      tap(() => this.cache.invalidar('usuarios'))
+    );
   }
 
   eliminar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.delete<ConfUsuario>('configuracion/usuario/' + usuario.usuUsername);
+    return this.api.delete<ConfUsuario>('/configuracion/usuario/' + usuario.usuUsername).pipe(
+      tap(() => this.cache.invalidar('usuarios'))
+    );
   }
 
   cargar(filtro?: TipoFiltro, q?: string) {
@@ -47,9 +55,14 @@ export class UsuariosService {
     if (q && q.trim().length > 0) {
       params = params.set('q', q.trim());
     }
-    return this.api.get<ConfUsuario[]>('configuracion/usuario/filtrar', params).subscribe(
-      { next: (data) => this.despuesDeCargar(data) }
-    );;
+    return this.api.get<ConfUsuario[]>('/configuracion/usuario/filtrar', params).subscribe({
+      next: (data) => this.despuesDeCargar(data),
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
+        this.cargando.inactivar();
+        this.usuarios.set([]);
+      }
+    });
   }
 
   despuesDeCargar(data: ConfUsuario[]) {
@@ -59,18 +72,21 @@ export class UsuariosService {
 
   agregarAlGrid(usuario: ConfUsuario) {
     this.usuarios.update(list => [...list, usuario]);
+    this.cache.invalidar('usuarios');
   }
 
   actualizarElGrid(usuario: ConfUsuario) {
     this.usuarios.update(list =>
       list.map(u => u.usuUsername === usuario.usuUsername ? usuario : u)
     );
+    this.cache.invalidar('usuarios');
   }
 
   eliminarDelGrid(usuario: ConfUsuario) {
     this.usuarios.update(list =>
       list.filter(u => u.usuUsername !== usuario.usuUsername)
     );
+    this.cache.invalidar('usuarios');
   }
 
   generarColumnasListado(): ColDef[] {

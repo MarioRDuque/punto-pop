@@ -1,7 +1,7 @@
 <p-fluid>
     <p-panel value="0">
         <div class="card">
-            <p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
+            <p-tabs [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
                 <p-tablist>
                     <p-tab [value]="Tabs.LISTADO"><i class="{{ICONSCONSTANT.USERS}}"></i><span> Lista de
                             usuarios</span></p-tab>

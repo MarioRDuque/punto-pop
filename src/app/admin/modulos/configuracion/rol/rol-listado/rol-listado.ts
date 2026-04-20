@@ -11,6 +11,8 @@ import { RolFormulario } from '../rol-formulario/rol-formulario';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 import { ConfRol } from '../../../../entities/ConfRol';
 import { AccionEnum } from '../../../../enums/accion-enum';
+import { TabsStateService } from '../../../../service/tabs.service';
+import { TabsEnum } from '../../../../enums/tabs-enum';
 
 @Component({
   selector: 'app-rol-listado',
@@ -24,7 +26,8 @@ export class RolListado implements OnInit {
   private rolService = inject(RolService);
   private toast = inject(ToastService);
   private cargando = inject(CargandoService);
-  public formsService = inject(FormsService);
+  private formsService = inject(FormsService);
+  private tabsState = inject(TabsStateService);
   public dialogService = inject(DialogService);
 
   public listaRol = this.rolService.listaRoles;
@@ -54,6 +57,13 @@ export class RolListado implements OnInit {
 
   imprimirDesdeHeader() {
     this.imprimirSignal.set(true);
+  }
+
+  editarObj(data: ConfRol) {
+    this.formsService.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.EDITAR);
+    this.tabsState.cambiarEstadoTab(false);
+    this.tabsState.irATab(TabsEnum.EDITAR);
   }
 
   consultarObj(data: ConfRol) {

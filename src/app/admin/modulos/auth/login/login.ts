@@ -1,23 +1,61 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../../component/floatingconfigurator/app.floatingconfigurator';
+import { LoginService } from '../../../service/login.service';
+import { InputComponent } from '../../../component/input/input.component';
+import { PasswordComponent } from '../../../component/password/password';
+import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
-    templateUrl: './login.html'
+    imports: [
+        ButtonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        RippleModule,
+        AppFloatingConfigurator,
+        InputComponent,
+        PasswordComponent
+    ],
+    templateUrl: './login.html',
+    styleUrl: './login.scss'
 })
 export class Login {
-    email = '';
 
-    password = '';
+    private fb = inject(FormBuilder);
+    private loginService = inject(LoginService);
+    private router = inject(Router);
 
-    checked = false;
+    ICONSCONSTANT = ICONSCONSTANT;
+    cargandoLogin = false;
+    anio = new Date().getFullYear();
+
+    loginForm = this.fb.group({
+        username: ['', [Validators.required]],
+        password: ['', [Validators.required]]
+    });
+
+    iniciarSesion() {
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+
+        const { username, password } = this.loginForm.getRawValue();
+        this.cargandoLogin = true;
+
+        this.loginService.login({ username: username!, password: password! }).subscribe({
+            next: () => {
+                this.cargandoLogin = false;
+                this.router.navigate(['/']);
+            },
+            error: () => {
+                this.cargandoLogin = false;
+            }
+        });
+    }
 }
