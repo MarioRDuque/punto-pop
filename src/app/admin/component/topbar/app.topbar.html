@@ -22,6 +22,7 @@
             <span>SAKAI</span>
         </a>
     </div>
+
     <div class="layout-topbar-actions">
         <div class="layout-config-menu">
             <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
@@ -36,6 +37,7 @@
                 <app-configurator />
             </div>
         </div>
+
         <button class="layout-topbar-menu-button layout-topbar-action" pStyleClass="@next" enterFromClass="hidden"
             enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout"
             [hideOnOutsideClick]="true">
@@ -44,18 +46,48 @@
 
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
-                <button type="button" class="layout-topbar-action">
-                    <i class="pi pi-calendar"></i>
-                    <span>Calendar</span>
+
+                <!-- Avatar: foto o iniciales -->
+                <button type="button" class="layout-topbar-action" pStyleClass="@next"
+                    enterFromClass="hidden" enterActiveClass="animate-scalein"
+                    leaveToClass="hidden" leaveActiveClass="animate-fadeout"
+                    [hideOnOutsideClick]="true">
+                    <div class="topbar-avatar">
+                        @if (fotoUsuario()) {
+                            <img [src]="fotoUsuario()!" [alt]="iniciales()" class="topbar-avatar-img" />
+                        } @else {
+                            <span class="topbar-avatar-initials">{{ iniciales() }}</span>
+                        }
+                    </div>
                 </button>
-                <button type="button" class="layout-topbar-action">
-                    <i class="pi pi-inbox"></i>
-                    <span>Messages</span>
-                </button>
-                <button type="button" class="layout-topbar-action">
-                    <i class="pi pi-user"></i>
-                    <span>Profile</span>
-                </button>
+
+                <!-- Menú de usuario desplegable -->
+                <div class="hidden topbar-user-menu">
+                    <div class="topbar-user-header">
+                        <div class="topbar-user-avatar-lg">
+                            @if (fotoUsuario()) {
+                                <img [src]="fotoUsuario()!" [alt]="iniciales()" class="topbar-avatar-img-lg" />
+                            } @else {
+                                <span class="topbar-avatar-initials-lg">{{ iniciales() }}</span>
+                            }
+                        </div>
+                        <div>
+                            <div class="topbar-user-name">{{ nombreCompleto() }}</div>
+                            <div class="topbar-user-role">{{ authService.usuario()?.roles?.[0]?.rolDescripcion ?? '' }}</div>
+                        </div>
+                    </div>
+                    <div class="topbar-user-divider"></div>
+                    <a class="topbar-user-item" routerLink="/">
+                        <i class="pi pi-user"></i>
+                        <span>Mi perfil</span>
+                    </a>
+                    <div class="topbar-user-divider"></div>
+                    <button type="button" class="topbar-user-item topbar-user-logout" (click)="cerrarSesion()">
+                        <i class="pi pi-sign-out"></i>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

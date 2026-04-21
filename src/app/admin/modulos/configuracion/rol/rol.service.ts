@@ -1,8 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
 import { ConfRol } from '../../../entities/ConfRol';
 import { CargandoService } from '../../../service/cargando.service';
+import { CacheService } from '../../../service/cache.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { TipoFiltro } from '../../../enums/tipo-filtro';
 import { HttpParams } from '@angular/common/http';
@@ -15,23 +16,30 @@ export class RolService {
 
   private api = inject(ApiService);
   private cargando = inject(CargandoService);
+  private cache = inject(CacheService);
   private utilService = inject(UtilService);
   public listaRoles = signal<ConfRol[]>([]);
 
   listarRol(): Observable<ConfRol[]> {
-    return this.api.get<ConfRol[]>('configuracion/rol');
+    return this.api.get<ConfRol[]>('/configuracion/rol');
   }
 
   guardar(rol: ConfRol): Observable<ConfRol> {
-    return this.api.post<ConfRol>('configuracion/rol', rol);
+    return this.api.post<ConfRol>('/configuracion/rol', rol).pipe(
+      tap(() => this.cache.invalidar('roles'))
+    );
   }
 
   actualizar(rol: ConfRol): Observable<ConfRol> {
-    return this.api.put<ConfRol>('configuracion/rol/' + rol.rolCodigo, rol);
+    return this.api.put<ConfRol>('/configuracion/rol/' + rol.rolCodigo, rol).pipe(
+      tap(() => this.cache.invalidar('roles'))
+    );
   }
 
   eliminar(rol: ConfRol): Observable<ConfRol> {
-    return this.api.delete<ConfRol>('configuracion/rol/' + rol.rolCodigo);
+    return this.api.delete<ConfRol>('/configuracion/rol/' + rol.rolCodigo).pipe(
+      tap(() => this.cache.invalidar('roles'))
+    );
   }
 
   cargar(filtro?: TipoFiltro, q?: string) {
@@ -43,7 +51,7 @@ export class RolService {
     if (q && q.trim().length > 0) {
       params = params.set('q', q.trim());
     }
-    return this.api.get<ConfRol[]>('configuracion/rol/filtrar', params).subscribe(
+    return this.api.get<ConfRol[]>('/configuracion/rol/filtrar', params).subscribe(
       { next: (data) => this.despuesDeCargar(data) }
     );;
   }
@@ -55,18 +63,21 @@ export class RolService {
 
   agregarAlGrid(rol: ConfRol) {
     this.listaRoles.update(list => [...list, rol]);
+    this.cache.invalidar('roles');
   }
 
   actualizarElGrid(rol: ConfRol) {
     this.listaRoles.update(list =>
       list.map(u => u.rolCodigo === rol.rolCodigo ? rol : u)
     );
+    this.cache.invalidar('roles');
   }
 
   eliminarDelGrid(rol: ConfRol) {
     this.listaRoles.update(list =>
       list.filter(u => u.rolCodigo !== rol.rolCodigo)
     );
+    this.cache.invalidar('roles');
   }
 
   generarColumnasListado(): ColDef[] {

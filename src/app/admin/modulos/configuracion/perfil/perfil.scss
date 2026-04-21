@@ -206,6 +206,19 @@
     transform: scale(1.04);
 }
 
+.avatar-foto {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary-color) 40%, transparent);
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s;
+    &:hover { transform: scale(1.04); }
+}
+
 /* ===== PROFILE TEXT ===== */
 .profile-name {
     font-size: 18px;

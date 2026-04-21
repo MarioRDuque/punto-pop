@@ -11,6 +11,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UsuarioFormulario } from '../usuario-formulario/usuario-formulario';
 import { FormsService } from '../../../../service/forms-service';
 import { AccionEnum } from '../../../../enums/accion-enum';
+import { TabsStateService } from '../../../../service/tabs.service';
+import { TabsEnum } from '../../../../enums/tabs-enum';
 
 @Component({
   selector: 'app-usuario-listado',
@@ -27,7 +29,8 @@ export class UsuarioListado implements OnInit {
   private usuariosService = inject(UsuariosService);
   private toast = inject(ToastService);
   private cargando = inject(CargandoService);
-  public formsService = inject(FormsService);
+  private formsService = inject(FormsService);
+  private tabsState = inject(TabsStateService);
   public dialogService = inject(DialogService);
 
   public listaUsuarios = this.usuariosService.usuarios;
@@ -57,6 +60,13 @@ export class UsuarioListado implements OnInit {
 
   imprimirDesdeHeader() {
     this.imprimirSignal.set(true);
+  }
+
+  editarObj(data: ConfUsuario) {
+    this.formsService.seleccionarObjeto(data);
+    this.formsService.accion.set(AccionEnum.EDITAR);
+    this.tabsState.cambiarEstadoTab(false);
+    this.tabsState.irATab(TabsEnum.EDITAR);
   }
 
   consultarObj(data: ConfUsuario) {

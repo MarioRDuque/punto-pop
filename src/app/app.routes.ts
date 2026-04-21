@@ -4,11 +4,13 @@ import { Perfil } from './admin/modulos/configuracion/perfil/perfil';
 import { Landing } from './admin/modulos/landing/landing';
 import { Notfound } from './admin/modulos/notfound/notfound';
 import { Documentation } from './admin/modulos/documentation/documentation';
+import { authGuard } from './admin/guards/auth.guard';
 
 export const routes: Routes = [
     {
         path: '',
         component: AppLayout,
+        canActivate: [authGuard],
         children: [
             { path: '', component: Perfil },
             { path: 'configuracion', loadChildren: () => import('./admin/modulos/configuracion/configuracion.routes') },

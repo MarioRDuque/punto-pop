@@ -1,3 +1,4 @@
+@if (usuario()) {
 <div class="grid">
     <!-- ===== COLUMNA IZQUIERDA ===== -->
     <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -7,26 +8,30 @@
             <div class="profile-hero">
                 <div class="avatar-wrap">
                     <div class="avatar-ring"></div>
-                    <div class="avatar">{{ usuario().usuNombre?.trim()?.[0]?.toUpperCase() }}{{ usuario().usuApellidos?.trim()?.[0]?.toUpperCase() }}</div>
+                    @if (usuario()?.usuFoto) {
+                        <img [src]="usuario()!.usuFoto!" class="avatar avatar-foto" alt="foto de perfil" />
+                    } @else {
+                        <div class="avatar">{{ usuario().usuNombre?.trim()?.[0]?.toUpperCase() }}{{ usuario().usuApellidos?.trim()?.[0]?.toUpperCase() }}</div>
+                    }
                 </div>
                 <div class="profile-name">{{usuario().usuNombre}} {{usuario().usuApellidos}}</div>
                 <div class="profile-username">@{{usuario().usuUsername}}</div>
                 <div class="profile-role-badge">
                     <div class="role-dot"></div>
-                    Administrador
+                    {{ usuario()?.roles?.[0]?.rolDescripcion || usuario()?.roles?.[0]?.rolCodigo || authService.usuario()?.roles?.[0] || 'Usuario' }}
                 </div>
                 <div class="stats-row">
                     <div class="stat-item">
-                        <div class="stat-value">4</div>
-                        <div class="stat-label">Usuarios</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">3</div>
+                        <div class="stat-value">{{ usuario()?.roles?.length ?? authService.usuario()?.roles?.length ?? 0 }}</div>
                         <div class="stat-label">Roles</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">✓</div>
-                        <div class="stat-label">Activo</div>
+                        <div class="stat-value">{{ authService.usuario()?.sucursales?.length ?? 0 }}</div>
+                        <div class="stat-label">Sucursales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ usuario().usuEstado ? '✓' : '✗' }}</div>
+                        <div class="stat-label">Estado</div>
                     </div>
                 </div>
             </div>
@@ -43,9 +48,12 @@
                     </div>
                     <div class="card-body">
                         <div class="roles-wrap">
-                            <div class="role-tag role-admin">🛡️ Administrador</div>
-                            <div class="role-tag role-user">👤 Usuario</div>
-                            <div class="role-tag role-editor">✏️ Editor</div>
+                            @for (rol of usuario()?.roles; track rol) {
+                                <div class="role-tag role-admin">🛡️ {{ rol.rolDescripcion || rol.rolCodigo || rol }}</div>
+                            }
+                            @if (!usuario()?.roles || usuario()?.roles?.length === 0) {
+                                <div class="role-tag role-user">👤 Sin roles asignados</div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -64,5 +72,71 @@
                 }
             </div>
         </div>
+
+        <!-- CAMBIO DE CONTRASEÑA (Requisito 17.2) -->
+        <div class="card fade-up delay-3">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">🔒</div>
+                    Cambiar Contraseña
+                </div>
+            </div>
+            <div class="card-body">
+                <app-cambio-password></app-cambio-password>
+            </div>
+        </div>
+
+        <!-- IDIOMA DEL SISTEMA -->
+        <div class="card fade-up delay-4">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">🌐</div>
+                    Idioma
+                </div>
+            </div>
+            <div class="card-body">
+                <app-selector-idioma></app-selector-idioma>
+            </div>
+        </div>
+
+        <!-- 2FA (Requisito 17.3) -->
+        <div class="card fade-up delay-5">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">🔐</div>
+                    Autenticación de Dos Factores (2FA)
+                </div>
+            </div>
+            <div class="card-body">
+                <app-dos-fa-panel></app-dos-fa-panel>
+            </div>
+        </div>
+
+        <!-- PREFERENCIAS DE NOTIFICACIÓN (Requisito 17.4) -->
+        <div class="card fade-up delay-6">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">🔔</div>
+                    Preferencias de Notificación
+                </div>
+            </div>
+            <div class="card-body">
+                <app-preferencias-notificacion></app-preferencias-notificacion>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE SESIONES (Requisito 17.5) -->
+        <div class="card fade-up delay-7">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">📱</div>
+                    Historial de Sesiones
+                </div>
+            </div>
+            <div class="card-body">
+                <app-historial-sesiones></app-historial-sesiones>
+            </div>
+        </div>
     </div>
 </div>
+}

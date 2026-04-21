@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from '../../../../component/header-crud/header-crud';
@@ -20,6 +20,7 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
 import { UtilService } from '../../../../service/util.service';
 import { RolService } from '../../rol/rol.service';
+import { AuthService } from '../../../../service/auth.service';
 
 @Component({
     selector: 'app-usuario-formulario',
@@ -48,9 +49,21 @@ export class UsuarioFormulario implements OnInit {
     private utilService = inject(UtilService);
     public tabsState = inject(TabsStateService);
     private rolService = inject(RolService);
+    private authService = inject(AuthService);
 
     public subtitulo = "";
     public accion = this.formsService.accion;
+
+    constructor() {
+        // Re-parchar el formulario cuando el backend actualiza objetoSeleccionado
+        // (el perfil carga datos de sesión primero y luego actualiza desde el backend)
+        effect(() => {
+            const obj = this.formsService.objetoSeleccionado();
+            if (obj && this.accion() !== AccionEnum.CREAR) {
+                this.consultaUsuario();
+            }
+        });
+    }
     public accionEnum = AccionEnum;
     ICONSCONSTANT = ICONSCONSTANT;
     public roles = this.rolService.listaRoles;
@@ -63,8 +76,9 @@ export class UsuarioFormulario implements OnInit {
         usuClave: ['', [Validators.required]],
         usuTelefono: ['', []],
         usuDireccion: ['', []],
-        roles: [[], [Validators.required]],
+        roles: [[] as any[], [Validators.required]],
         usuEstado: [true, [Validators.required]],
+        usuFoto: [null as string | null],
     });
 
     ngOnInit() {
@@ -88,9 +102,31 @@ export class UsuarioFormulario implements OnInit {
                 this.subtitulo = 'Perfil';
                 this.consultaUsuario();
                 this.usuarioForm.controls.usuUsername.disable();
+                // Deshabilitar rol y estado para usuarios no-admin (después de cargar datos)
+                this.aplicarRestriccionesPerfil();
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Aplica restricciones de edición para el perfil según el rol del usuario
+     * Los usuarios no-admin no pueden modificar su rol ni su estado
+     */
+    aplicarRestriccionesPerfil() {
+        const usuario = this.formsService.objetoSeleccionado();
+        // Los roles pueden venir como objetos {rolCodigo} o como strings desde la sesión
+        const tienePermisoAdmin = usuario?.roles?.some(
+            (rol: any) => {
+                const codigo = typeof rol === 'string' ? rol : (rol.rolCodigo || '');
+                return codigo === 'ADMIN' || codigo === 'SUPERADMIN';
+            }
+        );
+
+        if (!tienePermisoAdmin) {
+            this.usuarioForm.controls.roles.disable();
+            this.usuarioForm.controls.usuEstado.disable();
         }
     }
 
@@ -103,16 +139,41 @@ export class UsuarioFormulario implements OnInit {
     realizarAccion() {
         if (!this.utilService.validarFormulario(this.usuarioForm)) return;
         this.cargando.activar();
+        
+        // Obtener valores del formulario
+        const formValue = this.usuarioForm.getRawValue();
+        
+        // Convertir los códigos de roles a objetos que el backend puede deserializar
+        const rolesArray = Array.isArray(formValue.roles) ? formValue.roles : [];
+        const rolesObjetos = rolesArray.map((rol: any) => ({
+            rolCodigo: typeof rol === 'string' ? rol : (rol?.rolCodigo ?? ''),
+            rolDescripcion: typeof rol === 'object' ? (rol?.rolDescripcion ?? '') : '',
+            rolEstado: typeof rol === 'object' ? (rol?.rolEstado ?? true) : true
+        }));
+        
+        const usuario = new ConfUsuario({
+            usuUsername: formValue.usuUsername || '',
+            usuNombre: formValue.usuNombre || '',
+            usuApellidos: formValue.usuApellidos || '',
+            usuEmail: formValue.usuEmail || '',
+            usuClave: formValue.usuClave || '',
+            usuTelefono: formValue.usuTelefono || '',
+            usuDireccion: formValue.usuDireccion || '',
+            usuEstado: formValue.usuEstado ?? true,
+            usuFoto: formValue.usuFoto ?? null,
+            roles: rolesObjetos
+        });
+        
         if (this.accion() == AccionEnum.CREAR) {
             //INSERTAR
-            this.usuariosService.guardar(this.usuarioForm.getRawValue() as ConfUsuario)
+            this.usuariosService.guardar(usuario)
                 .subscribe({
                     next: (data) => this.despuesDeGuardar(data),
                 });
         } else {
             //ACTUALIZAR
-            if (JSON.stringify(this.usuarioForm.getRawValue()) != JSON.stringify(this.formsService.objetoSeleccionado())) {
-                this.usuariosService.actualizar(this.usuarioForm.getRawValue() as ConfUsuario)
+            if (JSON.stringify(usuario) != JSON.stringify(this.formsService.objetoSeleccionado())) {
+                this.usuariosService.actualizar(usuario)
                     .subscribe({
                         next: (data) => this.despuesDeActualizar(data),
                     });
@@ -126,7 +187,12 @@ export class UsuarioFormulario implements OnInit {
     consultaUsuario() {
         const usuario = this.formsService.objetoSeleccionado();
         if (usuario) {
-            this.usuarioForm.patchValue(this.formsService.objetoSeleccionado());
+            const rolesParaFormulario = usuario.roles?.map((rol: any) => rol.rolCodigo || rol) || [];
+            this.usuarioForm.patchValue({
+                ...usuario,
+                roles: rolesParaFormulario,
+                usuFoto: usuario.usuFoto ?? null
+            });
         }
     }
 
@@ -141,6 +207,10 @@ export class UsuarioFormulario implements OnInit {
         this.toast.success('El usuario se actualizó correctamente');
         if (this.accion() == AccionEnum.PERFIL) {
             this.formsService.objetoSeleccionado.set(data);
+            // Actualizar foto en la sesión para que el topbar y el avatar la reflejen
+            if (data.usuFoto !== undefined) {
+                this.authService.actualizarFoto(data.usuFoto ?? null);
+            }
         } else {
             this.usuariosService.actualizarElGrid(data);
             this.tabsState.irATab(TabsEnum.LISTADO);

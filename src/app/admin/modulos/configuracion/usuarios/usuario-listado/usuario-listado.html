@@ -3,6 +3,6 @@
     (imprimir)="imprimirDesdeHeader()"></app-header-crud>
 <!-- COMPONENTE GRID CRUD -->
 <app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" (consultarObj)="consultarObj($event)"
-    (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)" [colDefs]="colDefs"
-    [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal" [campoEstado]="'usuEstado'"
-    [subtitulo]="subtitulo"></app-grid>
+    (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)"
+    [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
+    [campoEstado]="'usuEstado'" [subtitulo]="subtitulo"></app-grid>
