@@ -1,0 +1,6 @@
+<form [formGroup]="productoForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
+    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
+    <div class="card w-full">
+        <app-producto-campos modo="completo" [accion]="accion()" />
+    </div>
+</form>

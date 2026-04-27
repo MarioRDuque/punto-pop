@@ -1,6 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { HeaderCrud } from "../../../../component/header-crud/header-crud";
-import { Grid } from "../../../../component/grid/grid";
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HeaderCrud } from '../../../../component/header-crud/header-crud';
+import { Grid } from '../../../../component/grid/grid';
 import { UsuariosService } from '../usuarios.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
@@ -16,60 +17,57 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 
 @Component({
   selector: 'app-usuario-listado',
-  imports: [
-    HeaderCrud,
-    Grid
-  ],
+  imports: [HeaderCrud, Grid],
   templateUrl: './usuario-listado.html',
   styleUrl: './usuario-listado.scss',
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class UsuarioListado implements OnInit {
 
-  private usuariosService = inject(UsuariosService);
-  private toast = inject(ToastService);
-  private cargando = inject(CargandoService);
-  private formsService = inject(FormsService);
-  private tabsState = inject(TabsStateService);
-  public dialogService = inject(DialogService);
+  private readonly usuariosService = inject(UsuariosService);
+  private readonly toast = inject(ToastService);
+  private readonly cargando = inject(CargandoService);
+  private readonly formsService = inject(FormsService);
+  private readonly tabsState = inject(TabsStateService);
+  private readonly destroyRef = inject(DestroyRef);
+  public readonly dialogService = inject(DialogService);
 
-  public listaUsuarios = this.usuariosService.usuarios;
-  public subtitulo = 'Listado de usuarios';
+  public readonly listaUsuarios = this.usuariosService.usuarios;
+  public readonly subtitulo = 'Listado de usuarios';
   public colDefs: ColDef[] = [];
   public ref: DynamicDialogRef<UsuarioFormulario> | null = null;
 
-  public exportarSignal = signal(false);
-  public imprimirSignal = signal(false);
+  public readonly exportarSignal = signal(false);
+  public readonly imprimirSignal = signal(false);
 
   ngOnInit(): void {
-    this.usuariosService.cargar();
+    this.usuariosService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.usuariosService.generarColumnasListado();
   }
 
-  buscar(event: EventCrudBusqueda) {
-    if (event.filtro) {
-      this.usuariosService.cargar(event.filtro, undefined);
-    } else {
-      this.usuariosService.cargar(undefined, event.texto);
-    }
+  buscar(event: EventCrudBusqueda): void {
+    this.usuariosService
+      .cargar(event.filtro, event.texto)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
-  exportarDesdeHeader() {
+  exportarDesdeHeader(): void {
     this.exportarSignal.set(true);
   }
 
-  imprimirDesdeHeader() {
+  imprimirDesdeHeader(): void {
     this.imprimirSignal.set(true);
   }
 
-  editarObj(data: ConfUsuario) {
+  editarObj(data: ConfUsuario): void {
     this.formsService.seleccionarObjeto(data);
     this.formsService.accion.set(AccionEnum.EDITAR);
     this.tabsState.cambiarEstadoTab(false);
     this.tabsState.irATab(TabsEnum.EDITAR);
   }
 
-  consultarObj(data: ConfUsuario) {
+  consultarObj(data: ConfUsuario): void {
     this.formsService.seleccionarObjeto(data);
     this.formsService.accion.set(AccionEnum.CONSULTAR);
     this.ref = this.dialogService.open(UsuarioFormulario, {
@@ -78,41 +76,40 @@ export class UsuarioListado implements OnInit {
       width: '50vw',
       closable: true,
       maximizable: true,
-      contentStyle: { overflow: 'auto' }
+      contentStyle: { overflow: 'auto' },
     });
   }
 
-  cambiarEstados(event: { data: ConfUsuario; estado: boolean }) {
+  cambiarEstados(event: { data: ConfUsuario; estado: boolean }): void {
+    if (!event.data) return;
     this.cargando.activar();
-    if (event.data) {
-      event.data.usuEstado = event.estado;
-      this.usuariosService.actualizar(event.data)
-        .subscribe({
-          next: (estado) => this.despuesDeCambiarEstado(estado),
-        });
-    }
+    event.data.usuEstado = event.estado;
+    this.usuariosService
+      .actualizar(event.data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: (data) => this.despuesDeCambiarEstado(data) });
   }
 
-  despuesDeCambiarEstado(estado: ConfUsuario) {
-    this.toast.success("El usuario " + estado.usuUsername + " ha sido ➔ " + (estado.usuEstado ? "ACTIVADO" : "INACTIVADO"));
-    this.usuariosService.actualizarElGrid(estado);
+  eliminarObj(data: ConfUsuario): void {
+    if (!data) return;
+    this.cargando.activar();
+    this.usuariosService
+      .eliminar(data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.despuesDeEliminar(data) });
+  }
+
+  private despuesDeCambiarEstado(data: ConfUsuario): void {
+    this.toast.success(
+      `El usuario ${data.usuUsername} ha sido ➔ ${data.usuEstado ? 'ACTIVADO' : 'INACTIVADO'}`
+    );
+    this.usuariosService.actualizarElGrid(data);
     this.cargando.inactivar();
   }
 
-  eliminarObj(data: ConfUsuario) {
-    this.cargando.activar();
-    if (data) {
-      this.usuariosService.eliminar(data)
-        .subscribe({
-          next: () => this.despuesDeEliminar(data),
-        });
-    }
-  }
-
-  despuesDeEliminar(data: ConfUsuario) {
-    this.toast.success("El usuario ha sido eliminado.");
+  private despuesDeEliminar(data: ConfUsuario): void {
+    this.toast.success('El usuario ha sido eliminado.');
     this.usuariosService.eliminarDelGrid(data);
     this.cargando.inactivar();
   }
-
 }

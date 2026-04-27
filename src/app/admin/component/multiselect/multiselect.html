@@ -4,7 +4,7 @@
         <ng-template pTemplate="selecteditems" let-items>
             @for (item of items; track item) {
             <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
-                {{ getLabel(item) }}
+                {{ getLabelByValue(item) }}
             </div>
             }
         </ng-template>

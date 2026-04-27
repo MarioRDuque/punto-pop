@@ -1,0 +1,154 @@
+<div class="flex flex-col gap-4">
+
+    <!-- Fila 1: Código + Nombre -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <app-input label="Código" id="codigo"
+                [autofocus]="accion === accionEnum.CREAR" />
+        </div>
+        <div class="field">
+            <app-input label="Nombre" id="nombre"
+                [autofocus]="accion === accionEnum.EDITAR" />
+        </div>
+    </div>
+
+    <!-- Descripción: solo en modo completo -->
+    @if (modo === 'completo') {
+        <div class="field">
+            <app-input label="Descripción" id="descripcion" />
+        </div>
+    }
+
+    <!-- Precio de venta + Tarifa IVA -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-inputnumber id="precioVenta" formControlName="precioVenta"
+                    mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+                    [min]="0" [style]="{'width':'100%'}" />
+                <label for="precioVenta">Precio de venta</label>
+            </p-floatlabel>
+        </div>
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-select id="tarifaIvaId" formControlName="tarifaIvaId"
+                    [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
+                    [style]="{'width':'100%'}" />
+                <label for="tarifaIvaId">Tarifa IVA</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <!-- Fila: Costo promedio (solo completo) -->
+    @if (modo === 'completo') {
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-inputnumber id="costo" formControlName="costo"
+                    mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+                    [style]="{'width':'100%'}" [readonly]="true" />
+                <label for="costo">Costo promedio (calculado)</label>
+            </p-floatlabel>
+        </div>
+    }
+
+    <!-- Categoría + Unidad de medida -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <div class="flex gap-1 items-end">
+                <p-floatlabel variant="on" class="flex-1">
+                    <p-select id="categoriaId" formControlName="categoriaId"
+                        [options]="categorias()" optionLabel="nombre" optionValue="id"
+                        [filter]="true" filterBy="nombre"
+                        [style]="{'width':'100%'}" />
+                    <label for="categoriaId">Categoría</label>
+                </p-floatlabel>
+                <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                    pTooltip="Nueva categoría" tooltipPosition="top"
+                    (onClick)="abrirDialogCategoria()" />
+                <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
+                    pTooltip="Refrescar" tooltipPosition="top"
+                    (onClick)="refrescarCategorias()" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="flex gap-1 items-end">
+                <p-floatlabel variant="on" class="flex-1">
+                    <p-select id="unidadMedidaId" formControlName="unidadMedidaId"
+                        [options]="unidades()" optionLabel="nombre" optionValue="id"
+                        [filter]="true" filterBy="nombre,abreviatura"
+                        [style]="{'width':'100%'}" />
+                    <label for="unidadMedidaId">Unidad de medida</label>
+                </p-floatlabel>
+                <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                    pTooltip="Nueva unidad" tooltipPosition="top"
+                    (onClick)="abrirDialogUnidad()" />
+                <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
+                    pTooltip="Refrescar" tooltipPosition="top"
+                    (onClick)="refrescarUnidades()" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock + Stock mínimo -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-inputnumber id="stock" formControlName="stock"
+                    [min]="0" [style]="{'width':'100%'}"
+                    [readonly]="modo === 'completo'" />
+                <label for="stock">
+                    {{ modo === 'completo' ? 'Stock (calculado)' : 'Stock inicial' }}
+                </label>
+            </p-floatlabel>
+        </div>
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-inputnumber id="stockMinimo" formControlName="stockMinimo"
+                    [min]="0" [style]="{'width':'100%'}" />
+                <label for="stockMinimo">Stock mínimo</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <!-- Estado: solo en modo completo -->
+    @if (modo === 'completo') {
+        <div class="field flex justify-center">
+            <app-toggle-switch label="Estado" id="estado" />
+        </div>
+    }
+
+</div>
+
+<!-- ── Dialog: Nueva categoría ───────────────────────────────────────── -->
+<p-dialog header="Nueva categoría" [(visible)]="dialogCategoriaVisible"
+    [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{'width':'420px'}" appendTo="body">
+    <div [formGroup]="categoriaForm" class="flex flex-col gap-4 pt-2">
+        <div class="field"><app-input label="Código" id="codigo" [autofocus]="true" /></div>
+        <div class="field"><app-input label="Nombre" id="nombre" /></div>
+        <div class="field"><app-input label="Descripción (opcional)" id="descripcion" /></div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true"
+            (onClick)="dialogCategoriaVisible.set(false)" />
+        <p-button label="Guardar" icon="pi pi-check"
+            (onClick)="guardarCategoria()" />
+    </ng-template>
+</p-dialog>
+
+<!-- ── Dialog: Nueva unidad de medida ────────────────────────────────── -->
+<p-dialog header="Nueva unidad de medida" [(visible)]="dialogUnidadVisible"
+    [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{'width':'420px'}" appendTo="body">
+    <div [formGroup]="unidadForm" class="flex flex-col gap-4 pt-2">
+        <div class="field"><app-input label="Código" id="codigo" [autofocus]="true" /></div>
+        <div class="field"><app-input label="Nombre" id="nombre" /></div>
+        <div class="field"><app-input label="Abreviatura (ej: kg, Lt, m²)" id="abreviatura" /></div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true"
+            (onClick)="dialogUnidadVisible.set(false)" />
+        <p-button label="Guardar" icon="pi pi-check"
+            (onClick)="guardarUnidad()" />
+    </ng-template>
+</p-dialog>

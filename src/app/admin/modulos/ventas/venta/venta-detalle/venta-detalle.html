@@ -1,0 +1,129 @@
+@if (venta) {
+
+  <!-- Encabezado -->
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-2xl font-bold text-surface-700">{{ venta.numero }}</span>
+      <p-tag [value]="venta.estado ?? ''" [severity]="getSeveridad(venta.estado)" />
+    </div>
+    <div class="flex flex-wrap gap-2">
+      @if (esEditar) {
+        @if (venta.estado === 'PENDIENTE') {
+          <p-button label="Completar" icon="pi pi-check-circle" severity="success"
+            size="small" (onClick)="completar()" />
+        }
+        @if (venta.estado !== 'ANULADA') {
+          <p-button label="Anular" icon="pi pi-times-circle" severity="danger"
+            [outlined]="true" size="small" (onClick)="anular()" />
+        }
+      }
+      @if (venta.estado !== 'ANULADA') {
+        <p-button label="Nota de Entrega" icon="pi pi-print" severity="secondary"
+          [outlined]="true" size="small" [loading]="cargandoNota()"
+          (onClick)="imprimirNotaEntrega()" />
+      }
+      @if (puedeEmitirNC) {
+        <p-button label="Nota de Crédito" icon="pi pi-file-edit" severity="warn"
+          [outlined]="true" size="small" (onClick)="abrirNotaCredito()" />
+        <p-button label="Nota de Débito" icon="pi pi-file-plus" severity="warn"
+          [outlined]="true" size="small" (onClick)="abrirNotaDebito()" />
+      }
+      @if (esEditar) {
+        <p-button label="Volver" icon="pi pi-arrow-left" severity="secondary"
+          [outlined]="true" size="small" (onClick)="cerrar()" />
+      }
+    </div>
+  </div>
+
+  <!-- Info general -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+    <div class="card p-3">
+      <p class="text-xs text-surface-400 m-0 mb-1">Fecha</p>
+      <p class="font-medium m-0">{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+    <div class="card p-3">
+      <p class="text-xs text-surface-400 m-0 mb-1">Forma de pago</p>
+      <p class="font-medium m-0">{{ venta.formaPago }}</p>
+    </div>
+    <div class="card p-3">
+      <p class="text-xs text-surface-400 m-0 mb-1">Cliente</p>
+      <p class="font-medium m-0">{{ venta.clienteNombre ?? 'Consumidor final' }}</p>
+    </div>
+    <div class="card p-3">
+      <p class="text-xs text-surface-400 m-0 mb-1">Usuario</p>
+      <p class="font-medium m-0">{{ venta.usuUsername }}</p>
+    </div>
+  </div>
+
+  @if (venta.observacion) {
+    <div class="card p-3 mb-4">
+      <p class="text-xs text-surface-400 m-0 mb-1">Observación</p>
+      <p class="m-0">{{ venta.observacion }}</p>
+    </div>
+  }
+
+  <!-- Comprobante SRI -->
+  @if (comprobante(); as comp) {
+    <div class="card p-3 mb-4 flex flex-wrap items-center gap-3">
+      <p class="text-xs text-surface-400 m-0 flex-none">Comprobante SRI</p>
+      <span class="font-mono text-sm font-medium flex-none">{{ comp.numeroComprobante }}</span>
+      <p-tag [value]="comp.estado" [severity]="getSeveridadComp(comp.estado)" />
+      @if (comp.numeroAutorizacion) {
+        <span class="text-xs text-surface-500">Auth: {{ comp.numeroAutorizacion }}</span>
+      }
+    </div>
+  }
+
+  <!-- Ítems -->
+  <div class="card p-0 overflow-hidden mb-4">
+    <table class="w-full text-sm">
+      <thead class="bg-surface-100">
+        <tr>
+          <th class="text-left px-4 py-2 text-surface-600">Código</th>
+          <th class="text-left px-4 py-2 text-surface-600">Producto</th>
+          <th class="text-right px-4 py-2 text-surface-600">P. Unit.</th>
+          <th class="text-right px-4 py-2 text-surface-600">Cant.</th>
+          <th class="text-right px-4 py-2 text-surface-600">Descto.</th>
+          <th class="text-right px-4 py-2 text-surface-600">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of venta.items; track item.productoId) {
+          <tr class="border-t border-surface-200">
+            <td class="px-4 py-2 font-mono text-xs">{{ item.productoCodigo }}</td>
+            <td class="px-4 py-2">{{ item.productoNombre }}</td>
+            <td class="px-4 py-2 text-right tabular-nums">${{ item.precioUnitario | number:'1.2-2' }}</td>
+            <td class="px-4 py-2 text-right tabular-nums">{{ item.cantidad | number:'1.0-3' }}</td>
+            <td class="px-4 py-2 text-right tabular-nums">${{ item.descuento | number:'1.2-2' }}</td>
+            <td class="px-4 py-2 text-right tabular-nums font-medium">${{ item.subtotal | number:'1.2-2' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Totales -->
+  <div class="flex justify-end">
+    <div class="w-full md:w-72 flex flex-col gap-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-surface-500">Subtotal</span>
+        <span class="tabular-nums">${{ venta.subtotal | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-surface-500">Descuento</span>
+        <span class="tabular-nums">${{ venta.descuento | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-surface-500">IVA 15%</span>
+        <span class="tabular-nums">${{ venta.iva | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-baseline pt-2 border-t border-surface-200">
+        <span class="text-base font-bold">Total</span>
+        <span class="text-2xl font-bold text-green-600 tabular-nums">${{ venta.total | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+} @else {
+  <p class="text-surface-400 text-center py-8">No hay venta seleccionada.</p>
+}

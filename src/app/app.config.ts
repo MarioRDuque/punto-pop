@@ -1,11 +1,24 @@
-import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, provideAppInitializer } from '@angular/core';
-import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import {
+  ApplicationConfig,
+  inject,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+  provideAppInitializer,
+} from '@angular/core';
+import {
+  provideRouter,
+  withEnabledBlockingInitialNavigation,
+  withInMemoryScrolling,
+  withPreloading,
+  PreloadAllModules,
+} from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { authInterceptor } from './admin/interceptors/auth.interceptor';
 import { errorInterceptor } from './admin/interceptors/error.interceptor';
 import { AuthService } from './admin/service/auth.service';
 
@@ -16,10 +29,18 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       inject(AuthService).init();
     }),
-    provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-    provideHttpClient(withFetch(), withInterceptors([errorInterceptor])),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
+      withEnabledBlockingInitialNavigation(),
+      withPreloading(PreloadAllModules)
+    ),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, errorInterceptor])
+    ),
     provideAnimationsAsync(),
     providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
     MessageService,
-  ]
+  ],
 };

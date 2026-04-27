@@ -37,6 +37,19 @@ export class MultiselectComponent<T extends object> {
     return String(item[this.optionLabel]);
   }
 
+  getLabelByValue(value: unknown): string {
+    if (this.optionValue) {
+      const found = this.options?.find(
+        (opt) => (opt as Record<string, unknown>)[this.optionValue!] === value
+      );
+      return found ? String((found as Record<string, unknown>)[this.optionLabel]) : String(value ?? '');
+    }
+    if (value === null || value === undefined) return '';
+    return typeof value === 'object'
+      ? String((value as Record<string, unknown>)[this.optionLabel])
+      : String(value);
+  }
+
   get control(): FormControl {
     return this.controlContainer
       .control

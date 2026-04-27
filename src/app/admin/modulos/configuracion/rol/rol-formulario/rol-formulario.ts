@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { FormsService } from '../../../../service/forms-service';
@@ -12,10 +12,12 @@ import { ToastService } from '../../../../service/toast.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { RolService } from '../rol.service';
 import { TabsStateService } from '../../../../service/tabs.service';
+import { MODULOS_PERMISOS } from '../../../../constantes/permisos.constants';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-rol-formulario',
-  imports: [ReactiveFormsModule, HeaderCrud, InputComponent, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, FormsModule, HeaderCrud, InputComponent, ToggleSwitchComponent, CheckboxModule],
   templateUrl: './rol-formulario.html',
   styleUrl: './rol-formulario.scss',
 })
@@ -32,11 +34,13 @@ export class RolFormulario implements OnInit {
   public subtitulo = "";
   public accion = this.formsService.accion;
   public accionEnum = AccionEnum;
+  public modulos = MODULOS_PERMISOS;
 
   public rolForm = this.fb.group({
     rolCodigo: ['', [Validators.required]],
     rolDescripcion: ['', [Validators.required]],
     rolEstado: [true, [Validators.required]],
+    permisos: [[] as string[]],
   });
 
   ngOnInit() {
@@ -64,24 +68,49 @@ export class RolFormulario implements OnInit {
     this.rolForm.enable();
     this.rolForm.reset();
     this.rolForm.controls.rolEstado.setValue(true);
+    this.rolForm.controls.permisos.setValue([]);
+  }
+
+  tienePermiso(codigo: string): boolean {
+    return (this.rolForm.controls.permisos.value ?? []).includes(codigo);
+  }
+
+  togglePermiso(codigo: string): void {
+    const actual = this.rolForm.controls.permisos.value ?? [];
+    const nuevo = actual.includes(codigo)
+      ? actual.filter(p => p !== codigo)
+      : [...actual, codigo];
+    this.rolForm.controls.permisos.setValue(nuevo);
+  }
+
+  todoModuloActivo(modulo: string): boolean {
+    const acciones = this.modulos.find(m => m.modulo === modulo)?.acciones ?? [];
+    const actual = this.rolForm.controls.permisos.value ?? [];
+    return acciones.length > 0 && acciones.every(a => actual.includes(a.codigo));
+  }
+
+  toggleModulo(modulo: string): void {
+    const acciones = this.modulos.find(m => m.modulo === modulo)?.acciones ?? [];
+    const actual = this.rolForm.controls.permisos.value ?? [];
+    const todosActivos = acciones.every(a => actual.includes(a.codigo));
+    const codigos = acciones.map(a => a.codigo);
+    const nuevo = todosActivos
+      ? actual.filter(p => !codigos.includes(p))
+      : [...new Set([...actual, ...codigos])];
+    this.rolForm.controls.permisos.setValue(nuevo);
   }
 
   realizarAccion() {
     if (!this.utilService.validarFormulario(this.rolForm)) return;
     this.cargando.activar();
+    const raw = this.rolForm.getRawValue() as ConfRol;
     if (this.accion() == AccionEnum.CREAR) {
-      //INSERTAR
-      this.rolService.guardar(this.rolForm.getRawValue() as ConfRol)
-        .subscribe({
-          next: (data) => this.despuesDeGuardar(data),
-        });
+      this.rolService.guardar(raw)
+        .subscribe({ next: (data) => this.despuesDeGuardar(data) });
     } else {
-      //ACTUALIZAR
-      if (JSON.stringify(this.rolForm.getRawValue()) != JSON.stringify(this.formsService.objetoSeleccionado())) {
-        this.rolService.actualizar(this.rolForm.getRawValue() as ConfRol)
-          .subscribe({
-            next: (data) => this.despuesDeActualizar(data),
-          });
+      if (JSON.stringify(raw) != JSON.stringify(this.formsService.objetoSeleccionado())) {
+        this.rolService.actualizar(raw)
+          .subscribe({ next: (data) => this.despuesDeActualizar(data) });
       } else {
         this.cargando.inactivar();
         this.toast.info('NO HUBO CAMBIOS');
@@ -92,7 +121,7 @@ export class RolFormulario implements OnInit {
   consultaRol() {
     const rol = this.formsService.objetoSeleccionado();
     if (rol) {
-      this.rolForm.patchValue(this.formsService.objetoSeleccionado());
+      this.rolForm.patchValue(rol);
     }
   }
 
@@ -109,5 +138,4 @@ export class RolFormulario implements OnInit {
     this.rolService.actualizarElGrid(data);
     this.tabsState.irATab(TabsEnum.LISTADO);
   }
-
 }

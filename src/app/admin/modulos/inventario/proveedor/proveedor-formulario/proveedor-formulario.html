@@ -1,0 +1,36 @@
+<form [formGroup]="proveedorForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
+    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
+    <div class="flex flex-col gap-4 w-full">
+        <div class="card p-0">
+            <p-fieldset legend="Datos Fiscales" [toggleable]="true">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <div class="field">
+                        <app-input label="RUC" id="ruc" [autofocus]="accion() === accionEnum.CREAR" />
+                    </div>
+                    <div class="field md:col-span-2">
+                        <app-input label="Razón Social" id="razonSocial" />
+                    </div>
+                    <div class="field md:col-span-3">
+                        <app-input label="Nombre Comercial (opcional)" id="nombreComercial" />
+                    </div>
+                </div>
+            </p-fieldset>
+            <p-fieldset legend="Contacto" [toggleable]="true">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <div class="field">
+                        <app-input label="Teléfono" id="telefono" keyFilter="num" />
+                    </div>
+                    <div class="field">
+                        <app-input label="Email" id="email" [uppercase]="false" />
+                    </div>
+                    <div class="field">
+                        <app-input label="Dirección" id="direccion" />
+                    </div>
+                    <div class="field flex justify-center">
+                        <app-toggle-switch label="Estado" id="estado" />
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,30 @@
+<p-fluid>
+    <p-panel value="0">
+        <div class="card">
+            <p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
+                <p-tablist>
+                    <p-tab [value]="Tabs.LISTADO"><i class="pi pi-list"></i><span> Proveedores</span></p-tab>
+                    <p-tab [value]="Tabs.CREAR"><i class="pi pi-plus"></i><span> Nuevo Proveedor</span></p-tab>
+                    <p-tab [value]="Tabs.EDITAR" [disabled]="tabsState.tabDeshabilitado()">
+                        <i class="pi pi-pencil"></i><span> Editar</span>
+                    </p-tab>
+                </p-tablist>
+                <p-tabpanels>
+                    <p-tabpanel [value]="Tabs.LISTADO">
+                        <app-proveedor-listado></app-proveedor-listado>
+                    </p-tabpanel>
+                    <p-tabpanel [value]="Tabs.CREAR">
+                        @if (tabsState.tabActivo() === Tabs.CREAR) {
+                        <app-proveedor-formulario></app-proveedor-formulario>
+                        }
+                    </p-tabpanel>
+                    <p-tabpanel [value]="Tabs.EDITAR">
+                        @if (tabsState.tabActivo() === Tabs.EDITAR) {
+                        <app-proveedor-formulario></app-proveedor-formulario>
+                        }
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
+        </div>
+    </p-panel>
+</p-fluid>

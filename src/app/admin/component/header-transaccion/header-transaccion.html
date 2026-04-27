@@ -1,0 +1,93 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex items-center w-full pl-3 relative">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
+            <div class="flex flex-col gap-1">
+                <p class="text-sm text-surface-600 dark:text-surface-400 m-0">{{ titulo }}</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="icons">
+        <div class="flex items-center gap-2">
+            @switch (modo) {
+
+            @case ('nuevo') {
+                <p-button [icon]="ICONS.GUARDAR" type="submit" [rounded]="true" [raised]="true"
+                    [pTooltip]="labelGuardar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [loading]="cargando" (onClick)="guardar.emit()" />
+                <p-button [icon]="ICONS.CLOSE" [rounded]="true" [raised]="true" severity="secondary"
+                    pTooltip="Cancelar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [disabled]="cargando" (onClick)="cancelar.emit()" />
+            }
+
+            @case ('editar') {
+                <p-button [icon]="ICONS.GUARDAR" type="submit" [rounded]="true" [raised]="true"
+                    pTooltip="Guardar cambios" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [loading]="cargando" (onClick)="guardar.emit()" />
+                <p-button [icon]="ICONS.CLOSE" [rounded]="true" [raised]="true" severity="secondary"
+                    pTooltip="Cancelar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [disabled]="cargando" (onClick)="cancelar.emit()" />
+            }
+
+            @case ('anular') {
+                <p-button icon="pi pi-ban" [rounded]="true" [raised]="true" severity="danger"
+                    [pTooltip]="labelAnular" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [loading]="cargando" (onClick)="anular.emit()" />
+                <p-button [icon]="ICONS.CLOSE" [rounded]="true" [raised]="true" severity="secondary"
+                    pTooltip="Cancelar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [disabled]="cargando" (onClick)="cancelar.emit()" />
+            }
+
+            @case ('autorizar') {
+                <p-button icon="pi pi-check-circle" [rounded]="true" [raised]="true" severity="success"
+                    [pTooltip]="labelAutorizar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [loading]="cargando" (onClick)="autorizar.emit()" />
+                <p-button icon="pi pi-times-circle" [rounded]="true" [raised]="true" severity="warn"
+                    [pTooltip]="labelRechazar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [disabled]="cargando" (onClick)="rechazar.emit()" />
+                <p-button [icon]="ICONS.CLOSE" [rounded]="true" [raised]="true" severity="secondary"
+                    pTooltip="Cancelar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    [disabled]="cargando" (onClick)="cancelar.emit()" />
+            }
+
+            @case ('ver') {
+                @if (mostrarImprimir) {
+                    <p-button [icon]="ICONS.IMPRIMIR" [rounded]="true" [raised]="true" severity="info"
+                        pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="imprimir.emit()" />
+                }
+                @if (mostrarExportar) {
+                    <p-button [icon]="ICONS.EXCEL" [rounded]="true" [raised]="true" severity="success"
+                        pTooltip="Exportar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="exportar.emit()" />
+                }
+                @if (mostrarEliminar) {
+                    <p-button [icon]="ICONS.ELIMINAR" [rounded]="true" [raised]="true" severity="danger"
+                        pTooltip="Eliminar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="eliminar.emit()" />
+                }
+                @if (mostrarAnular) {
+                    <p-button icon="pi pi-ban" [rounded]="true" [raised]="true" severity="danger"
+                        [pTooltip]="labelAnular" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="anular.emit()" />
+                }
+                @if (mostrarAutorizar) {
+                    <p-button icon="pi pi-check-circle" [rounded]="true" [raised]="true" severity="success"
+                        [pTooltip]="labelAutorizar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="autorizar.emit()" />
+                }
+                @if (mostrarModificar) {
+                    <p-button [icon]="ICONS.EDITAR" [rounded]="true" [raised]="true"
+                        [pTooltip]="labelModificar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                        (onClick)="modificar.emit()" />
+                }
+                <p-button [icon]="ICONS.REGRESAR" [rounded]="true" [raised]="true" severity="secondary"
+                    pTooltip="Regresar" tooltipPosition="top" tooltipStyleClass="small-tooltip"
+                    (onClick)="regresar.emit()" />
+            }
+
+            }
+        </div>
+    </ng-template>
+</p-panel>

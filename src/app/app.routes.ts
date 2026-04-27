@@ -14,6 +14,11 @@ export const routes: Routes = [
         children: [
             { path: '', component: Perfil },
             { path: 'configuracion', loadChildren: () => import('./admin/modulos/configuracion/configuracion.routes') },
+            { path: 'catalogo', loadChildren: () => import('./admin/modulos/catalogo/catalogo.routes') },
+            { path: 'ventas', loadChildren: () => import('./admin/modulos/ventas/ventas.routes') },
+            { path: 'inventario', loadChildren: () => import('./admin/modulos/inventario/inventario.routes') },
+            { path: 'facturacion', loadChildren: () => import('./admin/modulos/facturacion/facturacion.routes') },
+            { path: 'reportes', loadChildren: () => import('./admin/modulos/reportes/reportes.routes') },
             { path: 'uikit', loadChildren: () => import('./admin/modulos/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./admin/modulos/pages.routes') }

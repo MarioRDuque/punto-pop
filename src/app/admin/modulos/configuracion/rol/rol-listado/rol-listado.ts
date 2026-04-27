@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { Grid } from "../../../../component/grid/grid";
 import { RolService } from '../rol.service';
@@ -23,12 +24,13 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 })
 export class RolListado implements OnInit {
 
-  private rolService = inject(RolService);
-  private toast = inject(ToastService);
-  private cargando = inject(CargandoService);
-  private formsService = inject(FormsService);
-  private tabsState = inject(TabsStateService);
-  public dialogService = inject(DialogService);
+  private readonly rolService = inject(RolService);
+  private readonly toast = inject(ToastService);
+  private readonly cargando = inject(CargandoService);
+  private readonly formsService = inject(FormsService);
+  private readonly tabsState = inject(TabsStateService);
+  private readonly destroyRef = inject(DestroyRef);
+  public readonly dialogService = inject(DialogService);
 
   public listaRol = this.rolService.listaRoles;
   public subtitulo = 'Listado de rols';
@@ -39,15 +41,15 @@ export class RolListado implements OnInit {
   public imprimirSignal = signal(false);
 
   ngOnInit(): void {
-    this.rolService.cargar();
+    this.rolService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.rolService.generarColumnasListado();
   }
 
-  buscar(event: EventCrudBusqueda) {
+  buscar(event: EventCrudBusqueda): void {
     if (event.filtro) {
-      this.rolService.cargar(event.filtro, undefined);
+      this.rolService.cargar(event.filtro, undefined).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     } else {
-      this.rolService.cargar(undefined, event.texto);
+      this.rolService.cargar(undefined, event.texto).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
   }
 

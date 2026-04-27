@@ -1,6 +1,8 @@
 <form [formGroup]="rolForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
     <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
-    <div class="flex flex-col md:flex-row gap-4 w-full" style="padding-top: 8px;">
+    <div class="flex flex-col gap-6 w-full" style="padding-top: 8px;">
+
+        <!-- Datos básicos -->
         <div class="card flex flex-col gap-0 w-full p-0">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                 <div class="field">
@@ -10,12 +12,57 @@
                     <app-input label="Descripción" id="rolDescripcion" [autofocus]="accion() === accionEnum.EDITAR" />
                 </div>
             </div>
-            <br>
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-6 w-full">
-                <div class="flex justify-center">
-                    <app-toggle-switch label="Estado" id="rolEstado" />
-                </div>
+            <div class="flex justify-center mt-4">
+                <app-toggle-switch label="Estado" id="rolEstado" />
             </div>
         </div>
+
+        <!-- Matriz de permisos -->
+        <div class="card w-full p-0">
+            <h3 class="text-base font-semibold mb-4">Permisos del rol</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <tbody>
+                        @for (mod of modulos; track mod.modulo) {
+                        <tr class="border-b border-surface-200">
+                            <!-- Columna módulo con checkbox de selección total -->
+                            <td class="py-3 pr-4 font-medium w-40 min-w-40">
+                                <div class="flex items-center gap-2">
+                                    <p-checkbox
+                                        [binary]="true"
+                                        [ngModel]="todoModuloActivo(mod.modulo)"
+                                        [ngModelOptions]="{standalone: true}"
+                                        [disabled]="rolForm.disabled"
+                                        (onChange)="toggleModulo(mod.modulo)"
+                                        [inputId]="'mod_' + mod.modulo" />
+                                    <label [for]="'mod_' + mod.modulo" class="cursor-pointer select-none">
+                                        {{ mod.label }}
+                                    </label>
+                                </div>
+                            </td>
+                            <!-- Columnas acciones -->
+                            @for (accion of mod.acciones; track accion.codigo) {
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <p-checkbox
+                                        [binary]="true"
+                                        [ngModel]="tienePermiso(accion.codigo)"
+                                        [ngModelOptions]="{standalone: true}"
+                                        [disabled]="rolForm.disabled"
+                                        (onChange)="togglePermiso(accion.codigo)"
+                                        [inputId]="accion.codigo" />
+                                    <label [for]="accion.codigo" class="cursor-pointer select-none text-surface-600">
+                                        {{ accion.label }}
+                                    </label>
+                                </div>
+                            </td>
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </form>

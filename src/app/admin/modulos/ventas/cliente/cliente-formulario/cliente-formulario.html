@@ -1,0 +1,61 @@
+<form [formGroup]="clienteForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
+    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
+    <div class="flex flex-col md:flex-row gap-4 w-full" style="padding-top: 8px;">
+        <div class="card flex flex-col gap-0 w-full p-0">
+
+            <!-- Fila 1: Tipo Identificación e Identificación -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div class="field">
+                    <p-floatlabel>
+                        <p-select id="tipoIdentificacion" formControlName="tipoIdentificacion"
+                            [options]="tiposIdentificacion"
+                            optionLabel="label"
+                            optionValue="value"
+                            [style]="{'width': '100%'}">
+                        </p-select>
+                        <label for="tipoIdentificacion">Tipo de Identificación</label>
+                    </p-floatlabel>
+                </div>
+                <div class="field">
+                    <app-input label="Identificación" id="identificacion" [autofocus]="accion() === accionEnum.CREAR" />
+                </div>
+            </div>
+            <br>
+
+            <!-- Fila 2: Nombre -->
+            <div class="grid grid-cols-1 gap-6 w-full">
+                <div class="field">
+                    <app-input label="Nombre completo" id="nombre" [autofocus]="accion() === accionEnum.EDITAR" />
+                </div>
+            </div>
+            <br>
+
+            <!-- Fila 3: Email y Teléfono -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div class="field">
+                    <app-input label="Email" id="email" />
+                </div>
+                <div class="field">
+                    <app-input label="Teléfono" id="telefono" />
+                </div>
+            </div>
+            <br>
+
+            <!-- Fila 4: Dirección -->
+            <div class="grid grid-cols-1 gap-6 w-full">
+                <div class="field">
+                    <app-input label="Dirección" id="direccion" />
+                </div>
+            </div>
+            <br>
+
+            <!-- Estado -->
+            <div class="grid grid-cols-1 gap-6 w-full">
+                <div class="flex justify-center">
+                    <app-toggle-switch label="Estado" id="estado" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

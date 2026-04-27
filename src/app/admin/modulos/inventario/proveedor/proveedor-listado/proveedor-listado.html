@@ -1,0 +1,16 @@
+<app-header-crud [subtitulo]="subtitulo"
+    (exportar)="exportarDesdeHeader()"
+    (imprimir)="imprimirDesdeHeader()">
+</app-header-crud>
+
+<app-grid
+    [rowData]="listaProveedores()"
+    [colDefs]="colDefs"
+    [exportarSignal]="exportarSignal"
+    [imprimirSignal]="imprimirSignal"
+    [subtitulo]="subtitulo"
+    campoEstado="estado"
+    (buscarEnBdd)="buscar($event)"
+    (cambiarEstados)="cambiarEstados($event)"
+    (eliminarObj)="eliminarObj($event)">
+</app-grid>

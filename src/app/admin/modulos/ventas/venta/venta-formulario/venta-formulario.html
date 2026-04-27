@@ -1,0 +1,281 @@
+<form [formGroup]="ventaForm" autocomplete="off" novalidate>
+
+    <app-header-transaccion
+        [titulo]="accion() === accionEnum.EDITAR ? subtitulo : 'Nueva Venta'"
+        [modo]="accion() === accionEnum.EDITAR ? 'editar' : 'nuevo'"
+        [labelGuardar]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : 'Registrar Venta'"
+        [cargando]="false"
+        (guardar)="guardarVenta()"
+        (cancelar)="irAlListado()">
+    </app-header-transaccion>
+
+    <div class="flex flex-col xl:flex-row gap-4 mt-4">
+
+        <!-- ══ IZQUIERDA: búsqueda + carrito ═══════════════════════════════ -->
+        <div class="flex-1 min-w-0 card p-0 overflow-hidden flex flex-col">
+
+            <!-- Barra de búsqueda -->
+            <div class="p-4">
+                <div class="flex flex-wrap gap-3 items-center">
+
+                    <div class="flex gap-1 items-center flex-1 min-w-0" style="min-width: 240px">
+                        <p-autocomplete
+                            inputId="productoSearch"
+                            class="flex-1 w-full"
+                            [(ngModel)]="productoSeleccionado"
+                            [ngModelOptions]="{standalone: true}"
+                            [suggestions]="productosFiltrados()"
+                            (completeMethod)="filtrarProductos($event)"
+                            (onSelect)="onProductoSelect($event)"
+                            optionLabel="nombre"
+                            placeholder="Buscar producto por nombre o código..."
+                            [style]="{'width':'100%'}"
+                            [inputStyle]="{'width':'100%'}"
+                            [showClear]="true"
+                            appendTo="body">
+                            <ng-template let-p pTemplate="item">
+                                <div class="flex justify-between items-center w-full gap-4 py-1">
+                                    <span>
+                                        <span class="font-mono text-xs bg-surface-100 text-primary px-1.5 py-0.5 rounded mr-2">{{ p.codigo }}</span>
+                                        <span class="font-medium">{{ p.nombre }}</span>
+                                    </span>
+                                    <span class="text-xs text-surface-400 whitespace-nowrap shrink-0">
+                                        <strong class="text-surface-700">${{ p.precioVenta | number:'1.2-2' }}</strong>
+                                        &nbsp;·&nbsp;Stock:&nbsp;{{ p.stock }}
+                                        @if (p.tarifaIvaDescripcion) {
+                                            &nbsp;·&nbsp;{{ p.tarifaIvaDescripcion }}
+                                        }
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </p-autocomplete>
+                        <p-button icon="pi pi-plus" [rounded]="true" [text]="true" severity="success"
+                            pTooltip="Crear producto" tooltipPosition="top" (onClick)="abrirDialogProducto()" />
+                        <p-button icon="pi pi-refresh" [rounded]="true" [text]="true" severity="secondary"
+                            pTooltip="Actualizar lista" tooltipPosition="top" (onClick)="refrescarProductos()" />
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-sm text-surface-400">Cant.</span>
+                        <p-inputnumber
+                            [(ngModel)]="cantidad"
+                            [ngModelOptions]="{standalone: true}"
+                            [min]="0.001" [step]="1" [showButtons]="true"
+                            buttonLayout="horizontal"
+                            decrementButtonIcon="pi pi-minus"
+                            incrementButtonIcon="pi pi-plus"
+                            [inputStyle]="{'width':'52px','text-align':'center'}"
+                            (keyup.enter)="agregarItem()" />
+                    </div>
+
+                    <p-button icon="pi pi-shopping-cart" label="Agregar" severity="success"
+                        [disabled]="!esProductoValido()" (onClick)="agregarItem()" />
+
+                </div>
+
+                <p class="text-xs text-surface-400 mt-2.5 flex items-center gap-1.5 m-0">
+                    <i class="pi pi-bolt" style="color:#facc15;font-size:.65rem"></i>
+                    Presiona <kbd class="px-1.5 py-0.5 bg-surface-100 border border-surface-300 rounded font-mono text-xs">Enter</kbd>
+                    en la cantidad para agregar sin soltar el teclado
+                </p>
+            </div>
+
+            <!-- Separador con contador -->
+            <div class="flex items-center justify-between px-4 py-2 border-t border-b border-surface-200 bg-surface-50">
+                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase flex items-center gap-1.5">
+                    <i class="pi pi-list" style="font-size:.75rem"></i>
+                    Ítems en la venta
+                </span>
+                @if (itemCount() > 0) {
+                    <span class="text-xs font-semibold bg-primary text-primary-contrast px-2 py-0.5 rounded-full">
+                        {{ itemCount() }} {{ itemCount() === 1 ? 'ítem' : 'ítems' }}
+                    </span>
+                }
+            </div>
+
+            <!-- Grid -->
+            <ag-grid-angular
+                style="width:100%"
+                [style.height]="itemCount() === 0 ? '220px' : '400px'"
+                [theme]="theme"
+                [columnDefs]="columnDefs"
+                [defaultColDef]="defaultColDef"
+                [getRowId]="getRowId"
+                [rowData]="[]"
+                [context]="gridContext"
+                [localeText]="localeText"
+                [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                [stopEditingWhenCellsLoseFocus]="true"
+                [singleClickEdit]="true"
+                (gridReady)="onGridReady($event)"
+                (cellValueChanged)="onCellValueChanged($event)">
+            </ag-grid-angular>
+
+        </div>
+
+        <!-- ══ DERECHA: panel lateral ══════════════════════════════════════ -->
+        <div class="flex flex-col w-full xl:w-72 xl:sticky xl:top-4 xl:self-start gap-3">
+
+            <!-- CLIENTE -->
+            <div class="card flex flex-col gap-3">
+                <div class="flex items-center gap-1.5">
+                    <i class="pi pi-user text-primary" style="font-size:.85rem"></i>
+                    <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
+                </div>
+                <p-select
+                    formControlName="clienteId"
+                    [options]="clientes()"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    filterBy="nombre"
+                    [showClear]="true"
+                    placeholder="Consumidor final"
+                    [style]="{'width':'100%'}">
+                </p-select>
+                <div class="flex gap-2">
+                    <p-button label="+ Nuevo cliente" severity="secondary" [outlined]="true"
+                        styleClass="flex-1 text-sm justify-center" size="small"
+                        (onClick)="abrirDialogCliente()" />
+                    <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
+                        pTooltip="Refrescar clientes" tooltipPosition="top"
+                        (onClick)="refrescarClientes()" />
+                </div>
+            </div>
+
+            <!-- FORMA DE PAGO -->
+            <div class="card flex flex-col gap-3">
+                <div class="flex items-center gap-1.5">
+                    <i class="pi pi-credit-card text-primary" style="font-size:.85rem"></i>
+                    <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Forma de pago</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    @for (fp of formasPago; track fp.value) {
+                        <p-button
+                            [label]="fp.label"
+                            [outlined]="ventaForm.controls.formaPago.value !== fp.value"
+                            [severity]="ventaForm.controls.formaPago.value === fp.value ? 'success' : 'secondary'"
+                            styleClass="justify-center w-full"
+                            size="small"
+                            (onClick)="seleccionarFormaPago(fp.value)" />
+                    }
+                </div>
+            </div>
+
+            <!-- OBSERVACIÓN -->
+            <div class="card flex flex-col gap-2">
+                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
+                <textarea pTextarea formControlName="observacion" rows="3"
+                    class="w-full resize-none"
+                    placeholder="Notas u observaciones...">
+                </textarea>
+            </div>
+
+            <!-- TOTALES + BOTÓN -->
+            <div class="card flex flex-col gap-3">
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-surface-500">Subtotal</span>
+                        <span class="tabular-nums">${{ subtotal() | number:'1.2-2' }}</span>
+                    </div>
+                    @for (linea of ivaLineas(); track linea.label) {
+                        <div class="flex justify-between text-sm">
+                            <span class="text-surface-500">{{ linea.label }}</span>
+                            <span class="tabular-nums">${{ linea.valor | number:'1.2-2' }}</span>
+                        </div>
+                    }
+                    <div class="flex justify-between items-baseline pt-2 border-t border-surface-200">
+                        <span class="text-base font-bold">Total</span>
+                        <span class="text-2xl font-bold text-green-600 tabular-nums">
+                            ${{ total() | number:'1.2-2' }}
+                        </span>
+                    </div>
+                </div>
+                <p-button
+                    [label]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : '✓ Registrar Venta'"
+                    severity="success"
+                    size="large"
+                    [disabled]="itemCount() === 0"
+                    (onClick)="guardarVenta()"
+                    styleClass="w-full justify-center">
+                </p-button>
+                @if (itemCount() === 0) {
+                    <p class="text-xs text-center text-surface-400 m-0">
+                        Agrega productos para continuar
+                    </p>
+                }
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+<!-- ─── Modal: Venta registrada ─────────────────────────────────────────── -->
+<p-dialog [(visible)]="dialogImprimirVisible" [modal]="true" [closable]="false"
+    [style]="{'width':'400px'}" [draggable]="false" appendTo="body">
+    <div class="flex flex-col items-center gap-4 py-6 text-center">
+        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
+            <i class="pi pi-check-circle text-green-500" style="font-size:2.25rem"></i>
+        </div>
+        <div>
+            <p class="text-lg font-bold m-0">¡Venta registrada!</p>
+            @if (ventaRegistrada(); as v) {
+                <p class="text-sm text-surface-500 mt-1 m-0">
+                    N° <strong>{{ v.numero }}</strong> · Total:
+                    <strong class="text-green-600">${{ v.total | number:'1.2-2' }}</strong>
+                </p>
+            }
+        </div>
+        <p class="text-surface-600 m-0">¿Desea imprimir el comprobante?</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex gap-2 w-full">
+            <p-button label="No, gracias" severity="secondary" [outlined]="true"
+                styleClass="flex-1 justify-center" (onClick)="irAlListado()" />
+            <p-button label="Imprimir" icon="pi pi-print"
+                styleClass="flex-1 justify-center" (onClick)="imprimirVenta()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Dialog: Nuevo cliente ───────────────────────────────────────────── -->
+<p-dialog header="Nuevo cliente" [(visible)]="dialogClienteVisible"
+    [modal]="true" [style]="{'width':'460px'}" [draggable]="false" appendTo="body">
+    <div [formGroup]="clienteForm" class="flex flex-col gap-4 pt-2">
+        <div class="field">
+            <p-floatlabel variant="on" class="w-full">
+                <p-select id="tipoIdentificacion" formControlName="tipoIdentificacion"
+                    [options]="tiposIdentificacion" optionLabel="label" optionValue="value"
+                    [style]="{'width':'100%'}"></p-select>
+                <label for="tipoIdentificacion">Tipo de identificación</label>
+            </p-floatlabel>
+        </div>
+        <div class="field"><app-input label="Identificación" id="identificacion" /></div>
+        <div class="field"><app-input label="Nombre completo" id="nombre" /></div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="field"><app-input label="Teléfono" id="telefono" /></div>
+            <div class="field"><app-input label="Email" id="email" /></div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" severity="secondary" [text]="true"
+            (onClick)="dialogClienteVisible.set(false)" />
+        <p-button label="Guardar cliente" icon="pi pi-check"
+            (onClick)="guardarClienteRapido()" />
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Dialog: Nuevo producto ──────────────────────────────────────────── -->
+<p-dialog header="Nuevo producto" [(visible)]="dialogProductoVisible"
+    [modal]="true" [style]="{'width':'500px'}" [draggable]="false" appendTo="body">
+    <div [formGroup]="productoRapidoForm" class="pt-2">
+        <app-producto-campos modo="rapido" />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" severity="secondary" [text]="true"
+            (onClick)="dialogProductoVisible.set(false)" />
+        <p-button label="Guardar producto" icon="pi pi-check"
+            (onClick)="guardarProductoRapido()" />
+    </ng-template>
+</p-dialog>

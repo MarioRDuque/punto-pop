@@ -1,0 +1,16 @@
+<app-header-crud [subtitulo]="subtitulo"
+    (exportar)="exportarDesdeHeader()"
+    (imprimir)="imprimirDesdeHeader()">
+</app-header-crud>
+
+<ag-grid-angular
+    style="width: 100%; height: 500px;"
+    [theme]="theme"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="compraService.listaCompras()"
+    [context]="gridContext"
+    [localeText]="localeText"
+    [animateRows]="true"
+    (gridReady)="onGridReady($event)">
+</ag-grid-angular>

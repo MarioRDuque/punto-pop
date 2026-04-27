@@ -1,0 +1,82 @@
+<p-fluid>
+    <div class="flex flex-col gap-6">
+
+        <!-- PANEL VENTAS -->
+        <p-panel header="Reporte de Ventas">
+            <div class="card">
+                <form [formGroup]="filtrosVentas" autocomplete="off">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="field">
+                            <p-floatlabel>
+                                <p-select id="estado" formControlName="estado"
+                                    [options]="estadosVenta"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    [showClear]="true"
+                                    [style]="{'width': '100%'}">
+                                </p-select>
+                                <label for="estado">Estado</label>
+                            </p-floatlabel>
+                        </div>
+                        <div class="field">
+                            <p-floatlabel>
+                                <p-datepicker id="desde" formControlName="desde"
+                                    dateFormat="yy-mm-dd"
+                                    [showIcon]="true"
+                                    [style]="{'width': '100%'}">
+                                </p-datepicker>
+                                <label for="desde">Fecha desde</label>
+                            </p-floatlabel>
+                        </div>
+                        <div class="field">
+                            <p-floatlabel>
+                                <p-datepicker id="hasta" formControlName="hasta"
+                                    dateFormat="yy-mm-dd"
+                                    [showIcon]="true"
+                                    [style]="{'width': '100%'}">
+                                </p-datepicker>
+                                <label for="hasta">Fecha hasta</label>
+                            </p-floatlabel>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex gap-3 flex-wrap">
+                    <p-button label="Descargar PDF" icon="pi pi-file-pdf" severity="danger"
+                        (onClick)="descargarVentasPdf()">
+                    </p-button>
+                    <p-button label="Descargar Excel" icon="pi pi-file-excel" severity="success"
+                        (onClick)="descargarVentasXlsx()">
+                    </p-button>
+                </div>
+            </div>
+        </p-panel>
+
+        <!-- PANEL STOCK -->
+        <p-panel header="Reporte de Stock de Productos">
+            <div class="card">
+                <p class="text-gray-500 mb-4">Descarga el reporte actual de stock de todos los productos.</p>
+                <div class="flex gap-3 flex-wrap">
+                    <p-button label="Descargar PDF" icon="pi pi-file-pdf" severity="danger"
+                        (onClick)="descargarStock('pdf')">
+                    </p-button>
+                    <p-button label="Descargar Excel" icon="pi pi-file-excel" severity="success"
+                        (onClick)="descargarStock('xlsx')">
+                    </p-button>
+                </div>
+            </div>
+        </p-panel>
+
+        <!-- PANEL USUARIOS -->
+        <p-panel header="Reporte de Usuarios">
+            <div class="card">
+                <p class="text-gray-500 mb-4">Descarga el listado de usuarios del sistema.</p>
+                <div class="flex gap-3 flex-wrap">
+                    <p-button label="Descargar PDF" icon="pi pi-file-pdf" severity="danger"
+                        (onClick)="descargarUsuarios()">
+                    </p-button>
+                </div>
+            </div>
+        </p-panel>
+
+    </div>
+</p-fluid>

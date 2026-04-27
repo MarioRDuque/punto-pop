@@ -1,0 +1,145 @@
+<form [formGroup]="compraForm" autocomplete="off" novalidate>
+    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="false"></app-header-crud>
+
+    <div class="flex flex-col xl:flex-row gap-4 w-full" style="padding-top: 8px;">
+
+        <!-- LEFT: Búsqueda + Grid -->
+        <div class="flex flex-col gap-4 flex-1 min-w-0">
+
+            <!-- Barra de búsqueda -->
+            <div class="card">
+                <div class="flex flex-col sm:flex-row gap-3 items-end">
+                    <p-autocomplete
+                        class="flex-1 w-full"
+                        [(ngModel)]="productoSeleccionado"
+                        [ngModelOptions]="{standalone: true}"
+                        [suggestions]="productosFiltrados()"
+                        (completeMethod)="filtrarProductos($event)"
+                        (onSelect)="onProductoSelect($event)"
+                        optionLabel="nombre"
+                        placeholder="Buscar producto por código o nombre..."
+                        [style]="{'width': '100%'}"
+                        [inputStyle]="{'width': '100%'}"
+                        [showClear]="true"
+                        appendTo="body">
+                        <ng-template let-p pTemplate="item">
+                            <div class="flex justify-between items-center w-full gap-4 py-1">
+                                <span>
+                                    <strong class="text-primary">{{ p.codigo }}</strong>
+                                    <span class="ml-2">{{ p.nombre }}</span>
+                                </span>
+                                <span class="text-xs text-gray-400 whitespace-nowrap">
+                                    CPP: ${{ (p.costo ?? 0) | number:'1.4-4' }}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </p-autocomplete>
+
+                    <p-inputnumber
+                        [(ngModel)]="cantidad"
+                        [ngModelOptions]="{standalone: true}"
+                        [min]="0.001" [step]="1"
+                        [showButtons]="true"
+                        buttonLayout="horizontal"
+                        decrementButtonIcon="pi pi-minus"
+                        incrementButtonIcon="pi pi-plus"
+                        [inputStyle]="{'width': '56px', 'text-align': 'center'}"
+                        placeholder="Cant.">
+                    </p-inputnumber>
+
+                    <p-floatlabel variant="on">
+                        <p-inputnumber id="costoUnitario"
+                            [(ngModel)]="costoUnitario"
+                            [ngModelOptions]="{standalone: true}"
+                            mode="decimal" [minFractionDigits]="4" [maxFractionDigits]="4"
+                            [min]="0" [style]="{'width': '130px'}">
+                        </p-inputnumber>
+                        <label for="costoUnitario">Costo Unit.</label>
+                    </p-floatlabel>
+
+                    <p-button
+                        icon="pi pi-plus"
+                        label="Agregar"
+                        (onClick)="agregarItem()"
+                        [disabled]="!esProductoValido()">
+                    </p-button>
+                </div>
+            </div>
+
+            <!-- Grid de ítems -->
+            <div class="card p-0 overflow-hidden">
+                <ag-grid-angular
+                    style="width: 100%; height: 420px;"
+                    [theme]="theme"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    [getRowId]="getRowId"
+                    [rowData]="[]"
+                    [context]="gridContext"
+                    [localeText]="localeText"
+                    [stopEditingWhenCellsLoseFocus]="true"
+                    [singleClickEdit]="true"
+                    (gridReady)="onGridReady($event)"
+                    (cellValueChanged)="onCellValueChanged($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+
+        <!-- RIGHT: Panel sticky -->
+        <div class="card flex flex-col gap-5 w-full xl:w-72 xl:sticky xl:top-4 xl:self-start">
+
+            <!-- Proveedor -->
+            <div class="field">
+                <p-floatlabel variant="on" class="w-full">
+                    <p-select id="proveedorId" formControlName="proveedorId"
+                        [options]="proveedores()"
+                        optionLabel="razonSocial"
+                        optionValue="id"
+                        [filter]="true"
+                        filterBy="razonSocial,ruc"
+                        [style]="{'width': '100%'}">
+                    </p-select>
+                    <label for="proveedorId">Proveedor *</label>
+                </p-floatlabel>
+            </div>
+
+            <!-- Observación -->
+            <div class="field">
+                <app-input label="Observación" id="observacion" />
+            </div>
+
+            <!-- Totales -->
+            <div class="flex flex-col gap-2 border-t pt-4">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">Subtotal</span>
+                    <span class="font-semibold tabular-nums">${{ subtotal() | number:'1.2-2' }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500">IVA 15%</span>
+                    <span class="font-semibold tabular-nums">${{ iva() | number:'1.2-2' }}</span>
+                </div>
+                <div class="flex justify-between text-xl font-bold pt-3 border-t">
+                    <span>Total</span>
+                    <span class="text-blue-600 tabular-nums">${{ total() | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <!-- Info estado -->
+            <div class="text-xs text-gray-400 text-center bg-gray-50 rounded p-2">
+                La compra se crea en estado <strong>BORRADOR</strong>.<br>
+                Desde el listado presione <strong>Recibir</strong> para actualizar el stock.
+            </div>
+
+            <!-- Botón guardar -->
+            <p-button
+                label="Guardar Compra"
+                icon="pi pi-save"
+                severity="info"
+                size="large"
+                (onClick)="guardarCompra()"
+                styleClass="w-full justify-center">
+            </p-button>
+
+        </div>
+    </div>
+</form>
