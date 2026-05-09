@@ -3,7 +3,7 @@
     <app-header-transaccion
         [titulo]="accion() === accionEnum.EDITAR ? subtitulo : 'Nueva Venta'"
         [modo]="accion() === accionEnum.EDITAR ? 'editar' : 'nuevo'"
-        [labelGuardar]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : 'Registrar Venta'"
+        [labelGuardar]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : 'Cobrar'"
         [cargando]="false"
         (guardar)="guardarVenta()"
         (cancelar)="irAlListado()">
@@ -11,26 +11,138 @@
 
     <div class="flex flex-col xl:flex-row gap-4 mt-4">
 
-        <!-- ══ IZQUIERDA: búsqueda + carrito ═══════════════════════════════ -->
-        <div class="flex-1 min-w-0 card p-0 overflow-hidden flex flex-col">
+        <!-- ══ IZQUIERDA ════════════════════════════════════════════════════ -->
+        <div class="flex-1 min-w-0 flex flex-col gap-3">
 
-            <!-- Barra de búsqueda -->
-            <div class="p-4">
-                <div class="flex flex-wrap gap-3 items-center">
+            <!-- Fila 1: CLIENTE + OBSERVACIÓN (mismo alto fijo) -->
+            <div class="flex gap-3 items-stretch" style="height:135px; overflow:hidden">
 
-                    <div class="flex gap-1 items-center flex-1 min-w-0" style="min-width: 240px">
+                <!-- CLIENTE -->
+                <div class="card flex flex-col gap-3 shrink-0" style="width:280px; height:100%; overflow:hidden; margin-bottom:0">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <i class="pi pi-user text-surface-400" style="font-size:.8rem"></i>
+                            <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
+                        </div>
+                        @if (getClienteSeleccionado()) {
+                            <button type="button"
+                                class="text-xs font-medium text-primary hover:underline"
+                                (click)="limpiarCliente()">Cambiar</button>
+                        }
+                    </div>
+
+                    @if (getClienteSeleccionado(); as c) {
+                        <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 bg-surface-50 cursor-pointer hover:bg-surface-100 transition-colors">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                                style="background: linear-gradient(135deg,#10b981,#06b6d4)">
+                                {{ getInitials(c.nombre) }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-sm text-surface-800 truncate">{{ c.nombre }}</div>
+                                <div class="text-xs text-surface-400 truncate">{{ c.tipoIdentificacion }} {{ c.identificacion }}</div>
+                            </div>
+                            <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0 bg-white">
+                                <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
+                            </div>
+                        </div>
+                    } @else {
+                        <p-select formControlName="clienteId" [options]="clientes()"
+                            optionLabel="nombre" optionValue="id" [filter]="true"
+                            filterBy="nombre" [showClear]="true" placeholder="Consumidor final"
+                            [style]="{'width':'100%'}" appendTo="body">
+                        </p-select>
+                    }
+
+                    <button type="button"
+                        class="flex items-center gap-1 text-sm font-semibold text-green-600 hover:text-green-700 w-fit"
+                        (click)="abrirDialogCliente()">
+                        <i class="pi pi-plus" style="font-size:.7rem"></i>
+                        Nuevo cliente
+                    </button>
+                </div>
+
+                <!-- OBSERVACIÓN -->
+                <div class="card flex-1 flex flex-col gap-2" style="height:100%; overflow:hidden; margin-bottom:0">
+                    <div class="flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-1.5">
+                            <i class="pi pi-file-edit text-surface-400" style="font-size:.8rem"></i>
+                            <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
+                        </div>
+                        <span class="text-xs text-surface-300">Opcional</span>
+                    </div>
+                    <textarea formControlName="observacion"
+                        rows="3"
+                        class="w-full resize-none rounded-lg border border-surface-200 p-2 text-sm outline-none focus:border-primary"
+                        style="height:60px; max-height:100px"
+                        placeholder="Notas internas, referencia, mesa...">
+                    </textarea>
+                </div>
+
+            </div>
+
+            <!-- Fila 2: ITEMS EN LA VENTA (card separada) -->
+            <div class="card p-0 overflow-hidden flex flex-col" style="padding:0; margin-bottom:0">
+
+                <!-- Header -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-surface-200">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Items en la venta</span>
+                        @if (itemCount() > 0) {
+                            <span class="text-xs font-medium bg-surface-100 text-surface-600 px-2 py-0.5 rounded-full">
+                                {{ itemCount() }} productos · {{ totalUnidades() }} uds
+                            </span>
+                        }
+                    </div>
+                    @if (itemCount() > 0) {
+                        <div class="flex items-center gap-1">
+                            <p-button label="Aplicar descuento global" [text]="true" severity="secondary"
+                                size="small" styleClass="text-xs" (onClick)="abrirDescuentoGlobal()" />
+                            <p-button label="Vaciar carrito" [text]="true" severity="danger"
+                                size="small" styleClass="text-xs" (onClick)="vaciarCarrito()" />
+                        </div>
+                    }
+                </div>
+
+                <!-- AG-Grid -->
+                <ag-grid-angular
+                    style="width:100%"
+                    [style.height]="itemCount() === 0 ? '180px' : (itemCount() * rowHeight + 56) + 'px'"
+                    [theme]="theme"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    [getRowId]="getRowId"
+                    [rowData]="[]"
+                    [rowHeight]="rowHeight"
+                    [context]="gridContext"
+                    [localeText]="localeText"
+                    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                    [stopEditingWhenCellsLoseFocus]="true"
+                    [singleClickEdit]="true"
+                    (gridReady)="onGridReady($event)"
+                    (cellValueChanged)="onCellValueChanged($event)">
+                </ag-grid-angular>
+
+                <!-- Barra de búsqueda inferior -->
+                <div class="flex items-center gap-2 mx-3 mb-3 mt-2 px-3 py-2.5 rounded-xl"
+                    style="border:2px dashed #86efac; background:#f0fdf4">
+
+                    <i class="pi pi-qrcode shrink-0" style="font-size:1.1rem;color:#86efac"></i>
+
+                    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                        <span class="text-xs font-semibold text-surface-400 shrink-0">Código.</span>
                         <p-autocomplete
                             inputId="productoSearch"
-                            class="flex-1 w-full"
+                            class="flex-1"
                             [(ngModel)]="productoSeleccionado"
                             [ngModelOptions]="{standalone: true}"
                             [suggestions]="productosFiltrados()"
                             (completeMethod)="filtrarProductos($event)"
                             (onSelect)="onProductoSelect($event)"
+                            (keydown.enter)="onSearchEnter()"
                             optionLabel="nombre"
-                            placeholder="Buscar producto por nombre o código..."
+                            placeholder="Escanea o escribe — verás coincidencias al teclear"
                             [style]="{'width':'100%'}"
-                            [inputStyle]="{'width':'100%'}"
+                            [inputStyle]="{'width':'100%','background':'transparent','border':'none','box-shadow':'none','padding':'0'}"
                             [showClear]="true"
                             appendTo="body">
                             <ng-template let-p pTemplate="item">
@@ -49,135 +161,115 @@
                                 </div>
                             </ng-template>
                         </p-autocomplete>
-                        <p-button icon="pi pi-plus" [rounded]="true" [text]="true" severity="success"
-                            pTooltip="Crear producto" tooltipPosition="top" (onClick)="abrirDialogProducto()" />
-                        <p-button icon="pi pi-refresh" [rounded]="true" [text]="true" severity="secondary"
-                            pTooltip="Actualizar lista" tooltipPosition="top" (onClick)="refrescarProductos()" />
                     </div>
 
-                    <div class="flex items-center gap-2 shrink-0">
-                        <span class="text-sm text-surface-400">Cant.</span>
-                        <p-inputnumber
-                            [(ngModel)]="cantidad"
-                            [ngModelOptions]="{standalone: true}"
-                            [min]="0.001" [step]="1" [showButtons]="true"
-                            buttonLayout="horizontal"
-                            decrementButtonIcon="pi pi-minus"
-                            incrementButtonIcon="pi pi-plus"
-                            [inputStyle]="{'width':'52px','text-align':'center'}"
-                            (keyup.enter)="agregarItem()" />
-                    </div>
-
-                    <p-button icon="pi pi-shopping-cart" label="Agregar" severity="success"
-                        [disabled]="!esProductoValido()" (onClick)="agregarItem()" />
+                    <button type="button"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-surface-300 bg-white text-xs font-medium text-surface-600 hover:bg-surface-100 shrink-0"
+                        [disabled]="!esProductoValido()"
+                        (click)="agregarItem()">
+                        <i class="pi pi-arrow-return-left" style="font-size:9px"></i>
+                        Enter
+                    </button>
 
                 </div>
 
-                <p class="text-xs text-surface-400 mt-2.5 flex items-center gap-1.5 m-0">
-                    <i class="pi pi-bolt" style="color:#facc15;font-size:.65rem"></i>
-                    Presiona <kbd class="px-1.5 py-0.5 bg-surface-100 border border-surface-300 rounded font-mono text-xs">Enter</kbd>
-                    en la cantidad para agregar sin soltar el teclado
-                </p>
             </div>
-
-            <!-- Separador con contador -->
-            <div class="flex items-center justify-between px-4 py-2 border-t border-b border-surface-200 bg-surface-50">
-                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase flex items-center gap-1.5">
-                    <i class="pi pi-list" style="font-size:.75rem"></i>
-                    Ítems en la venta
-                </span>
-                @if (itemCount() > 0) {
-                    <span class="text-xs font-semibold bg-primary text-primary-contrast px-2 py-0.5 rounded-full">
-                        {{ itemCount() }} {{ itemCount() === 1 ? 'ítem' : 'ítems' }}
-                    </span>
-                }
-            </div>
-
-            <!-- Grid -->
-            <ag-grid-angular
-                style="width:100%"
-                [style.height]="itemCount() === 0 ? '220px' : '400px'"
-                [theme]="theme"
-                [columnDefs]="columnDefs"
-                [defaultColDef]="defaultColDef"
-                [getRowId]="getRowId"
-                [rowData]="[]"
-                [context]="gridContext"
-                [localeText]="localeText"
-                [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-                [stopEditingWhenCellsLoseFocus]="true"
-                [singleClickEdit]="true"
-                (gridReady)="onGridReady($event)"
-                (cellValueChanged)="onCellValueChanged($event)">
-            </ag-grid-angular>
 
         </div>
 
-        <!-- ══ DERECHA: panel lateral ══════════════════════════════════════ -->
-        <div class="flex flex-col w-full xl:w-72 xl:sticky xl:top-4 xl:self-start gap-3">
-
-            <!-- CLIENTE -->
-            <div class="card flex flex-col gap-3">
-                <div class="flex items-center gap-1.5">
-                    <i class="pi pi-user text-primary" style="font-size:.85rem"></i>
-                    <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
-                </div>
-                <p-select
-                    formControlName="clienteId"
-                    [options]="clientes()"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    filterBy="nombre"
-                    [showClear]="true"
-                    placeholder="Consumidor final"
-                    [style]="{'width':'100%'}">
-                </p-select>
-                <div class="flex gap-2">
-                    <p-button label="+ Nuevo cliente" severity="secondary" [outlined]="true"
-                        styleClass="flex-1 text-sm justify-center" size="small"
-                        (onClick)="abrirDialogCliente()" />
-                    <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
-                        pTooltip="Refrescar clientes" tooltipPosition="top"
-                        (onClick)="refrescarClientes()" />
-                </div>
-            </div>
+        <!-- ══ DERECHA ═══════════════════════════════════════════════════════ -->
+        <div class="flex flex-col w-full xl:w-[340px] shrink-0 xl:sticky xl:top-4 xl:self-start gap-3">
 
             <!-- FORMA DE PAGO -->
             <div class="card flex flex-col gap-3">
-                <div class="flex items-center gap-1.5">
-                    <i class="pi pi-credit-card text-primary" style="font-size:.85rem"></i>
-                    <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Forma de pago</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <i class="pi pi-credit-card text-surface-400" style="font-size:.8rem"></i>
+                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Forma de pago</span>
+                    </div>
+                    <button type="button" class="text-xs font-medium text-primary hover:underline">
+                        + Dividir pago
+                    </button>
                 </div>
+
                 <div class="grid grid-cols-2 gap-2">
                     @for (fp of formasPago; track fp.value) {
-                        <p-button
-                            [label]="fp.label"
-                            [outlined]="ventaForm.controls.formaPago.value !== fp.value"
-                            [severity]="ventaForm.controls.formaPago.value === fp.value ? 'success' : 'secondary'"
-                            styleClass="justify-center w-full"
-                            size="small"
-                            (onClick)="seleccionarFormaPago(fp.value)" />
+                        <button type="button"
+                            class="flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-left"
+                            [class.border-green-500]="formaPagoActual() === fp.value"
+                            [class.bg-green-50]="formaPagoActual() === fp.value"
+                            [class.border-surface-200]="formaPagoActual() !== fp.value"
+                            [class.bg-white]="formaPagoActual() !== fp.value"
+                            (click)="seleccionarFormaPago(fp.value)">
+                            <div class="relative shrink-0">
+                                <i [class]="fp.icon" style="font-size:.85rem"
+                                    [class.text-green-600]="formaPagoActual() === fp.value"
+                                    [class.text-surface-400]="formaPagoActual() !== fp.value"></i>
+                                @if (formaPagoActual() === fp.value) {
+                                    <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-green-500"></span>
+                                }
+                            </div>
+                            <div>
+                                <div class="text-xs font-semibold leading-none"
+                                    [class.text-green-700]="formaPagoActual() === fp.value"
+                                    [class.text-surface-700]="formaPagoActual() !== fp.value">
+                                    {{ fp.label }}
+                                </div>
+                                @if (fp.sublabel) {
+                                    <div class="text-xs text-surface-400 mt-0.5 leading-none">{{ fp.sublabel }}</div>
+                                }
+                            </div>
+                        </button>
                     }
                 </div>
+
+                @if (formaPagoActual() === 'EFECTIVO') {
+                    <div class="border-t border-surface-200 pt-3 flex flex-col gap-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-surface-500">Recibido</span>
+                            <p-inputnumber
+                                [ngModel]="montoCobrar()"
+                                (ngModelChange)="montoCobrar.set($event ?? 0)"
+                                [ngModelOptions]="{standalone: true}"
+                                [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0"
+                                [inputStyle]="{'width':'90px','text-align':'right','font-weight':'600','font-size':'14px'}" />
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-xs text-surface-400 shrink-0">Sugerencias</span>
+                            <button type="button"
+                                class="text-xs px-2 py-0.5 rounded border border-surface-200 bg-white text-surface-600 hover:bg-surface-100"
+                                (click)="montoCobrar.set(total())">Exacto</button>
+                            @for (s of sugerenciasEfectivo; track s) {
+                                <button type="button"
+                                    class="text-xs px-2 py-0.5 rounded border border-surface-200 bg-white text-surface-600 hover:bg-surface-100"
+                                    (click)="montoCobrar.set(s)">${{ s }}</button>
+                            }
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-surface-500">Cambio</span>
+                            <span class="text-xl font-bold tabular-nums"
+                                [class.text-green-600]="cambio() >= 0"
+                                [class.text-red-500]="montoCobrar() > 0 && cambio() < 0">
+                                ${{ cambio() | number:'1.2-2' }}
+                            </span>
+                        </div>
+                    </div>
+                }
             </div>
 
-            <!-- OBSERVACIÓN -->
-            <div class="card flex flex-col gap-2">
-                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
-                <textarea pTextarea formControlName="observacion" rows="3"
-                    class="w-full resize-none"
-                    placeholder="Notas u observaciones...">
-                </textarea>
-            </div>
-
-            <!-- TOTALES + BOTÓN -->
+            <!-- TOTALES + COBRAR -->
             <div class="card flex flex-col gap-3">
                 <div class="flex flex-col gap-2">
                     <div class="flex justify-between text-sm">
-                        <span class="text-surface-500">Subtotal</span>
+                        <span class="text-surface-500">Subtotal ({{ totalUnidades() }} uds)</span>
                         <span class="tabular-nums">${{ subtotal() | number:'1.2-2' }}</span>
                     </div>
+                    @if (descuentoTotal() > 0) {
+                        <div class="flex justify-between text-sm">
+                            <span class="text-surface-500">Descuentos</span>
+                            <span class="tabular-nums text-orange-600">-${{ descuentoTotal() | number:'1.2-2' }}</span>
+                        </div>
+                    }
                     @for (linea of ivaLineas(); track linea.label) {
                         <div class="flex justify-between text-sm">
                             <span class="text-surface-500">{{ linea.label }}</span>
@@ -185,25 +277,35 @@
                         </div>
                     }
                     <div class="flex justify-between items-baseline pt-2 border-t border-surface-200">
-                        <span class="text-base font-bold">Total</span>
+                        <span class="text-base font-bold">TOTAL</span>
                         <span class="text-2xl font-bold text-green-600 tabular-nums">
                             ${{ total() | number:'1.2-2' }}
                         </span>
                     </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs text-surface-400">MXN · pago contado</span>
+                        @if (descuentoTotal() > 0) {
+                            <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                                Ahorra ${{ descuentoTotal() | number:'1.2-2' }}
+                            </span>
+                        }
+                    </div>
                 </div>
+
                 <p-button
-                    [label]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : '✓ Registrar Venta'"
-                    severity="success"
-                    size="large"
+                    [label]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : labelCobrar()"
+                    severity="success" size="large"
                     [disabled]="itemCount() === 0"
                     (onClick)="guardarVenta()"
                     styleClass="w-full justify-center">
                 </p-button>
-                @if (itemCount() === 0) {
-                    <p class="text-xs text-center text-surface-400 m-0">
-                        Agrega productos para continuar
-                    </p>
-                }
+
+                <div class="flex justify-center items-center gap-1 text-xs text-surface-300 flex-wrap">
+                    <span>Confirma con</span>
+                    <kbd class="px-1.5 py-0.5 bg-surface-100 border border-surface-200 rounded font-mono text-xs text-surface-500">F2</kbd>
+                    <span>· imprime ticket con</span>
+                    <kbd class="px-1.5 py-0.5 bg-surface-100 border border-surface-200 rounded font-mono text-xs text-surface-500">⌘P</kbd>
+                </div>
             </div>
 
         </div>
