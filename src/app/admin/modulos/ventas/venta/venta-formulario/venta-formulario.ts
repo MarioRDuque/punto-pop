@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
@@ -23,7 +23,7 @@ import {
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
 import { HeaderTransaccion } from '../../../../component/header-transaccion/header-transaccion';
-import { InputComponent } from '../../../../component/input/input.component';
+import { ClienteFormulario } from '../../cliente/cliente-formulario/cliente-formulario';
 import { ProductoCampos } from '../../../catalogo/producto/producto-campos/producto-campos';
 import { VentaService } from '../venta.service';
 import { ClienteService } from '../../cliente/cliente.service';
@@ -35,7 +35,7 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { FormsService } from '../../../../service/forms-service';
 import { FormaPago, ItemVenta, Venta } from '../../../../entities/Venta';
 import { CatProducto } from '../../../../entities/CatProducto';
-import { VentaCliente, TipoIdentificacion } from '../../../../entities/VentaCliente';
+import { VentaCliente } from '../../../../entities/VentaCliente';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
@@ -47,7 +47,6 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
     FormsModule,
     DecimalPipe,
     HeaderTransaccion,
-    InputComponent,
     ProductoCampos,
     SelectModule,
     InputNumberModule,
@@ -58,10 +57,13 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
     TooltipModule,
     TextareaModule,
     AgGridAngular,
+    ClienteFormulario,
   ],
   templateUrl: './venta-formulario.html',
 })
 export class VentaFormulario implements OnInit {
+
+  @ViewChild(ClienteFormulario) private clienteFormRef?: ClienteFormulario;
 
   private fb = inject(FormBuilder);
   private ventaService = inject(VentaService);
@@ -77,8 +79,13 @@ export class VentaFormulario implements OnInit {
   public accion = this.formsService.accion;
   public accionEnum = AccionEnum;
   public subtitulo = 'Nueva Venta';
-  public clientes = this.clienteService.listaClientes;
-  public productos = this.productoService.listaProductos;
+  public clientes           = this.clienteService.listaClientes;
+  public clientesActivos    = computed(() => this.clientes().filter(c => c.estado));
+  public clientesScrollHeight = computed(() => {
+    const total = this.clientesActivos().length * 43;
+    return `${Math.min(total + 8, 200)}px`;
+  });
+  public productos          = this.productoService.listaProductos;
 
   public productoSeleccionado: CatProducto | null = null;
   public productosFiltrados = signal<CatProducto[]>([]);
@@ -94,7 +101,7 @@ export class VentaFormulario implements OnInit {
   public localeText = AG_GRID_LOCALE_ES;
   public gridContext = { component: this };
   public itemCount = signal(0);
-  public rowHeight = 52;
+  public rowHeight = 44;
 
   public overlayNoRowsTemplate = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -140,12 +147,6 @@ export class VentaFormulario implements OnInit {
     { label: 'Por pagar',     sublabel: '',                  value: 'POR_PAGAR',     icon: 'pi pi-calendar' },
   ];
 
-  public tiposIdentificacion: { label: string; value: TipoIdentificacion }[] = [
-    { label: 'Cédula',    value: 'CEDULA' },
-    { label: 'RUC',       value: 'RUC' },
-    { label: 'Pasaporte', value: 'PASAPORTE' },
-  ];
-
   public ventaForm = this.fb.group({
     formaPago:   ['EFECTIVO' as FormaPago, [Validators.required]],
     observacion: [''],
@@ -163,14 +164,6 @@ export class VentaFormulario implements OnInit {
     return id ? (this.clientes().find(c => c.id === id) ?? null) : null;
   }
 
-  public clienteForm = this.fb.group({
-    tipoIdentificacion: ['CEDULA' as TipoIdentificacion, [Validators.required]],
-    identificacion:     ['', [Validators.required]],
-    nombre:             ['', [Validators.required]],
-    telefono:           [''],
-    email:              [''],
-  });
-
   public productoRapidoForm = this.fb.group({
     codigo:         ['', [Validators.required]],
     nombre:         ['', [Validators.required]],
@@ -182,6 +175,16 @@ export class VentaFormulario implements OnInit {
     stockMinimo:    [0],
   });
 
+  private readonly _avatarPalette = [
+    { bg: '#d1fae5', color: '#065f46' },
+    { bg: '#dbeafe', color: '#1e40af' },
+    { bg: '#fef3c7', color: '#92400e' },
+    { bg: '#ede9fe', color: '#5b21b6' },
+    { bg: '#fee2e2', color: '#991b1b' },
+    { bg: '#cffafe', color: '#164e63' },
+    { bg: '#ffedd5', color: '#9a3412' },
+  ];
+
   public defaultColDef: ColDef = {
     resizable: true,
     sortable: false,
@@ -189,7 +192,6 @@ export class VentaFormulario implements OnInit {
     suppressHeaderMenuButton: true,
   };
 
-  private readonly _avatarPalette = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#f97316'];
 
   public columnDefs: ColDef<ItemVenta>[] = [
     {
@@ -219,14 +221,14 @@ export class VentaFormulario implements OnInit {
           .map((w: string) => w.charAt(0))
           .join('')
           .toUpperCase();
-        const bg = component._avatarPalette[(name.charCodeAt(0) ?? 0) % component._avatarPalette.length];
-
         const div = document.createElement('div');
         div.style.cssText = 'display:flex;align-items:center;gap:8px;height:100%;';
 
+        const palette = component._avatarPalette;
+        const { bg, color } = palette[(name.charCodeAt(0) ?? 0) % palette.length];
         const avatar = document.createElement('div');
         avatar.textContent = initials.slice(0, 2);
-        avatar.style.cssText = `width:28px;height:28px;border-radius:6px;background:${bg};color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
+        avatar.style.cssText = `width:28px;height:28px;border-radius:6px;background:${bg};color:${color};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
 
         const textWrap = document.createElement('div');
         textWrap.style.cssText = 'flex:1;min-width:0;';
@@ -234,7 +236,7 @@ export class VentaFormulario implements OnInit {
         const nameEl = document.createElement('div');
         nameEl.textContent = params.value;
         nameEl.style.cssText =
-          'font-size:13px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+          'font-size:12.5px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;';
 
         const stock = product?.stock ?? 0;
         const stockMinimo = (product as any)?.stockMinimo ?? 0;
@@ -244,9 +246,9 @@ export class VentaFormulario implements OnInit {
         const unitLabel = (product as any)?.unidadMedidaDescripcion ?? '';
 
         const subEl = document.createElement('div');
-        subEl.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:11px;color:#9ca3af;';
+        subEl.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10.5px;color:#9ca3af;margin-top:1px;';
         const dot = document.createElement('span');
-        dot.style.cssText = `width:6px;height:6px;border-radius:50%;background:${dotColor};flex-shrink:0;display:inline-block;`;
+        dot.style.cssText = `width:5px;height:5px;border-radius:50%;background:${dotColor};flex-shrink:0;display:inline-block;`;
         const txt = document.createElement('span');
         txt.textContent = stockLabel + (unitLabel ? ` · ${unitLabel}` : '');
         subEl.appendChild(dot);
@@ -263,6 +265,9 @@ export class VentaFormulario implements OnInit {
       field: 'cantidad',
       headerName: 'CANTIDAD',
       width: 130,
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: { min: 1, precision: 0 },
       cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
         const component = (params.context as { component: VentaFormulario }).component;
 
@@ -270,20 +275,20 @@ export class VentaFormulario implements OnInit {
         div.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:4px;height:100%;';
 
         const btnStyle =
-          'width:22px;height:22px;border:1px solid #e5e7eb;border-radius:4px;background:#f9fafb;cursor:pointer;color:#374151;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
+          'width:20px;height:20px;border:1px solid #e5e7eb;border-radius:4px;background:#f9fafb;cursor:pointer;color:#6b7280;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
 
         const btnMinus = document.createElement('button');
         btnMinus.type = 'button';
-        btnMinus.innerHTML = '<i class="pi pi-minus" style="font-size:8px"></i>';
+        btnMinus.innerHTML = '<i class="pi pi-minus" style="font-size:7px"></i>';
         btnMinus.style.cssText = btnStyle;
 
         const numSpan = document.createElement('span');
         numSpan.textContent = String(params.value);
-        numSpan.style.cssText = 'min-width:28px;text-align:center;font-size:13px;font-weight:500;color:#111827;';
+        numSpan.style.cssText = 'min-width:24px;text-align:center;font-size:12.5px;font-weight:500;color:#111827;';
 
         const btnPlus = document.createElement('button');
         btnPlus.type = 'button';
-        btnPlus.innerHTML = '<i class="pi pi-plus" style="font-size:8px"></i>';
+        btnPlus.innerHTML = '<i class="pi pi-plus" style="font-size:7px"></i>';
         btnPlus.style.cssText = btnStyle;
 
         btnMinus.addEventListener('click', (e) => {
@@ -450,10 +455,6 @@ export class VentaFormulario implements OnInit {
       .toUpperCase();
   }
 
-  getAvatarColor(nombre: string): string {
-    return this._avatarPalette[(nombre.charCodeAt(0) ?? 0) % this._avatarPalette.length];
-  }
-
   limpiarCliente(): void {
     this.ventaForm.controls.clienteId.setValue(null);
   }
@@ -529,43 +530,20 @@ export class VentaFormulario implements OnInit {
     this.sincronizarTotales();
   }
 
-  // ─── Cliente rápido ───────────────────────────────────────────────────────
+  // ─── Cliente (dialog) ─────────────────────────────────────────────────────
 
   abrirDialogCliente(): void {
-    this.clienteForm.reset();
-    this.clienteForm.controls.tipoIdentificacion.setValue('CEDULA');
     this.dialogClienteVisible.set(true);
+    setTimeout(() => this.clienteFormRef?.initForm(), 0);
   }
 
-  refrescarClientes(): void {
-    this.clienteService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.toast.info('Clientes actualizados'),
-    });
+  guardarClienteDesdeDialog(): void {
+    this.clienteFormRef?.realizarAccion();
   }
 
-  guardarClienteRapido(): void {
-    if (!this.utilService.validarFormulario(this.clienteForm)) return;
-    this.cargando.activar();
-    const v = this.clienteForm.getRawValue();
-    const cliente: VentaCliente = {
-      tipoIdentificacion: v.tipoIdentificacion as TipoIdentificacion,
-      identificacion:     v.identificacion ?? '',
-      nombre:             v.nombre ?? '',
-      telefono:           v.telefono ?? undefined,
-      email:              v.email ?? undefined,
-      estado:             true,
-    };
-    this.clienteService.guardar(cliente)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.toast.success(`Cliente "${data.nombre}" creado`);
-          this.clienteService.agregarAlGrid(data);
-          this.ventaForm.controls.clienteId.setValue(data.id ?? null);
-          this.dialogClienteVisible.set(false);
-          this.cargando.inactivar();
-        },
-      });
+  onClienteGuardado(data: VentaCliente): void {
+    this.ventaForm.controls.clienteId.setValue(data.id ?? null);
+    this.dialogClienteVisible.set(false);
   }
 
   // ─── Producto rápido ──────────────────────────────────────────────────────

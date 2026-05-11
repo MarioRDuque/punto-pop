@@ -46,10 +46,12 @@
                             </div>
                         </div>
                     } @else {
-                        <p-select formControlName="clienteId" [options]="clientes()"
+                        <p-select formControlName="clienteId" [options]="clientesActivos()"
                             optionLabel="nombre" optionValue="id" [filter]="true"
                             filterBy="nombre" [showClear]="true" placeholder="Consumidor final"
-                            [style]="{'width':'100%'}" appendTo="body">
+                            [style]="{'width':'100%'}" appendTo="body"
+                            [virtualScroll]="true" [virtualScrollItemSize]="43"
+                            [scrollHeight]="clientesScrollHeight()">
                         </p-select>
                     }
 
@@ -106,7 +108,8 @@
                 <!-- AG-Grid -->
                 <ag-grid-angular
                     style="width:100%"
-                    [style.height]="itemCount() === 0 ? '180px' : (itemCount() * rowHeight + 56) + 'px'"
+                    [style.minHeight]="itemCount() === 0 ? '160px' : null"
+                    domLayout="autoHeight"
                     [theme]="theme"
                     [columnDefs]="columnDefs"
                     [defaultColDef]="defaultColDef"
@@ -343,28 +346,16 @@
 
 <!-- ─── Dialog: Nuevo cliente ───────────────────────────────────────────── -->
 <p-dialog header="Nuevo cliente" [(visible)]="dialogClienteVisible"
-    [modal]="true" [style]="{'width':'460px'}" [draggable]="false" appendTo="body">
-    <div [formGroup]="clienteForm" class="flex flex-col gap-4 pt-2">
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-select id="tipoIdentificacion" formControlName="tipoIdentificacion"
-                    [options]="tiposIdentificacion" optionLabel="label" optionValue="value"
-                    [style]="{'width':'100%'}"></p-select>
-                <label for="tipoIdentificacion">Tipo de identificación</label>
-            </p-floatlabel>
-        </div>
-        <div class="field"><app-input label="Identificación" id="identificacion" /></div>
-        <div class="field"><app-input label="Nombre completo" id="nombre" /></div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="field"><app-input label="Teléfono" id="telefono" /></div>
-            <div class="field"><app-input label="Email" id="email" /></div>
-        </div>
-    </div>
+    [modal]="true" [style]="{'width':'500px'}" [draggable]="false" appendTo="body">
+    <app-cliente-formulario
+        [modoDialog]="true"
+        (clienteGuardado)="onClienteGuardado($event)">
+    </app-cliente-formulario>
     <ng-template pTemplate="footer">
         <p-button label="Cancelar" severity="secondary" [text]="true"
             (onClick)="dialogClienteVisible.set(false)" />
         <p-button label="Guardar cliente" icon="pi pi-check"
-            (onClick)="guardarClienteRapido()" />
+            (onClick)="guardarClienteDesdeDialog()" />
     </ng-template>
 </p-dialog>
 
