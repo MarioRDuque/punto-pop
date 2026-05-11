@@ -41,7 +41,7 @@ export class ClienteService {
 
   cargar(): Observable<PageResponse<VentaCliente>> {
     this.cargando.activar();
-    const params = new HttpParams().set('size', '1000');
+    const params = new HttpParams().set('size', '5000');
     return this.api.get<PageResponse<VentaCliente>>('/ventas/cliente', params).pipe(
       tap((page) => {
         this.listaClientes.set(page.content);

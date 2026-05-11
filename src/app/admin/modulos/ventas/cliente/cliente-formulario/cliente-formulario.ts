@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
@@ -23,6 +23,9 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
   templateUrl: './cliente-formulario.html',
 })
 export class ClienteFormulario implements OnInit {
+
+  @Input() modoDialog = false;
+  @Output() clienteGuardado = new EventEmitter<VentaCliente>();
 
   private fb = inject(FormBuilder);
   private formsService = inject(FormsService) as FormsService<VentaCliente>;
@@ -55,6 +58,11 @@ export class ClienteFormulario implements OnInit {
   });
 
   ngOnInit() {
+    if (this.modoDialog) {
+      this.subtitulo = 'Complete la información';
+      this.initForm();
+      return;
+    }
     switch (this.accion()) {
       case AccionEnum.CREAR:
         this.subtitulo = 'Complete la información';
@@ -92,7 +100,11 @@ export class ClienteFormulario implements OnInit {
             this.toast.success('El cliente se guardó correctamente');
             this.cargando.inactivar();
             this.clienteService.agregarAlGrid(data);
-            this.initForm();
+            if (this.modoDialog) {
+              this.clienteGuardado.emit(data);
+            } else {
+              this.initForm();
+            }
           }
         });
     } else {

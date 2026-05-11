@@ -1,5 +1,5 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { SelectModule } from 'primeng/select';
@@ -23,7 +23,7 @@ import {
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
 import { HeaderTransaccion } from '../../../../component/header-transaccion/header-transaccion';
-import { InputComponent } from '../../../../component/input/input.component';
+import { ClienteFormulario } from '../../cliente/cliente-formulario/cliente-formulario';
 import { ProductoCampos } from '../../../catalogo/producto/producto-campos/producto-campos';
 import { VentaService } from '../venta.service';
 import { ClienteService } from '../../cliente/cliente.service';
@@ -35,7 +35,7 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { FormsService } from '../../../../service/forms-service';
 import { FormaPago, ItemVenta, Venta } from '../../../../entities/Venta';
 import { CatProducto } from '../../../../entities/CatProducto';
-import { VentaCliente, TipoIdentificacion } from '../../../../entities/VentaCliente';
+import { VentaCliente } from '../../../../entities/VentaCliente';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
@@ -47,7 +47,6 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
     FormsModule,
     DecimalPipe,
     HeaderTransaccion,
-    InputComponent,
     ProductoCampos,
     SelectModule,
     InputNumberModule,
@@ -58,10 +57,13 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
     TooltipModule,
     TextareaModule,
     AgGridAngular,
+    ClienteFormulario,
   ],
   templateUrl: './venta-formulario.html',
 })
 export class VentaFormulario implements OnInit {
+
+  @ViewChild(ClienteFormulario) private clienteFormRef?: ClienteFormulario;
 
   private fb = inject(FormBuilder);
   private ventaService = inject(VentaService);
@@ -77,8 +79,13 @@ export class VentaFormulario implements OnInit {
   public accion = this.formsService.accion;
   public accionEnum = AccionEnum;
   public subtitulo = 'Nueva Venta';
-  public clientes = this.clienteService.listaClientes;
-  public productos = this.productoService.listaProductos;
+  public clientes           = this.clienteService.listaClientes;
+  public clientesActivos    = computed(() => this.clientes().filter(c => c.estado));
+  public clientesScrollHeight = computed(() => {
+    const total = this.clientesActivos().length * 43;
+    return `${Math.min(total + 8, 200)}px`;
+  });
+  public productos          = this.productoService.listaProductos;
 
   public productoSeleccionado: CatProducto | null = null;
   public productosFiltrados = signal<CatProducto[]>([]);
@@ -94,6 +101,7 @@ export class VentaFormulario implements OnInit {
   public localeText = AG_GRID_LOCALE_ES;
   public gridContext = { component: this };
   public itemCount = signal(0);
+  public rowHeight = 44;
 
   public overlayNoRowsTemplate = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -101,30 +109,42 @@ export class VentaFormulario implements OnInit {
       <i class="pi pi-shopping-cart" style="font-size:2.5rem;opacity:.25"></i>
       <p style="font-weight:500;margin:0">El carrito está vacío</p>
       <p style="font-size:.8125rem;margin:0;opacity:.75">
-        Busca un producto arriba y presiona <strong>Agregar</strong>
+        Escanea o escribe un producto abajo
       </p>
     </div>`;
 
   private _totales = signal({ subtotal: 0, iva: 0, total: 0 });
   private _ivaLineas = signal<{ label: string; valor: number }[]>([{ label: 'IVA', valor: 0 }]);
+  private _descuentoTotal = signal(0);
+  private _totalUnidades = signal(0);
 
-  public subtotal  = computed(() => this._totales().subtotal);
-  public iva       = computed(() => this._totales().iva);
-  public total     = computed(() => this._totales().total);
-  public ivaLineas = this._ivaLineas.asReadonly();
+  public subtotal      = computed(() => this._totales().subtotal);
+  public iva           = computed(() => this._totales().iva);
+  public total         = computed(() => this._totales().total);
+  public ivaLineas     = this._ivaLineas.asReadonly();
+  public descuentoTotal = computed(() => this._descuentoTotal());
+  public totalUnidades  = computed(() => this._totalUnidades());
 
-  public formasPago: { label: string; value: FormaPago }[] = [
-    { label: 'Efectivo',      value: 'EFECTIVO' },
-    { label: 'Tarjeta',       value: 'TARJETA' },
-    { label: 'Transferencia', value: 'TRANSFERENCIA' },
-    { label: 'Crédito',       value: 'CREDITO' },
-    { label: 'Por pagar',     value: 'POR_PAGAR' },
-  ];
+  public montoCobrar = signal(0);
+  public cambio = computed(() => {
+    const mc = this.montoCobrar();
+    const t = this.total();
+    return mc > 0 ? Math.max(0, mc - t) : 0;
+  });
 
-  public tiposIdentificacion: { label: string; value: TipoIdentificacion }[] = [
-    { label: 'Cédula',    value: 'CEDULA' },
-    { label: 'RUC',       value: 'RUC' },
-    { label: 'Pasaporte', value: 'PASAPORTE' },
+  public labelCobrar = computed(() => {
+    const t = this.total();
+    return `✓ Cobrar $${t.toFixed(2)}`;
+  });
+
+  public sugerenciasEfectivo = [300, 500, 1000];
+
+  public formasPago: { label: string; sublabel: string; value: FormaPago; icon: string }[] = [
+    { label: 'Efectivo',      sublabel: 'Calcula cambio',   value: 'EFECTIVO',      icon: 'pi pi-wallet' },
+    { label: 'Tarjeta',       sublabel: 'Crédito o débito', value: 'TARJETA',       icon: 'pi pi-credit-card' },
+    { label: 'Transferencia', sublabel: 'SPEI',              value: 'TRANSFERENCIA', icon: 'pi pi-send' },
+    { label: 'Crédito',       sublabel: 'A 30 días',         value: 'CREDITO',       icon: 'pi pi-clock' },
+    { label: 'Por pagar',     sublabel: '',                  value: 'POR_PAGAR',     icon: 'pi pi-calendar' },
   ];
 
   public ventaForm = this.fb.group({
@@ -133,13 +153,16 @@ export class VentaFormulario implements OnInit {
     clienteId:   [null as string | null],
   });
 
-  public clienteForm = this.fb.group({
-    tipoIdentificacion: ['CEDULA' as TipoIdentificacion, [Validators.required]],
-    identificacion:     ['', [Validators.required]],
-    nombre:             ['', [Validators.required]],
-    telefono:           [''],
-    email:              [''],
+  private _formaPago = toSignal(this.ventaForm.controls.formaPago.valueChanges, {
+    initialValue: 'EFECTIVO' as FormaPago | null,
   });
+
+  public formaPagoActual = computed(() => this._formaPago() ?? 'EFECTIVO');
+
+  public getClienteSeleccionado(): VentaCliente | null {
+    const id = this.ventaForm.controls.clienteId.value;
+    return id ? (this.clientes().find(c => c.id === id) ?? null) : null;
+  }
 
   public productoRapidoForm = this.fb.group({
     codigo:         ['', [Validators.required]],
@@ -152,6 +175,16 @@ export class VentaFormulario implements OnInit {
     stockMinimo:    [0],
   });
 
+  private readonly _avatarPalette = [
+    { bg: '#d1fae5', color: '#065f46' },
+    { bg: '#dbeafe', color: '#1e40af' },
+    { bg: '#fef3c7', color: '#92400e' },
+    { bg: '#ede9fe', color: '#5b21b6' },
+    { bg: '#fee2e2', color: '#991b1b' },
+    { bg: '#cffafe', color: '#164e63' },
+    { bg: '#ffedd5', color: '#9a3412' },
+  ];
+
   public defaultColDef: ColDef = {
     resizable: true,
     sortable: false,
@@ -159,45 +192,183 @@ export class VentaFormulario implements OnInit {
     suppressHeaderMenuButton: true,
   };
 
+
   public columnDefs: ColDef<ItemVenta>[] = [
-    { field: 'productoCodigo', headerName: 'Código', width: 95 },
-    { field: 'productoNombre', headerName: 'Producto', flex: 1, minWidth: 150 },
     {
-      field: 'precioUnitario', headerName: 'P. Unit.', width: 105, type: 'rightAligned',
-      valueFormatter: (p) => (p.value != null ? `$${(p.value as number).toFixed(2)}` : ''),
-    },
-    {
-      field: 'cantidad', headerName: 'Cant.', width: 90, editable: true, type: 'rightAligned',
-      cellEditor: 'agNumberCellEditor', cellEditorParams: { min: 0.001, precision: 3 },
-    },
-    {
-      field: 'descuento', headerName: 'Descto.', width: 100, editable: true, type: 'rightAligned',
-      cellEditor: 'agNumberCellEditor', cellEditorParams: { min: 0, precision: 2 },
-      valueFormatter: (p) => `$${((p.value as number) ?? 0).toFixed(2)}`,
-    },
-    {
-      colId: 'subtotalCalc', headerName: 'Subtotal', width: 110, type: 'rightAligned',
-      valueGetter: (p) => {
-        const d = p.data;
-        return d ? Math.max(0, d.cantidad * d.precioUnitario - (d.descuento ?? 0)) : 0;
+      field: 'productoCodigo',
+      headerName: 'CÓDIGO',
+      width: 100,
+      cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
+        const span = document.createElement('span');
+        span.textContent = params.value;
+        span.style.cssText =
+          'font-family:monospace;font-size:11px;background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:4px;white-space:nowrap;';
+        return span;
       },
+    },
+    {
+      field: 'productoNombre',
+      headerName: 'PRODUCTO',
+      flex: 1,
+      minWidth: 160,
+      cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
+        const component = (params.context as { component: VentaFormulario }).component;
+        const product = component.productos().find(p => p.id === params.data?.productoId);
+        const name: string = params.data?.productoNombre ?? '';
+        const initials = name
+          .split(' ')
+          .slice(0, 2)
+          .map((w: string) => w.charAt(0))
+          .join('')
+          .toUpperCase();
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:8px;height:100%;';
+
+        const palette = component._avatarPalette;
+        const { bg, color } = palette[(name.charCodeAt(0) ?? 0) % palette.length];
+        const avatar = document.createElement('div');
+        avatar.textContent = initials.slice(0, 2);
+        avatar.style.cssText = `width:28px;height:28px;border-radius:6px;background:${bg};color:${color};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
+
+        const textWrap = document.createElement('div');
+        textWrap.style.cssText = 'flex:1;min-width:0;';
+
+        const nameEl = document.createElement('div');
+        nameEl.textContent = params.value;
+        nameEl.style.cssText =
+          'font-size:12.5px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;';
+
+        const stock = product?.stock ?? 0;
+        const stockMinimo = (product as any)?.stockMinimo ?? 0;
+        const isLowStock = stock > 0 && stockMinimo > 0 && stock <= stockMinimo * 2;
+        const dotColor = stock === 0 ? '#ef4444' : isLowStock ? '#f59e0b' : '#22c55e';
+        const stockLabel = stock === 0 ? 'Sin stock' : isLowStock ? `Quedan ${stock}` : `Stock: ${stock}`;
+        const unitLabel = (product as any)?.unidadMedidaDescripcion ?? '';
+
+        const subEl = document.createElement('div');
+        subEl.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10.5px;color:#9ca3af;margin-top:1px;';
+        const dot = document.createElement('span');
+        dot.style.cssText = `width:5px;height:5px;border-radius:50%;background:${dotColor};flex-shrink:0;display:inline-block;`;
+        const txt = document.createElement('span');
+        txt.textContent = stockLabel + (unitLabel ? ` · ${unitLabel}` : '');
+        subEl.appendChild(dot);
+        subEl.appendChild(txt);
+
+        textWrap.appendChild(nameEl);
+        textWrap.appendChild(subEl);
+        div.appendChild(avatar);
+        div.appendChild(textWrap);
+        return div;
+      },
+    },
+    {
+      field: 'cantidad',
+      headerName: 'CANTIDAD',
+      width: 130,
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: { min: 1, precision: 0 },
+      cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
+        const component = (params.context as { component: VentaFormulario }).component;
+
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:4px;height:100%;';
+
+        const btnStyle =
+          'width:20px;height:20px;border:1px solid #e5e7eb;border-radius:4px;background:#f9fafb;cursor:pointer;color:#6b7280;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
+
+        const btnMinus = document.createElement('button');
+        btnMinus.type = 'button';
+        btnMinus.innerHTML = '<i class="pi pi-minus" style="font-size:7px"></i>';
+        btnMinus.style.cssText = btnStyle;
+
+        const numSpan = document.createElement('span');
+        numSpan.textContent = String(params.value);
+        numSpan.style.cssText = 'min-width:24px;text-align:center;font-size:12.5px;font-weight:500;color:#111827;';
+
+        const btnPlus = document.createElement('button');
+        btnPlus.type = 'button';
+        btnPlus.innerHTML = '<i class="pi pi-plus" style="font-size:7px"></i>';
+        btnPlus.style.cssText = btnStyle;
+
+        btnMinus.addEventListener('click', (e) => {
+          e.stopPropagation();
+          component.decrementarCantidad(params.data!.productoId);
+        });
+        btnPlus.addEventListener('click', (e) => {
+          e.stopPropagation();
+          component.incrementarCantidad(params.data!.productoId);
+        });
+
+        div.appendChild(btnMinus);
+        div.appendChild(numSpan);
+        div.appendChild(btnPlus);
+        return div;
+      },
+    },
+    {
+      field: 'precioUnitario',
+      headerName: 'P. UNIT.',
+      width: 100,
+      type: 'rightAligned',
       valueFormatter: (p) => (p.value != null ? `$${(p.value as number).toFixed(2)}` : ''),
     },
     {
-      headerName: '', width: 46, resizable: false,
+      field: 'descuento',
+      headerName: 'DESCUENTO',
+      width: 120,
+      editable: true,
+      type: 'rightAligned',
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: { min: 0, precision: 2 },
+      cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
+        const val = (params.value as number) ?? 0;
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;height:100%;';
+
+        const badge = document.createElement('span');
+        if (val > 0) {
+          badge.textContent = `-$${val.toFixed(2)}`;
+          badge.style.cssText =
+            'font-size:11px;background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-weight:500;cursor:pointer;';
+        } else {
+          badge.innerHTML = '<i class="pi pi-tag" style="font-size:9px;margin-right:3px"></i>Descto.';
+          badge.style.cssText =
+            'font-size:11px;background:#f3f4f6;color:#9ca3af;padding:2px 8px;border-radius:4px;cursor:pointer;';
+        }
+        div.appendChild(badge);
+        return div;
+      },
+    },
+    {
+      headerName: '',
+      width: 46,
+      resizable: false,
       cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.innerHTML = '<i class="pi pi-trash" style="font-size:11px"></i>';
-        btn.style.cssText = 'background:none;border:none;cursor:pointer;color:#ef4444;padding:0 6px;height:100%;';
+        btn.style.cssText =
+          'background:none;border:none;cursor:pointer;color:#ef4444;padding:0 6px;height:100%;display:flex;align-items:center;';
         btn.title = 'Eliminar';
-        btn.onclick = () =>
+        btn.onclick = (e) => {
+          e.stopPropagation();
           (params.context as { component: VentaFormulario }).component.eliminarItem(params.data!.productoId);
+        };
         return btn;
       },
     },
   ];
 
   public getRowId = (params: GetRowIdParams<ItemVenta>) => params.data.productoId;
+
+  @HostListener('document:keydown.F2', ['$event'])
+  onF2(event: Event): void {
+    if (this.itemCount() > 0) {
+      event.preventDefault();
+      this.guardarVenta();
+    }
+  }
 
   ngOnInit(): void {
     if (this.clientes().length === 0) {
@@ -246,6 +417,20 @@ export class VentaFormulario implements OnInit {
 
   onProductoSelect(event: { value: CatProducto }): void {
     this.productoSeleccionado = event.value;
+    // Al seleccionar desde el dropdown, agrega inmediatamente
+    setTimeout(() => this.agregarItem(), 0);
+  }
+
+  onSearchEnter(): void {
+    if (this.esProductoValido()) {
+      this.agregarItem();
+      return;
+    }
+    const sugs = this.productosFiltrados();
+    if (sugs.length > 0) {
+      this.productoSeleccionado = sugs[0];
+      setTimeout(() => this.agregarItem(), 0);
+    }
   }
 
   esProductoValido(): boolean {
@@ -258,6 +443,30 @@ export class VentaFormulario implements OnInit {
 
   seleccionarFormaPago(value: FormaPago): void {
     this.ventaForm.controls.formaPago.setValue(value);
+    this.montoCobrar.set(0);
+  }
+
+  getInitials(nombre: string): string {
+    return nombre
+      .split(' ')
+      .slice(0, 2)
+      .map(w => w.charAt(0))
+      .join('')
+      .toUpperCase();
+  }
+
+  limpiarCliente(): void {
+    this.ventaForm.controls.clienteId.setValue(null);
+  }
+
+  vaciarCarrito(): void {
+    this.gridApi?.setGridOption('rowData', []);
+    this.itemCount.set(0);
+    this.sincronizarTotales();
+  }
+
+  abrirDescuentoGlobal(): void {
+    this.toast.info('Descuento global — próximamente');
   }
 
   agregarItem(): void {
@@ -301,48 +510,40 @@ export class VentaFormulario implements OnInit {
     }
   }
 
+  incrementarCantidad(productoId: string): void {
+    const node = this.gridApi.getRowNode(productoId);
+    if (node?.data) {
+      this.gridApi.applyTransaction({ update: [{ ...node.data, cantidad: node.data.cantidad + 1 }] });
+      this.sincronizarTotales();
+    }
+  }
+
+  decrementarCantidad(productoId: string): void {
+    const node = this.gridApi.getRowNode(productoId);
+    if (!node?.data || node.data.cantidad <= 1) return;
+    this.gridApi.applyTransaction({ update: [{ ...node.data, cantidad: node.data.cantidad - 1 }] });
+    this.sincronizarTotales();
+  }
+
   onCellValueChanged(event: CellValueChangedEvent<ItemVenta>): void {
     this.gridApi.refreshCells({ rowNodes: [event.node], columns: ['subtotalCalc'], force: true });
     this.sincronizarTotales();
   }
 
-  // ─── Cliente rápido ───────────────────────────────────────────────────────
+  // ─── Cliente (dialog) ─────────────────────────────────────────────────────
 
   abrirDialogCliente(): void {
-    this.clienteForm.reset();
-    this.clienteForm.controls.tipoIdentificacion.setValue('CEDULA');
     this.dialogClienteVisible.set(true);
+    setTimeout(() => this.clienteFormRef?.initForm(), 0);
   }
 
-  refrescarClientes(): void {
-    this.clienteService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.toast.info('Clientes actualizados'),
-    });
+  guardarClienteDesdeDialog(): void {
+    this.clienteFormRef?.realizarAccion();
   }
 
-  guardarClienteRapido(): void {
-    if (!this.utilService.validarFormulario(this.clienteForm)) return;
-    this.cargando.activar();
-    const v = this.clienteForm.getRawValue();
-    const cliente: VentaCliente = {
-      tipoIdentificacion: v.tipoIdentificacion as TipoIdentificacion,
-      identificacion:     v.identificacion ?? '',
-      nombre:             v.nombre ?? '',
-      telefono:           v.telefono ?? undefined,
-      email:              v.email ?? undefined,
-      estado:             true,
-    };
-    this.clienteService.guardar(cliente)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.toast.success(`Cliente "${data.nombre}" creado`);
-          this.clienteService.agregarAlGrid(data);
-          this.ventaForm.controls.clienteId.setValue(data.id ?? null);
-          this.dialogClienteVisible.set(false);
-          this.cargando.inactivar();
-        },
-      });
+  onClienteGuardado(data: VentaCliente): void {
+    this.ventaForm.controls.clienteId.setValue(data.id ?? null);
+    this.dialogClienteVisible.set(false);
   }
 
   // ─── Producto rápido ──────────────────────────────────────────────────────
@@ -394,11 +595,15 @@ export class VentaFormulario implements OnInit {
   private sincronizarTotales(): void {
     let sub = 0;
     let iva = 0;
+    let desc = 0;
+    let uds = 0;
     const ivaMap = new Map<number, number>();
 
     this.gridApi.forEachNode((node) => {
       if (node.data) {
         const d = node.data;
+        desc += d.descuento ?? 0;
+        uds += d.cantidad;
         const itemSub = Math.max(0, d.cantidad * d.precioUnitario - (d.descuento ?? 0));
         sub += itemSub;
         const pct = d.porcentajeIva ?? 15;
@@ -410,6 +615,8 @@ export class VentaFormulario implements OnInit {
       }
     });
 
+    this._descuentoTotal.set(desc);
+    this._totalUnidades.set(uds);
     this._totales.set({ subtotal: sub, iva, total: sub + iva });
 
     const lineas = Array.from(ivaMap.entries())
@@ -445,7 +652,7 @@ export class VentaFormulario implements OnInit {
       observacion: formValue.observacion ?? undefined,
       clienteId:   formValue.clienteId ?? undefined,
       subtotal:    this.subtotal(),
-      descuento:   0,
+      descuento:   this.descuentoTotal(),
       baseIva:     0,
       baseExenta:  0,
       iva:         this.iva(),
@@ -499,7 +706,10 @@ export class VentaFormulario implements OnInit {
     this.gridApi?.setGridOption('rowData', []);
     this._totales.set({ subtotal: 0, iva: 0, total: 0 });
     this._ivaLineas.set([{ label: 'IVA', valor: 0 }]);
+    this._descuentoTotal.set(0);
+    this._totalUnidades.set(0);
     this.itemCount.set(0);
+    this.montoCobrar.set(0);
     this.productoSeleccionado = null;
     this.cantidad = 1;
     setTimeout(() => (document.getElementById('productoSearch') as HTMLInputElement)?.focus(), 100);
