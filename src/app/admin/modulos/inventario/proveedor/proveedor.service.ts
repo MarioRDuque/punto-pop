@@ -34,7 +34,7 @@ export class ProveedorService {
   }
 
   guardar(proveedor: Proveedor): Observable<Proveedor> {
-    return this.api.post<Proveedor>('/inventario/proveedor/guardar', proveedor).pipe(
+    return this.api.post<Proveedor>('/inventario/proveedor', proveedor).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }

@@ -108,6 +108,13 @@ export class Errors implements OnInit, OnDestroy {
         return `${fieldLabel} debe ser menor o igual a ${info['max']}.`;
       case 'pattern':
         return `${fieldLabel} tiene un formato inválido.`;
+      case 'identificacionInvalida': {
+        const labels: Record<string, string> = { CEDULA: 'Cédula', RUC: 'RUC', PASAPORTE: 'Pasaporte' };
+        const tipo = info['tipo'] as string;
+        return `${labels[tipo] ?? fieldLabel} inválido.`;
+      }
+      case 'rucInvalido':
+        return `RUC inválido.`;
       default:
         return null;
     }

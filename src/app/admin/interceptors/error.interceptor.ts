@@ -26,8 +26,12 @@ export const errorInterceptor: HttpInterceptorFn = (
 
         case 400:
           if (error.error?.errors) {
-            const mensaje = Object.values<string>(error.error.errors).join('\n');
-            toast.error(mensaje, error.error?.title || 'Error de Validación');
+            const messages = Object.values<string>(error.error.errors);
+            if (messages.length === 1) {
+              toast.error(messages[0], error.error?.title || 'Error de Validación');
+            } else {
+              toast.errorMultiple(messages, error.error?.title || 'Error de Validación');
+            }
           } else {
             toast.error(
               error.error?.detail || 'Contacte al administrador',

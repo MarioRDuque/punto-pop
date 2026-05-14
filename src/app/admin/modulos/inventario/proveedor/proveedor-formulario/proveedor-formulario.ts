@@ -14,6 +14,7 @@ import { UtilService } from '../../../../service/util.service';
 import { Proveedor } from '../../../../entities/Proveedor';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { rucValidator } from '../../../../directives/identificacion-rules';
 
 @Component({
   selector: 'app-proveedor-formulario',
@@ -37,7 +38,7 @@ export class ProveedorFormulario implements OnInit {
   public readonly accionEnum = AccionEnum;
 
   public readonly proveedorForm = this.fb.group({
-    ruc:             ['', [Validators.required]],
+    ruc:             ['', [Validators.required, rucValidator('EC')]],
     razonSocial:     ['', [Validators.required]],
     nombreComercial: [''],
     telefono:        [''],

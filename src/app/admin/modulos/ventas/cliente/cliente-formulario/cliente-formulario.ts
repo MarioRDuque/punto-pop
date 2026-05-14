@@ -15,6 +15,7 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { VentaCliente, TipoIdentificacion } from '../../../../entities/VentaCliente';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { identificacionValidator } from '../../../../directives/identificacion-rules';
 
 @Component({
   selector: 'app-cliente-formulario',
@@ -40,6 +41,14 @@ export class ClienteFormulario implements OnInit {
   public accion = this.formsService.accion;
   public accionEnum = AccionEnum;
 
+  constructor() {
+    this.clienteForm.controls.tipoIdentificacion.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.clienteForm.controls.identificacion.updateValueAndValidity({ emitEvent: false });
+      });
+  }
+
   public tiposIdentificacion: { label: string; value: TipoIdentificacion }[] = [
     { label: 'Cédula', value: 'CEDULA' },
     { label: 'RUC', value: 'RUC' },
@@ -49,7 +58,7 @@ export class ClienteFormulario implements OnInit {
   public clienteForm = this.fb.group({
     id: [null as string | null],
     tipoIdentificacion: ['CEDULA' as TipoIdentificacion, [Validators.required]],
-    identificacion: ['', [Validators.required]],
+    identificacion: ['', [Validators.required, identificacionValidator('EC')]],
     nombre: ['', [Validators.required]],
     email: [''],
     telefono: [''],

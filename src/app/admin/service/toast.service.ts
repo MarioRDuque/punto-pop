@@ -26,6 +26,15 @@ export class ToastService {
     });
   }
 
+  errorMultiple(messages: string[], summary = 'Error de Validación') {
+    this.messageService.add({
+      severity: 'error',
+      summary,
+      detail: messages.map(m => `• ${m}`).join('\n'),
+      life: 6000,
+    });
+  }
+
   warn(detail: string, summary = 'Advertencia') {
     this.messageService.add({
       severity: 'warn',
