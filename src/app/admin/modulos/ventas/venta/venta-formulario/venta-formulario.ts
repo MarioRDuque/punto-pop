@@ -202,7 +202,7 @@ export class VentaFormulario implements OnInit {
         const span = document.createElement('span');
         span.textContent = params.value;
         span.style.cssText =
-          'font-family:monospace;font-size:11px;background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:4px;white-space:nowrap;';
+          'font-family:monospace;font-size:11px;background:var(--ag-row-hover-color);color:var(--ag-secondary-foreground-color);padding:2px 7px;border-radius:4px;white-space:nowrap;';
         return span;
       },
     },
@@ -236,7 +236,7 @@ export class VentaFormulario implements OnInit {
         const nameEl = document.createElement('div');
         nameEl.textContent = params.value;
         nameEl.style.cssText =
-          'font-size:12.5px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;';
+          'font-size:12.5px;font-weight:500;color:var(--ag-foreground-color);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;';
 
         const stock = product?.stock ?? 0;
         const stockMinimo = (product as any)?.stockMinimo ?? 0;
@@ -246,7 +246,7 @@ export class VentaFormulario implements OnInit {
         const unitLabel = (product as any)?.unidadMedidaDescripcion ?? '';
 
         const subEl = document.createElement('div');
-        subEl.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10.5px;color:#9ca3af;margin-top:1px;';
+        subEl.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10.5px;color:var(--ag-secondary-foreground-color);margin-top:1px;';
         const dot = document.createElement('span');
         dot.style.cssText = `width:5px;height:5px;border-radius:50%;background:${dotColor};flex-shrink:0;display:inline-block;`;
         const txt = document.createElement('span');
@@ -275,7 +275,7 @@ export class VentaFormulario implements OnInit {
         div.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:4px;height:100%;';
 
         const btnStyle =
-          'width:20px;height:20px;border:1px solid #e5e7eb;border-radius:4px;background:#f9fafb;cursor:pointer;color:#6b7280;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
+          'width:20px;height:20px;border:1px solid var(--ag-border-color);border-radius:4px;background:var(--ag-row-hover-color);cursor:pointer;color:var(--ag-secondary-foreground-color);display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
 
         const btnMinus = document.createElement('button');
         btnMinus.type = 'button';
@@ -284,7 +284,7 @@ export class VentaFormulario implements OnInit {
 
         const numSpan = document.createElement('span');
         numSpan.textContent = String(params.value);
-        numSpan.style.cssText = 'min-width:24px;text-align:center;font-size:12.5px;font-weight:500;color:#111827;';
+        numSpan.style.cssText = 'min-width:24px;text-align:center;font-size:12.5px;font-weight:500;color:var(--ag-foreground-color);';
 
         const btnPlus = document.createElement('button');
         btnPlus.type = 'button';
@@ -330,11 +330,11 @@ export class VentaFormulario implements OnInit {
         if (val > 0) {
           badge.textContent = `-$${val.toFixed(2)}`;
           badge.style.cssText =
-            'font-size:11px;background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-weight:500;cursor:pointer;';
+            'font-size:11px;background:color-mix(in srgb,#f59e0b 18%,var(--ag-background-color));color:#f59e0b;padding:2px 7px;border-radius:4px;font-weight:500;cursor:pointer;';
         } else {
           badge.innerHTML = '<i class="pi pi-tag" style="font-size:9px;margin-right:3px"></i>Descto.';
           badge.style.cssText =
-            'font-size:11px;background:#f3f4f6;color:#9ca3af;padding:2px 8px;border-radius:4px;cursor:pointer;';
+            'font-size:11px;background:var(--ag-row-hover-color);color:var(--ag-secondary-foreground-color);padding:2px 8px;border-radius:4px;cursor:pointer;';
         }
         div.appendChild(badge);
         return div;
