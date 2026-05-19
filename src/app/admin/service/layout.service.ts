@@ -123,8 +123,10 @@ export class LayoutService {
         const _config = config || this.layoutConfig();
         if (_config.darkTheme) {
             document.documentElement.classList.add('app-dark');
+            document.documentElement.setAttribute('data-ag-theme-mode', 'dark');
         } else {
             document.documentElement.classList.remove('app-dark');
+            document.documentElement.setAttribute('data-ag-theme-mode', 'light');
         }
     }
 
