@@ -61,7 +61,6 @@ export class Perfil implements OnInit {
 
     // Mostrar inmediatamente con datos de sesión, sin esperar al backend
     const usuarioInicial = new ConfUsuario({
-      usuUsername: usuarioSesion.username,
       usuNombre: usuarioSesion.nombre,
       usuApellidos: usuarioSesion.apellidos,
       usuEmail: usuarioSesion.email,
@@ -74,7 +73,7 @@ export class Perfil implements OnInit {
     this.mostrarPerfil = true;
 
     // Actualizar en segundo plano con datos frescos del backend
-    this.usuariosService.obtenerUsuario(usuarioSesion.username).subscribe({
+    this.usuariosService.obtenerUsuario(usuarioSesion.email).subscribe({
       next: (data) => {
         this.formsService.objetoSeleccionado.set(data);
         // Sincronizar la foto en la sesión para que topbar y avatar la reflejen

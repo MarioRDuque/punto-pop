@@ -29,7 +29,7 @@ export interface Venta {
   estado?: EstadoVenta;
   formaPago: FormaPago;
   observacion?: string;
-  usuUsername?: string;
+  usuEmail?: string;
   cliente?: VentaCliente;
   clienteId?: string;
   clienteNombre?: string;

@@ -36,13 +36,13 @@ export class UsuariosService {
   }
 
   actualizar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.put<ConfUsuario>(`/configuracion/usuario/${usuario.usuUsername}`, usuario).pipe(
+    return this.api.put<ConfUsuario>(`/configuracion/usuario/${usuario.usuEmail}`, usuario).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(usuario: ConfUsuario): Observable<ConfUsuario> {
-    return this.api.delete<ConfUsuario>(`/configuracion/usuario/${usuario.usuUsername}`).pipe(
+    return this.api.delete<ConfUsuario>(`/configuracion/usuario/${usuario.usuEmail}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -70,21 +70,21 @@ export class UsuariosService {
 
   actualizarElGrid(usuario: ConfUsuario): void {
     this.usuarios.update((list) =>
-      list.map((u) => (u.usuUsername === usuario.usuUsername ? usuario : u))
+      list.map((u) => (u.usuEmail === usuario.usuEmail ? usuario : u))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(usuario: ConfUsuario): void {
     this.usuarios.update((list) =>
-      list.filter((u) => u.usuUsername !== usuario.usuUsername)
+      list.filter((u) => u.usuEmail !== usuario.usuEmail)
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'Usuario',    field: 'usuUsername', width: 120, minWidth: 120 },
+      { headerName: 'Usuario',    field: 'usuEmail', width: 120, minWidth: 120 },
       { headerName: 'Nombre',     field: 'usuNombre',   width: 120, minWidth: 120 },
       { headerName: 'Apellidos',  field: 'usuApellidos', width: 250, minWidth: 250 },
       { headerName: 'E-mail',     field: 'usuEmail',    width: 200, minWidth: 200 },

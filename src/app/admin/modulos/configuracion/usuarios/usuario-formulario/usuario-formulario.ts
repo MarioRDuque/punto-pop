@@ -64,7 +64,7 @@ export class UsuarioFormulario implements OnInit {
   public readonly usuarioForm = this.fb.group({
     usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
     usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-    usuUsername: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
+    usuEmail: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     usuEmail: ['', [Validators.required, Validators.email]],
     usuClave: ['', [Validators.required]],
     usuTelefono: [''],
@@ -101,12 +101,12 @@ export class UsuarioFormulario implements OnInit {
       case AccionEnum.EDITAR:
         this.subtitulo = 'Actualización de datos';
         this.patchFormulario(this.formsService.objetoSeleccionado());
-        this.usuarioForm.controls.usuUsername.disable();
+        this.usuarioForm.controls.usuEmail.disable();
         break;
       case AccionEnum.PERFIL:
         this.subtitulo = 'Perfil';
         this.patchFormulario(this.formsService.objetoSeleccionado());
-        this.usuarioForm.controls.usuUsername.disable();
+        this.usuarioForm.controls.usuEmail.disable();
         this.aplicarRestriccionesPerfil();
         break;
     }
@@ -126,7 +126,7 @@ export class UsuarioFormulario implements OnInit {
     const roles = this.normalizarRoles(formValue.roles ?? []);
 
     const usuario = new ConfUsuario({
-      usuUsername: formValue.usuUsername ?? '',
+      usuEmail: formValue.usuEmail ?? '',
       usuNombre: formValue.usuNombre ?? '',
       usuApellidos: formValue.usuApellidos ?? '',
       usuEmail: formValue.usuEmail ?? '',

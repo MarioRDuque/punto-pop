@@ -12,16 +12,13 @@ const ConfRolResumenSchema = z.object({
 
 export const UsuarioSesionSchema = z.object({
   token: z.string(),
-  username: z.string().min(1),
-  nombre: z.string(),
+  email: z.string().min(1),
+  empresaId: z.string().uuid().nullish(),
+  nombre: z.string().nullish().transform(v => v ?? ''),
   apellidos: z.string().nullish().transform(v => v ?? ''),
-  email: z.string().nullish().transform(v => v ?? ''),
   telefono: z.string().nullish(),
   direccion: z.string().nullish(),
-  tiene2FA: z.boolean().optional(),
-  foto: z.string().nullish(),
   roles: z.array(ConfRolResumenSchema).optional(),
-  sucursales: z.array(z.unknown()).optional(),
   permisos: z.array(z.string()).nullish().transform(v => v ?? []),
 });
 

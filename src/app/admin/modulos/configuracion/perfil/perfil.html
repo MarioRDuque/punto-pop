@@ -15,7 +15,7 @@
                     }
                 </div>
                 <div class="profile-name">{{usuario().usuNombre}} {{usuario().usuApellidos}}</div>
-                <div class="profile-username">@{{usuario().usuUsername}}</div>
+                <div class="profile-username">@{{usuario().usuEmail}}</div>
                 <div class="profile-role-badge">
                     <div class="role-dot"></div>
                     {{ usuario()?.roles?.[0]?.rolDescripcion || usuario()?.roles?.[0]?.rolCodigo || authService.usuario()?.roles?.[0] || 'Usuario' }}

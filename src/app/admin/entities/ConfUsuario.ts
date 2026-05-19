@@ -5,10 +5,9 @@
  * Usa nombres claros y agnósticos a la base de datos.
  */
 export interface Usuario {
-  username: string;
+  email: string;
   nombre: string;
   apellidos: string;
-  email: string;
   telefono?: string;
   direccion?: string;
   estado: boolean;
@@ -33,10 +32,9 @@ export interface ConfRolResumen {
  * NO usar directamente en lógica de UI — usar Usuario.
  */
 export class ConfUsuario {
-  usuUsername: string;
+  usuEmail: string;
   usuNombre: string;
   usuApellidos: string;
-  usuEmail: string;
   usuClave: string;
   usuTelefono: string;
   usuDireccion: string;
@@ -45,10 +43,9 @@ export class ConfUsuario {
   roles?: ConfRolResumen[];
 
   constructor(values: Partial<ConfUsuario> = {}) {
-    this.usuUsername = values.usuUsername ?? '';
+    this.usuEmail = values.usuEmail ?? '';
     this.usuNombre = values.usuNombre ?? '';
     this.usuApellidos = values.usuApellidos ?? '';
-    this.usuEmail = values.usuEmail ?? '';
     this.usuClave = values.usuClave ?? '';
     this.usuTelefono = values.usuTelefono ?? '';
     this.usuDireccion = values.usuDireccion ?? '';
@@ -57,32 +54,28 @@ export class ConfUsuario {
     this.roles = values.roles ?? [];
   }
 
-  /** Convierte el DTO al modelo de dominio */
   toDomain(): Usuario {
     return {
-      username: this.usuUsername,
+      email: this.usuEmail,
       nombre: this.usuNombre,
       apellidos: this.usuApellidos,
-      email: this.usuEmail,
       telefono: this.usuTelefono || undefined,
       direccion: this.usuDireccion || undefined,
       estado: this.usuEstado,
-      roles: this.roles
+      roles: this.roles,
     };
   }
 
-  /** Crea un DTO desde el modelo de dominio */
   static fromDomain(usuario: Usuario, clave = ''): ConfUsuario {
     return new ConfUsuario({
-      usuUsername: usuario.username,
+      usuEmail: usuario.email,
       usuNombre: usuario.nombre,
       usuApellidos: usuario.apellidos,
-      usuEmail: usuario.email,
       usuClave: clave,
       usuTelefono: usuario.telefono ?? '',
       usuDireccion: usuario.direccion ?? '',
       usuEstado: usuario.estado,
-      roles: usuario.roles
+      roles: usuario.roles,
     });
   }
 }

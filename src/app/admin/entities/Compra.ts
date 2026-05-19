@@ -21,6 +21,6 @@ export interface Compra {
   total?: number;
   estado?: EstadoCompra;
   observacion?: string;
-  usuUsername?: string;
+  usuEmail?: string;
   detalles: DetalleCompra[];
 }

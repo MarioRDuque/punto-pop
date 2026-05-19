@@ -38,7 +38,7 @@ export class Login {
   readonly anio = new Date().getFullYear();
 
   readonly loginForm = this.fb.group({
-    username: ['', [Validators.required]],
+    email: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
 
@@ -48,13 +48,13 @@ export class Login {
       return;
     }
 
-    const { username, password } = this.loginForm.getRawValue();
+    const { email, password } = this.loginForm.getRawValue();
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
 
     this.cargandoLogin.set(true);
 
     this.loginService
-      .login({ username: username!, password: password! })
+      .login({ email: email!, password: password! })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

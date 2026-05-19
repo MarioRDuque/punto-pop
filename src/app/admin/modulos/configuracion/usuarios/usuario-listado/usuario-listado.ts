@@ -101,7 +101,7 @@ export class UsuarioListado implements OnInit {
 
   private despuesDeCambiarEstado(data: ConfUsuario): void {
     this.toast.success(
-      `El usuario ${data.usuUsername} ha sido ➔ ${data.usuEstado ? 'ACTIVADO' : 'INACTIVADO'}`
+      `El usuario ${data.usuEmail} ha sido ➔ ${data.usuEstado ? 'ACTIVADO' : 'INACTIVADO'}`
     );
     this.usuariosService.actualizarElGrid(data);
     this.cargando.inactivar();

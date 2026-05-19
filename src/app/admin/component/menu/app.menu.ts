@@ -31,7 +31,7 @@ export class AppMenu implements OnInit{
                 items: [
                     { label: 'Productos', icon: 'pi pi-fw pi-box', routerLink: ['/catalogo/productos'] },
                     { label: 'Categorías', icon: 'pi pi-fw pi-tags', routerLink: ['/catalogo/categorias'] },
-                    { label: 'Unidades de Medida', icon: 'pi pi-fw pi-ruler', routerLink: ['/catalogo/unidades-medida'] }
+                    { label: 'Unidades de Medida', icon: 'pi pi-fw pi-calculator', routerLink: ['/catalogo/unidades-medida'] }
                 ]
             },
             {

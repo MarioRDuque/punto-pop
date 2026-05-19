@@ -101,7 +101,7 @@ export class VentaService {
         type: 'numericColumn',
         valueFormatter: (params) => params.value != null ? `$${Number(params.value).toFixed(2)}` : '',
       },
-      { headerName: 'Usuario', field: 'usuUsername', width: 150, minWidth: 120 },
+      { headerName: 'Usuario', field: 'usuEmail', width: 150, minWidth: 120 },
       this.utilService.getColumnaAcciones(),
     ];
   }

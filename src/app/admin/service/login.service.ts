@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { AuthService, UsuarioSesion } from './auth.service';
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
