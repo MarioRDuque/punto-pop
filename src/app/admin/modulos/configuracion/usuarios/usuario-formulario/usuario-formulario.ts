@@ -64,8 +64,7 @@ export class UsuarioFormulario implements OnInit {
   public readonly usuarioForm = this.fb.group({
     usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
     usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-    usuEmail: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
-    usuEmail: ['', [Validators.required, Validators.email]],
+    usuEmail: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.email]],
     usuClave: ['', [Validators.required]],
     usuTelefono: [''],
     usuDireccion: [''],
@@ -129,7 +128,6 @@ export class UsuarioFormulario implements OnInit {
       usuEmail: formValue.usuEmail ?? '',
       usuNombre: formValue.usuNombre ?? '',
       usuApellidos: formValue.usuApellidos ?? '',
-      usuEmail: formValue.usuEmail ?? '',
       usuClave: formValue.usuClave ?? '',
       usuTelefono: formValue.usuTelefono ?? '',
       usuDireccion: formValue.usuDireccion ?? '',

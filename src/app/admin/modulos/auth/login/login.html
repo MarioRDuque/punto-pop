@@ -1,112 +1,113 @@
 <div class="login-wrapper">
 
-    <!-- ══════════ PANEL IZQUIERDO — BRANDING ══════════ -->
-    <div class="brand-panel">
-        <div class="bubble bubble-1"></div>
-        <div class="bubble bubble-2"></div>
-        <div class="bubble bubble-3"></div>
+  <!-- ══════════ FONDO ANIMADO ══════════ -->
+  <div class="lw-bg" aria-hidden="true">
+    <div class="lw-bg__orb lw-bg__orb--a"></div>
+    <div class="lw-bg__orb lw-bg__orb--b"></div>
+    <div class="lw-bg__grid"></div>
+    <div class="lw-bg__vignette"></div>
+  </div>
 
-        <!-- Logo -->
-        <div class="brand-logo-box">
-            <div class="brand-initials">PP</div>
-            <div class="brand-name-text">
-                Punto Pop
-                <span>Sistema ERP</span>
-            </div>
-        </div>
+  <!-- ══════════ PANEL IZQUIERDO — BRANDING ══════════ -->
+  <div class="brand-panel">
+    <span class="bp-hud bp-hud--tl" aria-hidden="true"></span>
+    <span class="bp-hud bp-hud--br" aria-hidden="true"></span>
+    <div class="bp-scan" aria-hidden="true"></div>
 
-        <!-- Contenido central -->
-        <div class="brand-center">
-            <h1 class="brand-headline">
-                Gestiona tu negocio<br>en un solo lugar
-            </h1>
-            <p class="brand-description">
-                Plataforma integral para el control de usuarios, roles,
-                inventario y operaciones de tu empresa.
-            </p>
-
-            <div class="brand-features">
-                <div class="feature-row">
-                    <div class="feature-icon-box">
-                        <i class="pi pi-users"></i>
-                    </div>
-                    Gestión de usuarios y roles
-                </div>
-                <div class="feature-row">
-                    <div class="feature-icon-box">
-                        <i class="pi pi-chart-bar"></i>
-                    </div>
-                    Reportes y análisis en tiempo real
-                </div>
-                <div class="feature-row">
-                    <div class="feature-icon-box">
-                        <i class="pi pi-shield"></i>
-                    </div>
-                    Control de acceso seguro
-                </div>
-            </div>
-        </div>
-
-        <div class="brand-footer-text">
-            © {{ anio }} Punto Pop · Todos los derechos reservados
-        </div>
+    <!-- Logo -->
+    <div class="brand-logo-box">
+      <div class="brand-initials">PP</div>
+      <div class="brand-name-text">
+        Punto Pop
+        <span>Sistema ERP · Ecuador</span>
+      </div>
     </div>
 
-    <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
-    <div class="form-panel">
-
-        <div class="theme-toggle-corner">
-            <app-floating-configurator [float]="false" />
-        </div>
-
-        <div class="form-center">
-            <div class="login-box">
-
-                <!-- Logo solo en móvil -->
-                <div class="mobile-logo">
-                    <div class="mobile-initials-box">PP</div>
-                    <span class="mobile-brand-name">Punto Pop</span>
-                </div>
-
-                <h2 class="form-heading">Bienvenido</h2>
-                <p class="form-subheading">Ingresa tus credenciales para continuar</p>
-
-                <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" autocomplete="off" novalidate>
-
-                    <div class="fields-stack">
-                        <div class="field">
-                            <app-input
-                                label="Usuario"
-                                id="email"
-                                [icon]="ICONSCONSTANT.USER"
-                                [uppercase]="false" />
-                        </div>
-
-                        <div class="field">
-                            <app-password
-                                label="Contraseña"
-                                id="password"
-                                [uppercase]="false" />
-                        </div>
-                    </div>
-
-                    <p-button
-                        type="submit"
-                        label="Iniciar sesión"
-                        icon="pi pi-sign-in"
-                        iconPos="right"
-                        styleClass="login-submit-btn"
-                        [loading]="cargandoLogin()" />
-
-                </form>
-
-                <div class="form-bottom">
-                    © {{ anio }} Punto Pop · v1.0.0
-                </div>
-
-            </div>
-        </div>
-
+    <!-- Estado del sistema -->
+    <div class="bp-status">
+      <span class="bp-status__dot"></span>
+      Sistema operativo
     </div>
+
+    <!-- Contenido central -->
+    <div class="brand-center">
+      <h1 class="brand-headline">
+        Gestiona tu<br>
+        <em class="brand-headline__em">negocio</em><br>
+        en un solo lugar
+      </h1>
+      <p class="brand-description">
+        Plataforma integral con facturación electrónica SRI,
+        inventario y control de acceso seguro.
+      </p>
+      <div class="brand-features">
+        <div class="feature-row"><span class="bp-dot"></span>Facturación electrónica SRI en tiempo real</div>
+        <div class="feature-row"><span class="bp-dot"></span>Control de inventario y compras</div>
+        <div class="feature-row"><span class="bp-dot"></span>Acceso seguro con roles y permisos</div>
+      </div>
+    </div>
+
+    <!-- Métricas -->
+    <div class="bp-metrics">
+      <div class="bp-metric"><strong>99.9%</strong><span>Uptime</span></div>
+      <div class="bp-metric"><strong>2.4K+</strong><span>Ventas/mes</span></div>
+      <div class="bp-metric"><strong>SRI</strong><span>Certificado</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
+  <div class="form-panel">
+
+    <div class="theme-toggle-corner">
+      <app-floating-configurator [float]="false" />
+    </div>
+
+    <div class="form-center">
+      <div class="login-box">
+
+        <!-- Logo solo en móvil -->
+        <div class="mobile-logo">
+          <div class="mobile-initials-box">PP</div>
+          <span class="mobile-brand-name">Punto Pop</span>
+        </div>
+
+        <!-- Avatar con órbitas -->
+        <div class="fp-avatar">
+          <div class="fp-avatar__orbit fp-avatar__orbit--outer"></div>
+          <div class="fp-avatar__orbit fp-avatar__orbit--inner"></div>
+          <div class="fp-avatar__core"><i class="pi pi-user"></i></div>
+        </div>
+
+        <h2 class="form-heading">Iniciar sesión</h2>
+        <p class="form-subheading">Ingresa tus credenciales para continuar</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" autocomplete="off" novalidate>
+          <div class="fields-stack">
+            <app-input
+              label="Usuario"
+              id="email"
+              [icon]="ICONSCONSTANT.USER"
+              [uppercase]="false" />
+            <app-password
+              label="Contraseña"
+              id="password"
+              [uppercase]="false" />
+          </div>
+
+          <p-button
+            type="submit"
+            label="Iniciar sesión"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            styleClass="login-submit-btn"
+            [loading]="cargandoLogin()" />
+        </form>
+
+        <div class="form-bottom">© {{ anio }} Punto Pop · v1.0.0</div>
+
+      </div>
+    </div>
+
+  </div>
 
 </div>

@@ -18,6 +18,9 @@ export const UsuarioSesionSchema = z.object({
   apellidos: z.string().nullish().transform(v => v ?? ''),
   telefono: z.string().nullish(),
   direccion: z.string().nullish(),
+  foto: z.string().nullish(),
+  tiene2FA: z.boolean().optional(),
+  sucursales: z.array(z.any()).optional(),
   roles: z.array(ConfRolResumenSchema).optional(),
   permisos: z.array(z.string()).nullish().transform(v => v ?? []),
 });
