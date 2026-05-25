@@ -1,18 +1,24 @@
-//ENCABEZADO FORMULARIO
+/* HEADER CRUD · Punto Pop Aurora */
+
+/* Título y subtítulo — controlados via _aurora-extras.scss
+   (responden a dark mode) */
+
 .header-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .header-subtitle {
-  font-size: 0.813rem;
-  color: #6b7280;
-  line-height: 1;
-  margin-bottom: 2px;
-  margin-top: -8px;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .p-panel {
@@ -31,13 +37,10 @@
   display: none;
 }
 
-//FIN
-
 ::ng-deep .small-tooltip {
   .p-tooltip-text {
     padding: 0.25rem 0.5rem !important;
-    font-size: 0.75rem !important;
+    font-size: 0.6875rem !important;
     line-height: 1.2 !important;
   }
 }
-

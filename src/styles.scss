@@ -4,8 +4,8 @@
 @use 'primeicons/primeicons.css';
 @use './assets/demo/demo.scss';
 @use './assets/layout/disabled-primeng.scss';
+@use './styles/_aurora-extras.scss';
 @import "primeicons/primeicons.css";
-
 .text-primary-contrast {
   font-size: 10px !important;
 }

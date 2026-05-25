@@ -5,9 +5,10 @@ import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../../component/floatingconfigurator/app.floatingconfigurator';
 
 @Component({
-    selector: 'app-error',
-    imports: [ButtonModule, RippleModule, RouterModule, AppFloatingConfigurator, ButtonModule],
-    standalone: true,
-    templateUrl: './error.html'
+  selector: 'app-error',
+  standalone: true,
+  imports: [ButtonModule, RippleModule, RouterModule, AppFloatingConfigurator],
+  templateUrl: './error.html',
+  styleUrl: '../auth-error-pages.scss'
 })
 export class Error {}

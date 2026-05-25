@@ -1,0 +1,595 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   PUNTO POP · AURORA · Extras
+   Importa al final de tu src/styles.scss:
+     @use './styles/_aurora-extras.scss';
+   Añade refinamientos visuales para topbar, sidebar, ag-grid, tablas, tabs,
+   diálogos y pantallas auth. NO modifica nada existente en tu styles.scss.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   1. TOPBAR
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-topbar-logo {
+  svg {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+
+.topbar-brand-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  letter-spacing: -0.015em !important;
+  font-family: 'Inter', sans-serif !important;
+
+  em {
+    font-style: normal;
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+}
+
+.layout-topbar-logo-container {
+  gap: 0.75rem !important;
+
+  .layout-topbar-logo {
+    gap: 0.625rem !important;
+  }
+}
+
+/* Command search central */
+.layout-topbar-search {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.875rem;
+  height: 34px;
+  margin: 0 auto;
+  max-width: 360px;
+  flex: 1;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.40);
+  font-size: 0.8125rem;
+  cursor: text;
+  transition: background 0.14s, border-color 0.14s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  i { font-size: 0.8125rem; color: rgba(255, 255, 255, 0.40); flex-shrink: 0; }
+  span { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  kbd {
+    padding: 0.0625rem 0.375rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.55);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.1;
+  }
+
+  @media (min-width: 992px) { display: flex; }
+}
+
+.layout-topbar-action--avatar {
+  width: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  &:hover { background: transparent !important; }
+  .topbar-avatar { transition: box-shadow 0.18s ease; }
+  &:hover .topbar-avatar {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 50%, transparent);
+  }
+}
+
+.layout-topbar-action {
+  position: relative !important;
+
+  .topbar-bell-dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #f87171;
+    box-shadow: 0 0 0 2px #0a0e1a;
+    pointer-events: none;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   2. SIDEBAR · MENU — Glow del activo
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-menu {
+  li a {
+    position: relative;
+
+    &.active-route,
+    &.router-link-active {
+      &::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 6px; bottom: 6px;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--primary-color);
+        box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 60%, transparent);
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   3. MAIN CONTAINER — sutil grid de fondo
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-main-container {
+  background-image:
+    linear-gradient(var(--pp-border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pp-border-subtle) 1px, transparent 1px) !important;
+  background-size: 48px 48px !important;
+  background-position: 0 0 !important;
+}
+
+.layout-main {
+  padding: 1.25rem 1.5rem 2rem !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   4. TABS REFINADOS — más limpios, hover sutil, animación
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-tablist {
+  background: transparent !important;
+  border-bottom: 1px solid var(--pp-border-subtle) !important;
+  padding: 0 0.25rem !important;
+  margin: 0 0 1rem !important;
+}
+
+.p-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: var(--pp-text-2) !important;
+  font-weight: 500 !important;
+  font-size: 0.8125rem !important;
+  padding: 0.625rem 0.875rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  transition: color 0.14s !important;
+
+  i { font-size: 0.6875rem !important; opacity: 0.7; }
+
+  &:hover:not(.p-tab-active):not(.p-disabled) {
+    color: var(--pp-text) !important;
+  }
+  &:hover:not(.p-tab-active):not(.p-disabled) i {
+    opacity: 1;
+  }
+
+  &.p-tab-active {
+    color: var(--pp-text) !important;
+    font-weight: 600 !important;
+  }
+  &.p-tab-active i {
+    color: var(--primary-color) !important;
+    opacity: 1;
+  }
+}
+
+.p-tablist-active-bar {
+  height: 2px !important;
+  border-radius: 2px 2px 0 0 !important;
+  background: var(--primary-color) !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 50%, transparent);
+}
+
+.p-tabpanel,
+.p-tabpanels {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   5. HEADER-CRUD — primary accent bar + tipografía moderna
+   ════════════════════════════════════════════════════════════════════════════ */
+
+app-header-crud {
+  .header-title {
+    color: var(--text-color) !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.015em !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+  }
+
+  .header-subtitle {
+    font-size: 0.75rem !important;
+    color: var(--pp-text-3) !important;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Botones redondeados del header → más cuadrados */
+  .p-button.p-button-rounded {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+
+    .p-button-icon { font-size: 0.8125rem !important; }
+  }
+
+  .p-button.p-button-raised {
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 1px 2px rgba(0,0,0,0.08) !important;
+  }
+
+  /* Bar primary izquierda más sutil */
+  .bg-primary.rounded-sm {
+    background: linear-gradient(180deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 60%, transparent)) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 40%, transparent);
+    width: 3px !important;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   6. AG-GRID — Refinado: header limpio, hover sutil, mejor tipografía
+   ════════════════════════════════════════════════════════════════════════════ */
+
+ag-grid-angular {
+  --ag-font-family: 'Inter', sans-serif !important;
+  --ag-font-size: 13px !important;
+  --ag-grid-size: 6px !important;
+  --ag-border-radius: 10px !important;
+  --ag-wrapper-border-radius: 10px !important;
+
+  --ag-background-color: var(--pp-surface) !important;
+  --ag-foreground-color: var(--pp-text) !important;
+  --ag-border-color: var(--pp-border-subtle) !important;
+  --ag-row-border-color: var(--pp-border-subtle) !important;
+
+  --ag-header-background-color: var(--pp-surface-2) !important;
+  --ag-header-foreground-color: var(--pp-text-3) !important;
+  --ag-header-cell-hover-background-color: var(--pp-hover) !important;
+  --ag-header-cell-moving-background-color: var(--pp-subtle-bg) !important;
+  --ag-header-column-resize-handle-color: var(--pp-border) !important;
+  --ag-header-column-separator-color: var(--pp-border-subtle) !important;
+
+  --ag-row-hover-color: var(--pp-hover) !important;
+  --ag-selected-row-background-color: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+  --ag-odd-row-background-color: var(--pp-row-even) !important;
+}
+
+ag-grid-angular .ag-header-cell-text {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--pp-text-3) !important;
+}
+
+ag-grid-angular .ag-cell {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+}
+
+ag-grid-angular .ag-row {
+  font-feature-settings: 'tnum';
+}
+
+/* Status bar (footer) */
+ag-grid-angular .ag-status-bar {
+  background: var(--pp-surface-2) !important;
+  border-top: 1px solid var(--pp-border-subtle) !important;
+  font-size: 12px !important;
+  color: var(--pp-text-2) !important;
+  padding: 0.5rem 0.875rem !important;
+}
+
+/* status-bar-filtros */
+app-status-bar-filtros {
+  .grid-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    width: 100%;
+
+    label {
+      font-size: 0.75rem;
+      color: var(--pp-text-3);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   7. FILTER INPUT (encima de la grilla)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+app-grid {
+  .p-iconfield .p-inputtext {
+    padding-left: 2.25rem !important;
+  }
+  .p-iconfield .p-inputicon.search {
+    cursor: pointer;
+    transition: color 0.14s;
+    &:hover { color: var(--primary-color) !important; }
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   8. DIALOG · CONFIRM
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-confirmdialog,
+.p-dialog {
+  background: var(--pp-surface) !important;
+  border: 1px solid var(--pp-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 32px 80px var(--pp-shadow-lg), 0 8px 24px var(--pp-shadow) !important;
+  overflow: hidden !important;
+
+  .p-dialog-header,
+  .p-confirmdialog-header {
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid var(--pp-border-subtle) !important;
+    background: transparent !important;
+  }
+  .p-dialog-title,
+  .p-confirmdialog-title {
+    font-size: 0.9375rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--text-color) !important;
+  }
+  .p-dialog-content,
+  .p-confirmdialog-content {
+    padding: 1.25rem !important;
+    background: transparent !important;
+    color: var(--pp-text-2) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+  }
+  .p-dialog-footer,
+  .p-confirmdialog-footer {
+    padding: 0.75rem 1.25rem !important;
+    border-top: 1px solid var(--pp-border-subtle) !important;
+    background: var(--pp-surface-2) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.5rem !important;
+  }
+}
+
+.p-dialog-mask {
+  background: rgba(0, 0, 0, 0.50) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   9. TOAST
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-toast {
+  .p-toast-message {
+    background: var(--pp-overlay) !important;
+    border: 1px solid var(--pp-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 16px 40px var(--pp-shadow-lg) !important;
+    overflow: hidden;
+  }
+  .p-toast-message-success { border-left: 3px solid #34d399 !important; }
+  .p-toast-message-info    { border-left: 3px solid #60a5fa !important; }
+  .p-toast-message-warn    { border-left: 3px solid #fbbf24 !important; }
+  .p-toast-message-error   { border-left: 3px solid #fb7185 !important; }
+
+  .p-toast-summary {
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+  }
+  .p-toast-detail {
+    color: var(--pp-text-2) !important;
+    font-size: 0.8125rem !important;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   10. TOOLTIP — más sutil
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-tooltip {
+  .p-tooltip-text {
+    background: var(--pp-overlay) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--pp-border) !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    padding: 0.375rem 0.625rem !important;
+    box-shadow: 0 8px 20px var(--pp-shadow) !important;
+  }
+  .p-tooltip-arrow { display: none !important; }
+}
+
+.small-tooltip .p-tooltip-text {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.6875rem !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   11. PROGRESS BAR · CARGANDO
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.progressbar-wrapper {
+  .p-progressbar {
+    background: transparent !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+
+    .p-progressbar-value {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--primary-color) 40%,
+        color-mix(in srgb, var(--primary-color) 80%, #fff) 50%,
+        var(--primary-color) 60%,
+        transparent 100%) !important;
+      background-size: 200% 100% !important;
+      animation: pp-shimmer 1.4s linear infinite !important;
+    }
+  }
+}
+
+@keyframes pp-shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   12. CONFIGURATOR PANEL
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-config-menu .config-panel {
+  background: var(--pp-overlay) !important;
+  border: 1px solid var(--pp-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 60px var(--pp-shadow-lg) !important;
+  padding: 1rem !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   13. PANEL OUTER (CRUD wrappers) — más limpio, sin gradientes ruidosos
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-main > p-fluid > .p-panel {
+  background: var(--pp-surface) !important;
+  border: 1px solid var(--pp-border) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px -8px var(--pp-shadow) !important;
+}
+
+.layout-main > p-fluid > .p-panel > .p-panel-content,
+.layout-main > p-fluid > .p-panel > .p-panel-content-container {
+  padding: 0 !important;
+}
+
+.layout-main > p-fluid > .p-panel .card {
+  padding: 1rem !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   14. CARD · empty state
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.card {
+  transition: border-color 0.18s;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 22%, var(--pp-border)) !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   15. FIELDSET (formularios)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-fieldset {
+  position: relative;
+}
+
+.p-fieldset-legend {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 0.625rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   16. FLOAT LABEL · refinado
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.p-floatlabel {
+  --p-floatlabel-on-active-background: var(--pp-surface);
+}
+
+.p-floatlabel label {
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   17. SECCIÓN HEADER (componentes que muestran títulos de sección)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.pp-section-kicker {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--pp-text-3);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.pp-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.pp-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-feature-settings: 'tnum';
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   18. MOBILE — refinements
+   ════════════════════════════════════════════════════════════════════════════ */
+
+@media screen and (max-width: 991px) {
+  .layout-topbar-search { display: none !important; }
+  .layout-main { padding: 1rem !important; }
+}

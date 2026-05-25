@@ -1,49 +1,56 @@
 <div class="login-wrapper">
 
-  <!-- ══════════ FONDO ANIMADO ══════════ -->
+  <!-- ══════════ FONDO ══════════ -->
   <div class="lw-bg" aria-hidden="true">
-    <div class="lw-bg__orb lw-bg__orb--a"></div>
-    <div class="lw-bg__orb lw-bg__orb--b"></div>
     <div class="lw-bg__grid"></div>
-    <div class="lw-bg__vignette"></div>
+    <div class="lw-bg__aurora lw-bg__aurora--a"></div>
+    <div class="lw-bg__aurora lw-bg__aurora--b"></div>
   </div>
 
   <!-- ══════════ PANEL IZQUIERDO — BRANDING ══════════ -->
-  <div class="brand-panel">
-    <span class="bp-hud bp-hud--tl" aria-hidden="true"></span>
-    <span class="bp-hud bp-hud--br" aria-hidden="true"></span>
-    <div class="bp-scan" aria-hidden="true"></div>
-
-    <!-- Logo -->
-    <div class="brand-logo-box">
-      <div class="brand-initials">PP</div>
-      <div class="brand-name-text">
-        Punto Pop
-        <span>Sistema ERP · Ecuador</span>
-      </div>
-    </div>
+  <aside class="brand-panel">
+    <!-- Logo header -->
+    <a class="brand" aria-label="Punto Pop">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="1" y="1" width="30" height="30" rx="8" fill="rgba(255,255,255,0.95)" />
+          <circle cx="16" cy="16" r="9" fill="none" stroke="var(--_p)" stroke-width="1.5" />
+          <circle cx="16" cy="16" r="3" fill="var(--_p)" />
+        </svg>
+      </span>
+      <span class="brand-text">Punto<em>Pop</em></span>
+    </a>
 
     <!-- Estado del sistema -->
     <div class="bp-status">
       <span class="bp-status__dot"></span>
-      Sistema operativo
+      SRI · SISTEMA OPERATIVO
     </div>
 
-    <!-- Contenido central -->
+    <!-- Headline -->
     <div class="brand-center">
       <h1 class="brand-headline">
-        Gestiona tu<br>
-        <em class="brand-headline__em">negocio</em><br>
-        en un solo lugar
+        Tu negocio,<br />
+        <span class="brand-headline__dim">en un solo</span><br />
+        <em class="brand-headline__em">punto.</em>
       </h1>
       <p class="brand-description">
-        Plataforma integral con facturación electrónica SRI,
-        inventario y control de acceso seguro.
+        Facturación electrónica SRI, inventario y reportes diseñados para que tu equipo venda — no para que pelee con software.
       </p>
+
       <div class="brand-features">
-        <div class="feature-row"><span class="bp-dot"></span>Facturación electrónica SRI en tiempo real</div>
-        <div class="feature-row"><span class="bp-dot"></span>Control de inventario y compras</div>
-        <div class="feature-row"><span class="bp-dot"></span>Acceso seguro con roles y permisos</div>
+        <div class="feature-row">
+          <span class="feature-key">SRI</span>
+          <span class="feature-val">Facturación electrónica autorizada en tiempo real</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-key">STOCK</span>
+          <span class="feature-val">Inventario sincronizado entre sucursales</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-key">ACCESO</span>
+          <span class="feature-val">Roles y permisos con doble factor</span>
+        </div>
       </div>
     </div>
 
@@ -51,12 +58,12 @@
     <div class="bp-metrics">
       <div class="bp-metric"><strong>99.9%</strong><span>Uptime</span></div>
       <div class="bp-metric"><strong>2.4K+</strong><span>Ventas/mes</span></div>
-      <div class="bp-metric"><strong>SRI</strong><span>Certificado</span></div>
+      <div class="bp-metric"><strong>256-bit</strong><span>Cifrado</span></div>
     </div>
-  </div>
+  </aside>
 
   <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
-  <div class="form-panel">
+  <main class="form-panel">
 
     <div class="theme-toggle-corner">
       <app-floating-configurator [float]="false" />
@@ -66,17 +73,16 @@
       <div class="login-box">
 
         <!-- Logo solo en móvil -->
-        <div class="mobile-logo">
-          <div class="mobile-initials-box">PP</div>
-          <span class="mobile-brand-name">Punto Pop</span>
-        </div>
-
-        <!-- Avatar con órbitas -->
-        <div class="fp-avatar">
-          <div class="fp-avatar__orbit fp-avatar__orbit--outer"></div>
-          <div class="fp-avatar__orbit fp-avatar__orbit--inner"></div>
-          <div class="fp-avatar__core"><i class="pi pi-user"></i></div>
-        </div>
+        <a class="mobile-logo" aria-label="Punto Pop">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="1" y="1" width="30" height="30" rx="8" fill="var(--_p)" />
+              <circle cx="16" cy="16" r="9" fill="none" stroke="rgba(10,11,20,0.85)" stroke-width="1.5" />
+              <circle cx="16" cy="16" r="3" fill="rgba(10,11,20,0.9)" />
+            </svg>
+          </span>
+          <span class="mobile-brand-name">Punto<em>Pop</em></span>
+        </a>
 
         <h2 class="form-heading">Iniciar sesión</h2>
         <p class="form-subheading">Ingresa tus credenciales para continuar</p>
@@ -96,18 +102,21 @@
 
           <p-button
             type="submit"
-            label="Iniciar sesión"
+            label="Continuar"
             icon="pi pi-arrow-right"
             iconPos="right"
             styleClass="login-submit-btn"
             [loading]="cargandoLogin()" />
         </form>
 
-        <div class="form-bottom">© {{ anio }} Punto Pop · v1.0.0</div>
+        <div class="form-bottom">
+          <span>v1.0.0 · {{ anio }}</span>
+          <span>{{ '\u00A9' }} Punto Pop · Ecuador</span>
+        </div>
 
       </div>
     </div>
 
-  </div>
+  </main>
 
 </div>

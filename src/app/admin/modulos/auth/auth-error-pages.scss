@@ -1,0 +1,131 @@
+/* Pantallas de error / acceso denegado · Punto Pop Aurora */
+
+:host { display: block; }
+
+.pp-auth-shell {
+  position: relative;
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--pp-bg);
+  overflow: hidden;
+}
+
+.pp-auth-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pp-auth-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--pp-border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pp-border-subtle) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%);
+}
+
+.pp-auth-aurora {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(80px);
+  opacity: 0.35;
+}
+.pp-auth-aurora--warn {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.4), transparent 65%);
+}
+.pp-auth-aurora--danger {
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.4), transparent 65%);
+}
+
+.pp-auth-card {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  text-align: center;
+  background: var(--pp-surface);
+  border: 1px solid var(--pp-border);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 32px 80px -20px var(--pp-shadow-lg);
+}
+
+.pp-auth-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin: 0 auto 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+.pp-auth-icon i { font-size: 1.5rem; }
+.pp-auth-icon--warn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+.pp-auth-icon--danger {
+  background: rgba(225, 29, 72, 0.12);
+  border-color: rgba(225, 29, 72, 0.3);
+  color: #e11d48;
+}
+
+.pp-auth-code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--pp-text-3);
+  letter-spacing: 0.12em;
+  margin-bottom: 1rem;
+}
+
+.pp-auth-title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text-color);
+}
+
+.pp-auth-lead {
+  margin: 0 0 2rem;
+  font-size: 0.9375rem;
+  color: var(--text-color-secondary);
+  line-height: 1.55;
+}
+
+.pp-auth-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.pp-auth-link {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+.pp-auth-link:hover { text-decoration: underline; }
+
+::ng-deep .pp-auth-actions .p-button {
+  height: 44px !important;
+  padding: 0 1.5rem !important;
+  font-weight: 600 !important;
+}

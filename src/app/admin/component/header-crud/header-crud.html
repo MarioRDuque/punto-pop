@@ -1,43 +1,40 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <!-- TITULO -->
-        <div class="flex items-center w-full pl-3 relative">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-sm"></div>
-            <div class="flex flex-col gap-1">
-                <p class="text-sm text-surface-600 dark:text-surface-400 m-0 ">{{subtitulo}}</p>
-            </div>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="icons">
-        <div class="flex items-center gap-2">
-            @if(esFormulario){
-            @switch (formsService.accion()) {
-            @case (accionEnum.CREAR) {
-            <!-- BOTON CREAR -->
+  <ng-template pTemplate="header">
+    <div class="flex items-center w-full pl-4 relative">
+      <!-- Barra primary izquierda con glow -->
+      <div class="absolute left-0 top-1 bottom-1 w-[3px] bg-primary rounded-sm"></div>
+
+      <div class="flex flex-col gap-1">
+        <p class="header-subtitle">{{ subtitulo }}</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="icons">
+    <div class="flex items-center gap-2">
+      @if (esFormulario) {
+        @switch (formsService.accion()) {
+          @case (accionEnum.CREAR) {
             <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
-                [pTooltip]="'Guardar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
-            }
-            @case (accionEnum.EDITAR) {
-            <!-- BOTON EDITAR -->
+              pTooltip="Guardar" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+          }
+          @case (accionEnum.EDITAR) {
             <p-button [icon]="ICONSCONSTANT.REGRESAR" (click)="regresar()" [rounded]="true" [raised]="true"
-                [pTooltip]="'Regresar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" severity="secondary" />
+              pTooltip="Regresar" tooltipPosition="top" tooltipStyleClass="small-tooltip" severity="secondary" />
             <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
-                [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
-            }
-            @case (accionEnum.PERFIL) {
-            <!-- BOTON PERFIL -->
+              pTooltip="Actualizar" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+          }
+          @case (accionEnum.PERFIL) {
             <p-button [icon]="ICONSCONSTANT.GUARDAR" type="submit" [rounded]="true" [raised]="true"
-                [pTooltip]="'Actualizar'" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
-            }
-            }
-            } @else {
-            <!-- BOTON EXPORTAR -->
-            <p-button [icon]="ICONSCONSTANT.EXCEL" [rounded]="true" [raised]="true" severity="success"
-                pTooltip="Exportar" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
-            <!-- BOTON IMPRIMIR -->
-            <p-button [icon]="ICONSCONSTANT.IMPRIMIR" [rounded]="true" [raised]="true" severity="info"
-                pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onImprimir()" />
-            }
-        </div>
-    </ng-template>
+              pTooltip="Actualizar" tooltipPosition="top" tooltipStyleClass="small-tooltip" />
+          }
+        }
+      } @else {
+        <p-button [icon]="ICONSCONSTANT.EXCEL" [rounded]="true" [raised]="true" severity="success"
+          pTooltip="Exportar a Excel" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onExportar()" />
+        <p-button [icon]="ICONSCONSTANT.IMPRIMIR" [rounded]="true" [raised]="true" severity="info"
+          pTooltip="Imprimir" tooltipPosition="top" tooltipStyleClass="small-tooltip" (click)="onImprimir()" />
+      }
+    </div>
+  </ng-template>
 </p-panel>

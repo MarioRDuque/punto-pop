@@ -12,20 +12,47 @@ import { PricingWidget } from './components/pricingwidget';
 import { FooterWidget } from './components/footerwidget';
 
 @Component({
-    selector: 'app-landing',
-    standalone: true,
-    imports: [RouterModule, TopbarWidget, HeroWidget, FeaturesWidget, HighlightsWidget, PricingWidget, FooterWidget, RippleModule, StyleClassModule, ButtonModule, DividerModule],
-    template: `
-        <div class="bg-surface-0 dark:bg-surface-900">
-            <div id="home" class="landing-wrapper overflow-hidden">
-                <app-topbar-widget class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 flex items-center justify-between relative lg:static" />
-                <app-hero-widget />
-                <app-features-widget />
-                <app-highlights-widget />
-                <app-pricing-widget />
-                <app-footer-widget />
-            </div>
-        </div>
-    `
+  selector: 'app-landing',
+  standalone: true,
+  imports: [
+    RouterModule,
+    TopbarWidget,
+    HeroWidget,
+    FeaturesWidget,
+    HighlightsWidget,
+    PricingWidget,
+    FooterWidget,
+    RippleModule,
+    StyleClassModule,
+    ButtonModule,
+    DividerModule
+  ],
+  template: `
+    <div class="pp-landing">
+      <div id="home" class="pp-landing-inner">
+        <app-topbar-widget class="pp-landing-topbar py-5 px-6 mx-0 lg:mx-20 flex items-center justify-between relative lg:static" />
+        <app-hero-widget />
+        <app-features-widget />
+        <app-highlights-widget />
+        <app-pricing-widget />
+        <app-footer-widget />
+      </div>
+    </div>
+  `,
+  styles: [`
+    :host { display: block; }
+    .pp-landing {
+      background: var(--pp-bg);
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+    .pp-landing-inner {
+      overflow: hidden;
+    }
+    .pp-landing-topbar {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+  `]
 })
 export class Landing {}
