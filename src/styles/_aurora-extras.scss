@@ -8,7 +8,7 @@
 
 
 /* ════════════════════════════════════════════════════════════════════════════
-   1. TOPBAR
+   1. TOPBAR (ADAPTATIVO LIGHT/DARK)
    ════════════════════════════════════════════════════════════════════════════ */
 
 .layout-topbar-logo {
@@ -18,8 +18,9 @@
   }
 }
 
+/* Brand text — usa color del tema, no hardcoded blanco */
 .topbar-brand-text {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: var(--text-color) !important;
   font-weight: 600 !important;
   font-size: 0.9375rem !important;
   letter-spacing: -0.015em !important;
@@ -40,7 +41,7 @@
   }
 }
 
-/* Command search central */
+/* Command search — usa tokens del tema */
 .layout-topbar-search {
   display: none;
   align-items: center;
@@ -51,28 +52,39 @@
   max-width: 360px;
   flex: 1;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.40);
+  background: var(--pp-subtle-bg);
+  border: 1px solid var(--pp-border);
+  color: var(--pp-text-3);
   font-size: 0.8125rem;
   cursor: text;
-  transition: background 0.14s, border-color 0.14s;
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.55);
+    background: var(--pp-hover);
+    border-color: var(--pp-input-hover-border);
+    color: var(--pp-text-2);
   }
 
-  i { font-size: 0.8125rem; color: rgba(255, 255, 255, 0.40); flex-shrink: 0; }
-  span { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  i {
+    font-size: 0.8125rem;
+    color: var(--pp-text-3);
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   kbd {
     padding: 0.0625rem 0.375rem;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.55);
+    background: var(--pp-surface);
+    border: 1px solid var(--pp-border);
+    color: var(--pp-text-2);
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 0.6875rem;
     line-height: 1.1;
@@ -92,6 +104,7 @@
   }
 }
 
+/* Bell dot — ring color adaptativo al fondo del topbar */
 .layout-topbar-action {
   position: relative !important;
 
@@ -101,7 +114,7 @@
     width: 7px; height: 7px;
     border-radius: 50%;
     background: #f87171;
-    box-shadow: 0 0 0 2px #0a0e1a;
+    box-shadow: 0 0 0 2px var(--surface-card);
     pointer-events: none;
   }
 }
@@ -592,4 +605,153 @@ app-grid {
 @media screen and (max-width: 991px) {
   .layout-topbar-search { display: none !important; }
   .layout-main { padding: 1rem !important; }
+}
+
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   19. INDIGO/VIOLETA · Forzar primary color del diseño Aurora original
+   ════════════════════════════════════════════════════════════════════════════
+   Si quieres mantener el verde, comenta este bloque entero.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root,
+.app-dark {
+  --primary-color: #818cf8 !important;          /* indigo-400 */
+  --primary-50:  #eef2ff !important;
+  --primary-100: #e0e7ff !important;
+  --primary-200: #c7d2fe !important;
+  --primary-300: #a5b4fc !important;
+  --primary-400: #818cf8 !important;
+  --primary-500: #6366f1 !important;
+  --primary-600: #4f46e5 !important;
+  --primary-700: #4338ca !important;
+  --primary-800: #3730a3 !important;
+  --primary-900: #312e81 !important;
+  --primary-contrast-color: #0a0b14 !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   20. LOGIN · Background más dramático estilo canvas
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.login-wrapper {
+  background: #06080f !important;
+
+  .lw-bg__grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px) !important;
+    background-size: 48px 48px !important;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%) !important;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%) !important;
+  }
+
+  .lw-bg__aurora--a,
+  .lw-bg__orb--a {
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.20) 0%, transparent 65%) !important;
+    opacity: 0.7 !important;
+  }
+  .lw-bg__aurora--b,
+  .lw-bg__orb--b {
+    background: radial-gradient(circle, rgba(196, 181, 253, 0.12) 0%, transparent 65%) !important;
+    opacity: 0.6 !important;
+  }
+}
+
+/* Form panel — más cercano al canvas */
+.form-panel {
+  background: #0b0e1a !important;
+
+  .form-heading {
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
+  .form-subheading {
+    color: rgba(255, 255, 255, 0.50) !important;
+  }
+  .form-bottom {
+    color: rgba(255, 255, 255, 0.25) !important;
+  }
+}
+
+/* Brand text en panel izquierdo */
+.brand-panel {
+  .brand-text {
+    color: #fff !important;
+    em { color: #a5b4fc !important; }
+  }
+}
+
+/* Headline gradient indigo→violeta */
+.brand-headline__em {
+  background: linear-gradient(120deg, #a5b4fc 0%, #c4b5fd 50%, #a78bfa 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Botón de submit gradient indigo */
+::ng-deep .login-submit-btn,
+.login-submit-btn {
+  background: linear-gradient(180deg, #a5b4fc 0%, #818cf8 100%) !important;
+  color: #0a0b14 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.4), 0 8px 22px -4px rgba(129, 140, 248, 0.35) !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   21. TOPBAR · Background dark + ajustes para tema indigo
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-topbar {
+  background: #0a0b14 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.topbar-brand-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.layout-topbar-action {
+  color: rgba(255, 255, 255, 0.55) !important;
+  &:hover { color: rgba(255, 255, 255, 0.95) !important; background: rgba(255, 255, 255, 0.07) !important; }
+}
+
+.layout-menu-button {
+  color: rgba(255, 255, 255, 0.55) !important;
+  &:hover { color: rgba(255, 255, 255, 0.95) !important; }
+}
+
+.layout-topbar-search {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  i { color: rgba(255, 255, 255, 0.45) !important; }
+  kbd {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.10) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+}
+
+.topbar-bell-dot {
+  box-shadow: 0 0 0 2px #0a0b14 !important;
+}
+
+.layout-topbar-action-highlight {
+  background: rgba(129, 140, 248, 0.18) !important;
+  color: #a5b4fc !important;
+  border: 1px solid rgba(129, 140, 248, 0.32) !important;
+
+  &:hover {
+    background: rgba(129, 140, 248, 0.28) !important;
+  }
 }
