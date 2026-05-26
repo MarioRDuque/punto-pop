@@ -1,9 +1,20 @@
 <form [formGroup]="proveedorForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
-    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
-    <div class="flex flex-col gap-4 w-full">
-        <div class="card p-0">
-            <p-fieldset legend="Datos Fiscales" [toggleable]="true">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <div class="flex flex-col gap-3">
+
+        <!-- CARD UNIFICADO: secciones 1-2 -->
+        <div class="card flex flex-col gap-0 p-0 overflow-hidden">
+
+            <!-- 1. DATOS FISCALES -->
+            <div class="flex flex-col gap-4 p-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        style="background: var(--primary-color)">1</div>
+                    <div>
+                        <div class="text-sm font-semibold">Datos Fiscales</div>
+                        <div class="text-xs text-surface-400">Identificación legal del proveedor</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="field">
                         <app-input label="RUC" id="ruc" [autofocus]="accion() === accionEnum.CREAR" />
                     </div>
@@ -14,9 +25,19 @@
                         <app-input label="Nombre Comercial (opcional)" id="nombreComercial" />
                     </div>
                 </div>
-            </p-fieldset>
-            <p-fieldset legend="Contacto" [toggleable]="true">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            </div>
+
+            <!-- 2. CONTACTO -->
+            <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        style="background: var(--primary-color)">2</div>
+                    <div>
+                        <div class="text-sm font-semibold">Contacto</div>
+                        <div class="text-xs text-surface-400">Información para comunicaciones</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="field">
                         <app-input label="Teléfono" id="telefono" keyFilter="num" />
                     </div>
@@ -26,11 +47,33 @@
                     <div class="field">
                         <app-input label="Dirección" id="direccion" />
                     </div>
-                    <div class="field flex justify-center">
-                        <app-toggle-switch label="Estado" id="estado" />
-                    </div>
                 </div>
-            </p-fieldset>
+            </div>
         </div>
+
+        <!-- 3. ESTADO (card separado) -->
+        <div class="card flex flex-col gap-4">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">3</div>
+                <div>
+                    <div class="text-sm font-semibold">Estado</div>
+                    <div class="text-xs text-surface-400">Solo los activos aparecen en compras nuevas</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200"
+                style="background: var(--surface-hover)">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-green-100">
+                    <i class="pi pi-check text-green-600" style="font-size:.75rem"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-semibold">Proveedor activo</div>
+                    <div class="text-xs text-surface-400">Disponible para registrar nuevas compras</div>
+                </div>
+                <app-toggle-switch label="Estado" id="estado" />
+            </div>
+        </div>
+
+        <p class="text-xs text-surface-400 px-1 m-0">* Campos requeridos</p>
     </div>
 </form>

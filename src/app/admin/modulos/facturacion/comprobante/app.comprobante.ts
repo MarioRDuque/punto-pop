@@ -1,7 +1,5 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FluidModule } from 'primeng/fluid';
-import { PanelModule } from 'primeng/panel';
 import { ColDef } from 'ag-grid-community';
 import { HeaderCrud } from '../../../component/header-crud/header-crud';
 import { Grid } from '../../../component/grid/grid';
@@ -14,7 +12,7 @@ import { EventCrudBusqueda } from '../../../enums/event-crud-busqueda';
 @Component({
   selector: 'app-comprobante',
   standalone: true,
-  imports: [FluidModule, PanelModule, HeaderCrud, Grid],
+  imports: [  HeaderCrud, Grid],
   templateUrl: './app.comprobante.html',
 })
 export class AppComprobante implements OnInit {

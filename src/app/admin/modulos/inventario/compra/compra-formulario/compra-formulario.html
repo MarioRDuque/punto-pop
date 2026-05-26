@@ -1,145 +1,475 @@
 <form [formGroup]="compraForm" autocomplete="off" novalidate>
-    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="false"></app-header-crud>
+    <div class="flex flex-col xl:flex-row gap-3">
 
-    <div class="flex flex-col xl:flex-row gap-4 w-full" style="padding-top: 8px;">
+        <!-- ══ IZQUIERDA ══════════════════════════════════════════════════════ -->
+        <div class="flex-1 min-w-0">
 
-        <!-- LEFT: Búsqueda + Grid -->
-        <div class="flex flex-col gap-4 flex-1 min-w-0">
+            <!-- CARD UNIFICADO: PROVEEDOR + FOLIO + POR REABASTECER + ITEMS -->
+            <div class="card p-0 overflow-hidden flex flex-col">
 
-            <!-- Barra de búsqueda -->
-            <div class="card">
-                <div class="flex flex-col sm:flex-row gap-3 items-end">
+                <!-- Fila superior: PROVEEDOR | divisor | FOLIO / FECHA / OBSERVACIÓN -->
+                <div class="flex items-stretch">
+
+                    <!-- PROVEEDOR (columna izquierda) -->
+                    <div class="flex flex-col gap-3 shrink-0 p-4" style="width:260px">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <i class="pi pi-building text-surface-400" style="font-size:.8rem"></i>
+                                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Proveedor</span>
+                            </div>
+                            @if (getProveedorSeleccionado()) {
+                                <button type="button" class="text-xs font-medium text-primary hover:underline"
+                                    (click)="limpiarProveedor()">Cambiar</button>
+                            }
+                        </div>
+
+                        @if (getProveedorSeleccionado(); as prov) {
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 cursor-pointer transition-colors"
+                                style="background: var(--surface-hover)">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 bg-primary">
+                                    {{ getInitials(prov.razonSocial) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-semibold text-sm truncate">{{ prov.razonSocial }}</div>
+                                    <div class="text-xs text-surface-400 truncate">{{ prov.ruc }}</div>
+                                </div>
+                                <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0"
+                                    style="background: var(--surface-card)">
+                                    <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
+                                </div>
+                            </div>
+                        } @else {
+                            <p-select formControlName="proveedorId" [options]="proveedores()"
+                                optionLabel="razonSocial" optionValue="id"
+                                [filter]="true" filterBy="razonSocial,ruc"
+                                placeholder="Buscar proveedor"
+                                [style]="{'width':'100%'}" appendTo="body">
+                            </p-select>
+                        }
+
+                        <button type="button"
+                            class="flex items-center gap-1 text-sm font-semibold text-primary w-fit">
+                            <i class="pi pi-plus" style="font-size:.7rem"></i>
+                            Nuevo proveedor
+                        </button>
+                    </div>
+
+                    <!-- Divisor vertical -->
+                    <div class="w-px bg-surface-200 self-stretch shrink-0"></div>
+
+                    <!-- FOLIO / FECHA / OBSERVACIÓN (columna derecha) -->
+                    <div class="flex-1 flex flex-col gap-3 p-4">
+                        <div class="flex gap-3">
+                            <!-- Folio -->
+                            <div class="flex flex-col gap-1 flex-1">
+                                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Folio factura</span>
+                                <input pInputText formControlName="folioFactura"
+                                    placeholder="A-48291"
+                                    class="w-full" style="height:2rem; font-size:0.875rem" />
+                            </div>
+                            <!-- Fecha -->
+                            <div class="flex flex-col gap-1 flex-1">
+                                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Fecha factura</span>
+                                <p-datepicker
+                                    [ngModel]="fechaFacturaDate()"
+                                    (ngModelChange)="fechaFacturaDate.set($event)"
+                                    [ngModelOptions]="{standalone:true}"
+                                    dateFormat="d M yy"
+                                    inputStyleClass="w-full"
+                                    styleClass="w-full">
+                                </p-datepicker>
+                            </div>
+                        </div>
+
+                        <!-- Observación -->
+                        <div class="flex flex-col gap-1 flex-1">
+                            <div class="flex items-center justify-between shrink-0">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="pi pi-file-edit text-surface-400" style="font-size:.8rem"></i>
+                                    <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
+                                </div>
+                                <span class="text-xs text-surface-400">Opcional</span>
+                            </div>
+                            <textarea formControlName="observacion"
+                                rows="3"
+                                placeholder="Notas internas, número de pedido, almacén destino..."
+                                class="w-full resize-none rounded-lg border border-surface-200 p-2 text-sm outline-none focus:border-primary"
+                                style="flex:1">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POR REABASTECER (dentro del mismo card, separado con border-t) -->
+                @if (productosStockBajo().length > 0) {
+                    <div class="flex flex-col gap-2 px-4 py-3 border-t border-surface-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">
+                                Por reabastecer · Stock bajo
+                            </span>
+                            <button type="button" class="text-xs font-medium text-primary hover:underline">
+                                Ver todos →
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            @for (p of productosStockBajo().slice(0, 8); track p.id) {
+                                <button type="button"
+                                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-surface-200 text-xs transition-colors hover:border-primary hover:text-primary"
+                                    style="background: var(--surface-card)">
+                                    <span class="w-5 h-5 rounded-full text-primary text-[10px] font-bold flex items-center justify-center"
+                                        style="background: color-mix(in srgb, var(--primary-color) 12%, transparent)">
+                                        {{ getInitials(p.nombre) }}
+                                    </span>
+                                    <span class="font-medium">{{ p.nombre }}</span>
+                                    <span class="text-surface-300">·</span>
+                                    <span class="text-surface-400">{{ p.stock }}</span>
+                                    <span class="text-surface-300 ml-0.5">Sug. {{ p.stockMinimo * 2 }}</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- ITEMS EN LA COMPRA (dentro del mismo card, separado con border-t) -->
+
+                <!-- Header -->
+                <div class="flex items-center justify-between px-4 py-3 border-t border-b border-surface-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Items en la compra</span>
+                        @if (items().length > 0) {
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                                style="background: color-mix(in srgb, var(--primary-color) 10%, transparent); color: var(--primary-color)">
+                                {{ items().length }} {{ items().length === 1 ? 'producto' : 'productos' }} · {{ itemCount() }} uds
+                            </span>
+                        }
+                    </div>
+                    @if (items().length > 0) {
+                        <div class="flex items-center gap-3">
+                            <button type="button" class="text-xs text-surface-500 hover:text-primary">Aplicar descuento global</button>
+                            <button type="button" class="text-xs text-surface-500 hover:text-red-500"
+                                (click)="vaciarCarrito()">Vaciar carrito</button>
+                        </div>
+                    }
+                </div>
+
+                <!-- Scanner row (ENCIMA de la tabla) -->
+                <div class="flex items-center gap-2 mx-3 mt-3 mb-2 px-3 py-2.5 rounded-xl"
+                    style="border: 1.5px dashed color-mix(in srgb, var(--primary-color) 40%, transparent); background: color-mix(in srgb, var(--primary-color) 4%, transparent)">
+                    <i class="pi pi-qrcode shrink-0" style="font-size:.9rem; color: var(--primary-color)"></i>
+                    <span class="text-xs font-medium text-surface-400 shrink-0">Código.</span>
                     <p-autocomplete
-                        class="flex-1 w-full"
-                        [(ngModel)]="productoSeleccionado"
-                        [ngModelOptions]="{standalone: true}"
+                        class="flex-1 min-w-0"
+                        [(ngModel)]="productoScanner"
+                        [ngModelOptions]="{standalone:true}"
                         [suggestions]="productosFiltrados()"
                         (completeMethod)="filtrarProductos($event)"
-                        (onSelect)="onProductoSelect($event)"
+                        (onSelect)="onProductoScannerSelect($event)"
                         optionLabel="nombre"
-                        placeholder="Buscar producto por código o nombre..."
-                        [style]="{'width': '100%'}"
-                        [inputStyle]="{'width': '100%'}"
-                        [showClear]="true"
+                        placeholder="Escanea o escribe — verás coincidencias al teclear"
+                        [style]="{'width':'100%'}"
+                        [inputStyle]="{'width':'100%','border':'none','background':'transparent','box-shadow':'none','padding':'0','font-size':'0.875rem'}"
                         appendTo="body">
                         <ng-template let-p pTemplate="item">
                             <div class="flex justify-between items-center w-full gap-4 py-1">
                                 <span>
-                                    <strong class="text-primary">{{ p.codigo }}</strong>
+                                    <strong style="color: var(--primary-color)">{{ p.codigo }}</strong>
                                     <span class="ml-2">{{ p.nombre }}</span>
                                 </span>
-                                <span class="text-xs text-gray-400 whitespace-nowrap">
+                                <span class="text-xs text-surface-400 whitespace-nowrap">
                                     CPP: ${{ (p.costo ?? 0) | number:'1.4-4' }}
                                 </span>
                             </div>
                         </ng-template>
                     </p-autocomplete>
-
-                    <p-inputnumber
-                        [(ngModel)]="cantidad"
-                        [ngModelOptions]="{standalone: true}"
-                        [min]="0.001" [step]="1"
-                        [showButtons]="true"
-                        buttonLayout="horizontal"
-                        decrementButtonIcon="pi pi-minus"
-                        incrementButtonIcon="pi pi-plus"
-                        [inputStyle]="{'width': '56px', 'text-align': 'center'}"
-                        placeholder="Cant.">
-                    </p-inputnumber>
-
-                    <p-floatlabel variant="on">
-                        <p-inputnumber id="costoUnitario"
-                            [(ngModel)]="costoUnitario"
-                            [ngModelOptions]="{standalone: true}"
-                            mode="decimal" [minFractionDigits]="4" [maxFractionDigits]="4"
-                            [min]="0" [style]="{'width': '130px'}">
-                        </p-inputnumber>
-                        <label for="costoUnitario">Costo Unit.</label>
-                    </p-floatlabel>
-
-                    <p-button
-                        icon="pi pi-plus"
-                        label="Agregar"
-                        (onClick)="agregarItem()"
-                        [disabled]="!esProductoValido()">
-                    </p-button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button"
+                            class="w-6 h-6 rounded border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-100"
+                            (click)="decrementarCantidadScanner()">
+                            <i class="pi pi-minus" style="font-size:.55rem"></i>
+                        </button>
+                        <span class="text-sm font-semibold tabular-nums w-5 text-center">{{ cantidadScanner() }}</span>
+                        <button type="button"
+                            class="w-6 h-6 rounded border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-100"
+                            (click)="incrementarCantidadScanner()">
+                            <i class="pi pi-plus" style="font-size:.55rem"></i>
+                        </button>
+                    </div>
+                    <button type="button"
+                        class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-surface-200 text-xs font-semibold text-surface-600 hover:bg-surface-100 transition-colors shrink-0"
+                        style="background: var(--surface-card)"
+                        (click)="agregarItem()">
+                        <i class="pi pi-arrow-right" style="font-size:.6rem"></i> Enter
+                    </button>
                 </div>
-            </div>
 
-            <!-- Grid de ítems -->
-            <div class="card p-0 overflow-hidden">
-                <ag-grid-angular
-                    style="width: 100%; height: 420px;"
-                    [theme]="theme"
-                    [columnDefs]="columnDefs"
-                    [defaultColDef]="defaultColDef"
-                    [getRowId]="getRowId"
-                    [rowData]="[]"
-                    [context]="gridContext"
-                    [localeText]="localeText"
-                    [stopEditingWhenCellsLoseFocus]="true"
-                    [singleClickEdit]="true"
-                    (gridReady)="onGridReady($event)"
-                    (cellValueChanged)="onCellValueChanged($event)">
-                </ag-grid-angular>
+                <!-- Hint: producto no encontrado -->
+                @if (mostrarCrearProducto()) {
+                    <div class="mx-3 mb-2 flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-amber-300 bg-amber-50 text-xs text-amber-700">
+                        <i class="pi pi-exclamation-circle shrink-0"></i>
+                        <span>No se encontró "<strong>{{ termino() }}</strong>"</span>
+                        <button type="button"
+                            class="ml-auto font-semibold text-primary hover:underline shrink-0"
+                            (click)="abrirDialogProducto()">
+                            + Crear producto
+                        </button>
+                    </div>
+                }
+
+                <!-- Columnas header (siempre visible) -->
+                <div class="grid px-4 py-2 border-b border-surface-100 text-xs font-semibold text-surface-400 uppercase tracking-wider"
+                    style="grid-template-columns: 88px 1fr 140px 110px 130px 36px">
+                    <span>Código</span>
+                    <span>Producto</span>
+                    <span class="text-center">Cantidad</span>
+                    <span class="text-right">P. Costo</span>
+                    <span class="text-right pr-2">Descuento</span>
+                    <span></span>
+                </div>
+
+                <!-- Filas -->
+                @for (item of items(); track item.productoId) {
+                    <div class="grid px-4 py-3 border-b border-surface-100 items-center hover:bg-surface-50 transition-colors"
+                        style="grid-template-columns: 88px 1fr 140px 110px 130px 36px">
+
+                        <!-- Código -->
+                        <span class="text-xs font-mono text-surface-500 bg-surface-100 rounded px-1.5 py-0.5 w-fit">
+                            {{ item.productoCodigo }}
+                        </span>
+
+                        <!-- Producto -->
+                        <div class="flex items-center gap-2 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+                                style="background: color-mix(in srgb, var(--primary-color) 70%, #000)">
+                                {{ getInitials(item.productoNombre) }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-sm font-medium truncate">{{ item.productoNombre }}</div>
+                                @if (item.stock !== undefined) {
+                                    <div class="text-xs text-surface-400 flex items-center gap-1">
+                                        <span [class.text-amber-500]="item.stock <= 10"
+                                            [class.text-emerald-500]="item.stock > 10">●</span>
+                                        <span>Stock: {{ item.stock }}</span>
+                                        @if (item.unidadMedidaNombre) {
+                                            <span>· {{ item.unidadMedidaNombre }}</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Cantidad -->
+                        <div class="flex items-center justify-center gap-2">
+                            <button type="button"
+                                class="w-6 h-6 rounded-md border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-100"
+                                (click)="cambiarCantidad(item.productoId, -1)">
+                                <i class="pi pi-minus" style="font-size:.6rem"></i>
+                            </button>
+                            <span class="text-sm font-semibold tabular-nums w-8 text-center">{{ item.cantidad }}</span>
+                            <button type="button"
+                                class="w-6 h-6 rounded-md border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-100"
+                                (click)="cambiarCantidad(item.productoId, 1)">
+                                <i class="pi pi-plus" style="font-size:.6rem"></i>
+                            </button>
+                        </div>
+
+                        <!-- P. Costo -->
+                        <span class="text-sm font-semibold text-right tabular-nums pr-2">
+                            ${{ item.costoUnitario | number:'1.2-2' }}
+                        </span>
+
+                        <!-- Descuento -->
+                        <div class="flex justify-end pr-2">
+                            @if (item.descuentoPct > 0) {
+                                <button type="button"
+                                    class="px-2 py-1 rounded-lg border-2 text-xs font-bold"
+                                    style="border-color: var(--primary-color); color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 10%, transparent)"
+                                    (click)="aplicarDescuento(item.productoId)">
+                                    -{{ item.descuentoPct }}%
+                                </button>
+                            } @else {
+                                <button type="button"
+                                    class="flex items-center gap-1 text-xs text-surface-400 hover:text-primary transition-colors"
+                                    (click)="aplicarDescuento(item.productoId)">
+                                    <i class="pi pi-tag" style="font-size:.65rem"></i> Descto.
+                                </button>
+                            }
+                        </div>
+
+                        <!-- Eliminar -->
+                        <button type="button"
+                            class="flex items-center justify-center text-surface-300 hover:text-red-500 transition-colors"
+                            (click)="eliminarItem(item.productoId)">
+                            <i class="pi pi-trash" style="font-size:.75rem"></i>
+                        </button>
+                    </div>
+                } @empty {
+                    <!-- Estado vacío -->
+                    <div class="flex flex-col items-center justify-center gap-2 py-10 text-surface-300">
+                        <i class="pi pi-inbox" style="font-size:2rem"></i>
+                        <span class="text-sm">Escanea o busca un producto para agregarlo</span>
+                    </div>
+                }
+
             </div>
         </div>
 
-        <!-- RIGHT: Panel sticky -->
-        <div class="card flex flex-col gap-5 w-full xl:w-72 xl:sticky xl:top-4 xl:self-start">
+        <!-- ══ DERECHA ════════════════════════════════════════════════════════ -->
+        <div class="flex flex-col gap-3 w-full xl:w-72 shrink-0">
 
-            <!-- Proveedor -->
-            <div class="field">
-                <p-floatlabel variant="on" class="w-full">
-                    <p-select id="proveedorId" formControlName="proveedorId"
-                        [options]="proveedores()"
-                        optionLabel="razonSocial"
-                        optionValue="id"
-                        [filter]="true"
-                        filterBy="razonSocial,ruc"
-                        [style]="{'width': '100%'}">
-                    </p-select>
-                    <label for="proveedorId">Proveedor *</label>
-                </p-floatlabel>
-            </div>
+            <!-- CARD: CONDICIONES DE PAGO -->
+            <div class="card flex flex-col gap-3">
 
-            <!-- Observación -->
-            <div class="field">
-                <app-input label="Observación" id="observacion" />
-            </div>
-
-            <!-- Totales -->
-            <div class="flex flex-col gap-2 border-t pt-4">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-500">Subtotal</span>
-                    <span class="font-semibold tabular-nums">${{ subtotal() | number:'1.2-2' }}</span>
+                <!-- Header -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <i class="pi pi-credit-card text-surface-400" style="font-size:.8rem"></i>
+                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Condiciones de pago</span>
+                    </div>
+                    <button type="button" class="text-xs font-medium text-primary hover:underline">+ Dividir pago</button>
                 </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-500">IVA 15%</span>
-                    <span class="font-semibold tabular-nums">${{ iva() | number:'1.2-2' }}</span>
+
+                <!-- Botones 2x2 -->
+                <div class="grid grid-cols-2 gap-2">
+                    @for (c of condiciones; track c.value) {
+                        <button type="button"
+                            class="flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-left"
+                            [style]="condicionPago() === c.value
+                                ? 'border-color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 12%, var(--surface-card))'
+                                : 'border-color: var(--surface-200); background: var(--surface-card)'"
+                            (click)="seleccionarCondicion(c.value)">
+                            <div class="relative shrink-0">
+                                <i [class]="c.icon" style="font-size:.85rem"
+                                    [style.color]="condicionPago() === c.value ? 'var(--primary-color)' : 'var(--text-color-secondary)'">
+                                </i>
+                                @if (condicionPago() === c.value) {
+                                    <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary"></span>
+                                }
+                            </div>
+                            <div>
+                                <div class="text-xs font-semibold leading-none"
+                                    [style.color]="condicionPago() === c.value ? 'var(--primary-color)' : 'var(--text-color)'">
+                                    {{ c.label }}
+                                </div>
+                                <div class="text-xs text-surface-400 mt-0.5 leading-none">{{ c.subtitle }}</div>
+                            </div>
+                        </button>
+                    }
                 </div>
-                <div class="flex justify-between text-xl font-bold pt-3 border-t">
-                    <span>Total</span>
-                    <span class="text-blue-600 tabular-nums">${{ total() | number:'1.2-2' }}</span>
-                </div>
+
+                <!-- Crédito: fecha, plazo, vencimiento -->
+                @if (esCredito()) {
+                    <div class="border-t border-surface-200 pt-3 flex flex-col gap-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-surface-500">Fecha factura</span>
+                            <span class="text-sm font-medium">{{ formatFecha(fechaFacturaDate()) }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-surface-500">Plazo</span>
+                            <div class="flex gap-1">
+                                @for (p of plazos; track p) {
+                                    <button type="button"
+                                        class="text-xs px-2 py-0.5 rounded-full border transition-all"
+                                        [style]="plazo() === p
+                                            ? 'border-color: var(--primary-color); color: var(--primary-color); font-weight:700; background: color-mix(in srgb, var(--primary-color) 12%, var(--surface-card))'
+                                            : 'border-color: var(--surface-200); color: var(--text-color-secondary); background: var(--surface-card)'"
+                                        (click)="plazo.set(p)">
+                                        {{ p }}d
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-surface-500">Vence el</span>
+                            <span class="text-sm font-bold" style="color: var(--primary-color)">
+                                {{ formatFecha(fechaVencimiento()) }}
+                                <span class="text-surface-400 font-normal text-xs">en {{ diasHasta(fechaVencimiento()) }} días</span>
+                            </span>
+                        </div>
+                    </div>
+                }
+
             </div>
 
-            <!-- Info estado -->
-            <div class="text-xs text-gray-400 text-center bg-gray-50 rounded p-2">
-                La compra se crea en estado <strong>BORRADOR</strong>.<br>
-                Desde el listado presione <strong>Recibir</strong> para actualizar el stock.
+            <!-- CARD: TOTALES + TOTAL A PAGAR + BOTÓN -->
+            <div class="card flex flex-col gap-3">
+
+                <!-- Filas de detalle -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-surface-500">Subtotal ({{ itemCount() }} uds)</span>
+                        <span class="font-medium tabular-nums">${{ subtotalItems() | number:'1.2-2' }}</span>
+                    </div>
+                    @if (descuentoTotal() > 0) {
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-surface-500">Descuento proveedor</span>
+                            <span class="font-medium tabular-nums" style="color: var(--primary-color)">
+                                -${{ descuentoTotal() | number:'1.2-2' }}
+                            </span>
+                        </div>
+                    }
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-surface-500">IVA (15%)</span>
+                        <span class="font-medium tabular-nums">${{ ivaTotal() | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-surface-500">Retenciones</span>
+                        <span class="font-medium tabular-nums">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- TOTAL A PAGAR -->
+                <div class="flex items-start justify-between border-t border-surface-200 pt-3">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-surface-500">Total a pagar</div>
+                        @if (esCredito()) {
+                            <div class="text-xs text-surface-400 mt-0.5">
+                                MXN · crédito {{ plazo() }} días
+                                <span class="font-medium" style="color: var(--primary-color)">
+                                    Vence {{ formatFecha(fechaVencimiento()) }}
+                                </span>
+                            </div>
+                        } @else {
+                            <div class="text-xs text-surface-400 mt-0.5">MXN · pago contado</div>
+                        }
+                    </div>
+                    <span class="text-2xl font-bold tabular-nums">${{ totalFinal() | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- BOTÓN REGISTRAR -->
+                <button type="button"
+                    class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-base transition-all"
+                    style="background: var(--primary-color)"
+                    [disabled]="cargando.loading()"
+                    (click)="guardarCompra()">
+                    @if (cargando.loading()) {
+                        <i class="pi pi-spin pi-spinner"></i>
+                    } @else {
+                        <i class="pi pi-check"></i>
+                    }
+                    Registrar compra · ${{ totalFinal() | number:'1.2-2' }}
+                </button>
+
+                <p class="text-xs text-center text-surface-400">
+                    Confirma con
+                    <kbd class="px-1 py-0.5 rounded border border-surface-200 text-surface-600 text-[10px] font-mono">F2</kbd>
+                    · imprime orden con
+                    <kbd class="px-1 py-0.5 rounded border border-surface-200 text-surface-600 text-[10px] font-mono">⌘</kbd> P
+                </p>
             </div>
-
-            <!-- Botón guardar -->
-            <p-button
-                label="Guardar Compra"
-                icon="pi pi-save"
-                severity="info"
-                size="large"
-                (onClick)="guardarCompra()"
-                styleClass="w-full justify-center">
-            </p-button>
-
         </div>
     </div>
 </form>
+
+<!-- ─── Dialog: Nuevo producto ──────────────────────────────────────────── -->
+<p-dialog header="Nuevo producto" [(visible)]="dialogProductoVisible"
+    [modal]="true" [style]="{'width':'500px'}" [draggable]="false" appendTo="body">
+    <div [formGroup]="productoRapidoForm" class="pt-2">
+        <app-producto-campos modo="rapido" />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" severity="secondary" [text]="true"
+            (onClick)="dialogProductoVisible.set(false)" />
+        <p-button label="Guardar producto" icon="pi pi-check"
+            (onClick)="guardarProductoRapido()" />
+    </ng-template>
+</p-dialog>

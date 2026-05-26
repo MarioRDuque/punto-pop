@@ -1,7 +1,6 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -17,7 +16,7 @@ import { EstadoVenta } from '../../../entities/Venta';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    FluidModule,
+    
     PanelModule,
     ButtonModule,
     SelectModule,

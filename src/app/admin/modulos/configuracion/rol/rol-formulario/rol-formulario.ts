@@ -100,6 +100,14 @@ export class RolFormulario implements OnInit {
     this.rolForm.controls.permisos.setValue(nuevo);
   }
 
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
   realizarAccion() {
     if (!this.utilService.validarFormulario(this.rolForm)) return;
     this.cargando.activar();

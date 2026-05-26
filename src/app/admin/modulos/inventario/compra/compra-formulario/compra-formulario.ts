@@ -4,23 +4,13 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { DecimalPipe } from '@angular/common';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { AgGridAngular } from 'ag-grid-angular';
-import {
-  CellValueChangedEvent,
-  ColDef,
-  GetRowIdParams,
-  GridApi,
-  GridReadyEvent,
-  ICellRendererParams,
-  Theme,
-} from 'ag-grid-community';
-import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
-import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
-import { InputComponent } from '../../../../component/input/input.component';
+import { TooltipModule } from 'primeng/tooltip';
+import { DialogModule } from 'primeng/dialog';
+import { ProductoCampos } from '../../../catalogo/producto/producto-campos/producto-campos';
 import { CompraService } from '../compra.service';
 import { ProveedorService } from '../../proveedor/proveedor.service';
 import { ProductoService } from '../../../catalogo/producto/producto.service';
@@ -30,9 +20,23 @@ import { UtilService } from '../../../../service/util.service';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { Compra, DetalleCompra } from '../../../../entities/Compra';
 import { CatProducto } from '../../../../entities/CatProducto';
+import { Proveedor } from '../../../../entities/Proveedor';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
 const IVA_PORCENTAJE = 0.15;
+
+export interface ItemCompra {
+  productoId: string;
+  productoCodigo: string;
+  productoNombre: string;
+  unidadMedidaNombre?: string;
+  stock?: number;
+  cantidad: number;
+  costoUnitario: number;
+  descuentoPct: number;
+}
+
+export type CondicionPago = 'CONTADO' | 'TRANSFERENCIA' | 'CREDITO_30' | 'CREDITO_60';
 
 @Component({
   selector: 'app-compra-formulario',
@@ -41,14 +45,15 @@ const IVA_PORCENTAJE = 0.15;
     ReactiveFormsModule,
     FormsModule,
     DecimalPipe,
-    HeaderCrud,
-    InputComponent,
     SelectModule,
     InputNumberModule,
-    FloatLabelModule,
+    InputTextModule,
+    DatePickerModule,
     ButtonModule,
     AutoCompleteModule,
-    AgGridAngular,
+    TooltipModule,
+    DialogModule,
+    ProductoCampos,
   ],
   templateUrl: './compra-formulario.html',
 })
@@ -59,85 +64,81 @@ export class CompraFormulario implements OnInit {
   private readonly proveedorService = inject(ProveedorService);
   private readonly productoService = inject(ProductoService);
   private readonly toast = inject(ToastService);
-  private readonly cargando = inject(CargandoService);
+  readonly cargando = inject(CargandoService);
   private readonly utilService = inject(UtilService);
   private readonly destroyRef = inject(DestroyRef);
   public readonly tabsState = inject(TabsStateService);
 
-  public readonly subtitulo = 'Nueva Orden de Compra';
   public readonly proveedores = this.proveedorService.listaProveedores;
   public readonly productos = this.productoService.listaProductos;
 
-  public productoSeleccionado: CatProducto | null = null;
+  // Scanner
+  public productoScanner: CatProducto | null = null;
   public productosFiltrados = signal<CatProducto[]>([]);
-  public cantidad = 1;
-  public costoUnitario = 0;
+  public readonly cantidadScanner = signal(1);
+  public readonly costoScanner = signal(0);
+  public readonly termino = signal('');
+  public readonly mostrarCrearProducto = computed(
+    () => this.termino().length > 2 && this.productosFiltrados().length === 0
+  );
 
-  private gridApi!: GridApi<DetalleCompra>;
-  public theme: Theme = myTheme;
-  public localeText = AG_GRID_LOCALE_ES;
-  public gridContext = { component: this };
+  // Dialog crear producto
+  public readonly dialogProductoVisible = signal(false);
+  public readonly productoRapidoForm = this.fb.group({
+    codigo:         ['', [Validators.required]],
+    nombre:         ['', [Validators.required]],
+    precioVenta:    [0, [Validators.required, Validators.min(0.01)]],
+    categoriaId:    [null as string | null, [Validators.required]],
+    unidadMedidaId: [null as string | null, [Validators.required]],
+    tarifaIvaId:    [null as string | null, [Validators.required]],
+    stock:          [0],
+    stockMinimo:    [0],
+  });
 
-  private _totales = signal({ subtotal: 0, iva: 0, total: 0 });
-  public subtotal = computed(() => this._totales().subtotal);
-  public iva = computed(() => this._totales().iva);
-  public total = computed(() => this._totales().total);
+  // Items
+  private readonly _items = signal<ItemCompra[]>([]);
+  public readonly items = this._items.asReadonly();
+  public readonly itemCount = computed(() => this._items().reduce((s, i) => s + i.cantidad, 0));
+
+  // Condicion de pago
+  public readonly condicionPago = signal<CondicionPago>('CONTADO');
+  public readonly plazo = signal<number>(30);
+  public readonly fechaFacturaDate = signal<Date>(new Date());
+
+  // Computed totals
+  public readonly subtotalItems = computed(() =>
+    this._items().reduce((s, i) => s + i.cantidad * i.costoUnitario * (1 - i.descuentoPct / 100), 0)
+  );
+  public readonly descuentoTotal = computed(() =>
+    this._items().reduce((s, i) => s + i.cantidad * i.costoUnitario * (i.descuentoPct / 100), 0)
+  );
+  public readonly ivaTotal = computed(() => this.subtotalItems() * IVA_PORCENTAJE);
+  public readonly totalFinal = computed(() => this.subtotalItems() + this.ivaTotal());
+
+  public readonly fechaVencimiento = computed(() => {
+    const d = new Date(this.fechaFacturaDate());
+    d.setDate(d.getDate() + this.plazo());
+    return d;
+  });
+
+  public readonly productosStockBajo = computed(() =>
+    this.productos().filter((p) => p.stock <= p.stockMinimo && p.estado)
+  );
 
   public compraForm = this.fb.group({
     proveedorId: [null as string | null, [Validators.required]],
+    folioFactura: [''],
     observacion: [''],
   });
 
-  public defaultColDef: ColDef = {
-    resizable: true,
-    sortable: false,
-    suppressMovable: true,
-    suppressHeaderMenuButton: true,
-  };
-
-  public columnDefs: ColDef<DetalleCompra>[] = [
-    { field: 'productoCodigo',  headerName: 'Código',     width: 95 },
-    { field: 'productoNombre',  headerName: 'Producto',   flex: 1, minWidth: 150 },
-    {
-      field: 'cantidad', headerName: 'Cant.', width: 90,
-      editable: true, type: 'rightAligned',
-      cellEditor: 'agNumberCellEditor',
-      cellEditorParams: { min: 0.001, precision: 3 },
-    },
-    {
-      field: 'costoUnitario', headerName: 'Costo Unit.', width: 120,
-      editable: true, type: 'rightAligned',
-      cellEditor: 'agNumberCellEditor',
-      cellEditorParams: { min: 0.0001, precision: 4 },
-      valueFormatter: (p) => p.value != null ? `$${(p.value as number).toFixed(4)}` : '',
-    },
-    {
-      colId: 'subtotalCalc', headerName: 'Subtotal', width: 110,
-      type: 'rightAligned',
-      valueGetter: (p) => {
-        const d = p.data;
-        return d ? d.cantidad * d.costoUnitario : 0;
-      },
-      valueFormatter: (p) => p.value != null ? `$${(p.value as number).toFixed(2)}` : '',
-    },
-    {
-      headerName: '', width: 46, resizable: false,
-      cellRenderer: (params: ICellRendererParams<DetalleCompra>) => {
-        const btn = document.createElement('button');
-        btn.innerHTML = '<i class="pi pi-trash" style="font-size:11px"></i>';
-        btn.style.cssText =
-          'background:none;border:none;cursor:pointer;color:#ef4444;padding:0 6px;height:100%;';
-        btn.title = 'Eliminar';
-        btn.onclick = () =>
-          (params.context as { component: CompraFormulario }).component.eliminarItem(
-            params.data!.productoId
-          );
-        return btn;
-      },
-    },
+  readonly condiciones: Array<{ value: CondicionPago; label: string; subtitle: string; icon: string }> = [
+    { value: 'CONTADO', label: 'Contado', subtitle: 'Pago inmediato', icon: 'pi pi-check' },
+    { value: 'TRANSFERENCIA', label: 'Transferencia', subtitle: 'SPEI', icon: 'pi pi-send' },
+    { value: 'CREDITO_30', label: 'Crédito 30d', subtitle: 'Línea proveedor', icon: 'pi pi-clock' },
+    { value: 'CREDITO_60', label: 'Crédito 60d', subtitle: 'Plazo extendido', icon: 'pi pi-calendar' },
   ];
 
-  public getRowId = (params: GetRowIdParams<DetalleCompra>) => params.data.productoId;
+  readonly plazos = [15, 30, 60, 90];
 
   ngOnInit(): void {
     if (this.proveedores().length === 0) {
@@ -148,12 +149,22 @@ export class CompraFormulario implements OnInit {
     }
   }
 
-  onGridReady(event: GridReadyEvent<DetalleCompra>): void {
-    this.gridApi = event.api;
+  getProveedorSeleccionado(): Proveedor | null {
+    const id = this.compraForm.get('proveedorId')?.value;
+    return id ? (this.proveedores().find((p) => p.id === id) ?? null) : null;
+  }
+
+  getInitials(nombre: string): string {
+    return nombre.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+  }
+
+  limpiarProveedor(): void {
+    this.compraForm.patchValue({ proveedorId: null });
   }
 
   filtrarProductos(event: { query: string }): void {
     const q = event.query.toLowerCase().trim();
+    this.termino.set(event.query.trim());
     this.productosFiltrados.set(
       this.productos()
         .filter((p) => p.codigo.toLowerCase().includes(q) || p.nombre.toLowerCase().includes(q))
@@ -161,107 +172,164 @@ export class CompraFormulario implements OnInit {
     );
   }
 
-  onProductoSelect(event: { value: CatProducto }): void {
-    this.productoSeleccionado = event.value;
-    this.costoUnitario = event.value.costo ?? 0;
+  onProductoScannerSelect(event: { value: CatProducto }): void {
+    this.productoScanner = event.value;
+    this.costoScanner.set(event.value.costo ?? 0);
+    this.termino.set('');
+    setTimeout(() => this.agregarItem(), 0);
   }
 
-  esProductoValido(): boolean {
-    return (
-      this.productoSeleccionado !== null &&
-      typeof this.productoSeleccionado === 'object' &&
-      !!this.productoSeleccionado.id
-    );
+  abrirDialogProducto(): void {
+    this.productoRapidoForm.reset();
+    this.productoRapidoForm.controls.precioVenta.setValue(0);
+    this.productoRapidoForm.controls.stock.setValue(0);
+    this.productoRapidoForm.controls.stockMinimo.setValue(0);
+    this.dialogProductoVisible.set(true);
+  }
+
+  guardarProductoRapido(): void {
+    if (!this.utilService.validarFormulario(this.productoRapidoForm)) return;
+    this.cargando.activar();
+    const v = this.productoRapidoForm.getRawValue();
+    const producto: CatProducto = {
+      codigo:         v.codigo ?? '',
+      nombre:         v.nombre ?? '',
+      precioVenta:    v.precioVenta ?? 0,
+      categoriaId:    v.categoriaId ?? '',
+      unidadMedidaId: v.unidadMedidaId ?? '',
+      tarifaIvaId:    v.tarifaIvaId ?? '',
+      stock:          v.stock ?? 0,
+      stockMinimo:    v.stockMinimo ?? 0,
+      estado:         true,
+    };
+    this.productoService.guardar(producto)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.toast.success(`Producto "${data.nombre}" creado`);
+          this.productoService.agregarAlGrid(data);
+          this.productoScanner = data;
+          this.costoScanner.set(data.costo ?? 0);
+          this.dialogProductoVisible.set(false);
+          this.cargando.inactivar();
+          setTimeout(() => this.agregarItem(), 0);
+        },
+      });
+  }
+
+  esScannerValido(): boolean {
+    return this.productoScanner !== null &&
+      typeof this.productoScanner === 'object' &&
+      !!(this.productoScanner as CatProducto).id;
   }
 
   agregarItem(): void {
-    if (!this.esProductoValido()) {
+    if (!this.esScannerValido()) {
       this.toast.error('Seleccione un producto de la lista');
       return;
     }
-    if (this.costoUnitario <= 0) {
-      this.toast.error('Ingrese un costo unitario mayor a cero');
-      return;
-    }
-    const producto = this.productoSeleccionado!;
-    const existingNode = this.gridApi?.getRowNode(producto.id!);
-
-    if (existingNode?.data) {
-      const item = existingNode.data;
-      this.gridApi.applyTransaction({
-        update: [{ ...item, cantidad: item.cantidad + this.cantidad }],
-      });
-    } else {
-      const nuevoDetalle: DetalleCompra = {
-        productoId:    producto.id!,
+    const producto = this.productoScanner!;
+    this._items.update((items) => {
+      const idx = items.findIndex((i) => i.productoId === producto.id);
+      if (idx >= 0) {
+        const updated = [...items];
+        updated[idx] = { ...updated[idx], cantidad: updated[idx].cantidad + this.cantidadScanner() };
+        return updated;
+      }
+      return [...items, {
+        productoId: producto.id!,
         productoCodigo: producto.codigo,
         productoNombre: producto.nombre,
-        cantidad:       this.cantidad,
-        costoUnitario:  this.costoUnitario,
-        subtotal:       this.cantidad * this.costoUnitario,
-      };
-      this.gridApi.applyTransaction({ add: [nuevoDetalle] });
-    }
+        unidadMedidaNombre: producto.unidadMedidaNombre,
+        stock: producto.stock,
+        cantidad: this.cantidadScanner(),
+        costoUnitario: this.costoScanner(),
+        descuentoPct: 0,
+      }];
+    });
+    this.productoScanner = null;
+    this.cantidadScanner.set(1);
+    this.costoScanner.set(0);
+  }
 
-    this.sincronizarTotales();
-    this.productoSeleccionado = null;
-    this.cantidad = 1;
-    this.costoUnitario = 0;
+  cambiarCantidad(productoId: string, delta: number): void {
+    this._items.update((items) =>
+      items.map((i) => i.productoId === productoId
+        ? { ...i, cantidad: Math.max(1, i.cantidad + delta) }
+        : i
+      )
+    );
   }
 
   eliminarItem(productoId: string): void {
-    const node = this.gridApi.getRowNode(productoId);
-    if (node?.data) {
-      this.gridApi.applyTransaction({ remove: [node.data] });
-      this.sincronizarTotales();
+    this._items.update((items) => items.filter((i) => i.productoId !== productoId));
+  }
+
+  aplicarDescuento(_productoId: string): void {
+    // TODO: abrir dialog para ingresar descuento
+  }
+
+  vaciarCarrito(): void {
+    this._items.set([]);
+  }
+
+  seleccionarCondicion(condicion: CondicionPago): void {
+    this.condicionPago.set(condicion);
+    if (condicion === 'CREDITO_30') this.plazo.set(30);
+    if (condicion === 'CREDITO_60') this.plazo.set(60);
+  }
+
+  esCredito(): boolean {
+    return this.condicionPago() === 'CREDITO_30' || this.condicionPago() === 'CREDITO_60';
+  }
+
+  incrementarCantidadScanner(): void {
+    this.cantidadScanner.update((v) => v + 1);
+  }
+
+  decrementarCantidadScanner(): void {
+    this.cantidadScanner.update((v) => Math.max(1, v - 1));
+  }
+
+  formatFecha(date: Date): string {
+    return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  diasHasta(date: Date): number {
+    return Math.round((date.getTime() - Date.now()) / 86400000);
+  }
+
+  public irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
+  public guardarCompra(): void {
+    if (!this.compraForm.get('proveedorId')?.value) {
+      this.toast.error('Seleccione un proveedor');
+      return;
     }
-  }
-
-  onCellValueChanged(event: CellValueChangedEvent<DetalleCompra>): void {
-    this.gridApi.refreshCells({
-      rowNodes: [event.node],
-      columns: ['subtotalCalc'],
-      force: true,
-    });
-    this.sincronizarTotales();
-  }
-
-  private sincronizarTotales(): void {
-    let sub = 0;
-    this.gridApi.forEachNode((node) => {
-      if (node.data) sub += node.data.cantidad * node.data.costoUnitario;
-    });
-    const iva = sub * IVA_PORCENTAJE;
-    this._totales.set({ subtotal: sub, iva, total: sub + iva });
-  }
-
-  private getDetalles(): DetalleCompra[] {
-    const items: DetalleCompra[] = [];
-    this.gridApi.forEachNode((node) => {
-      if (node.data) {
-        const d = node.data;
-        items.push({ ...d, subtotal: d.cantidad * d.costoUnitario });
-      }
-    });
-    return items;
-  }
-
-  guardarCompra(): void {
-    if (!this.utilService.validarFormulario(this.compraForm)) return;
-    const detalles = this.getDetalles();
-    if (detalles.length === 0) {
+    if (this._items().length === 0) {
       this.toast.error('Agregue al menos un producto');
       return;
     }
 
     this.cargando.activar();
+    const detalles: DetalleCompra[] = this._items().map((i) => ({
+      productoId: i.productoId,
+      productoCodigo: i.productoCodigo,
+      productoNombre: i.productoNombre,
+      cantidad: i.cantidad,
+      costoUnitario: i.costoUnitario,
+      subtotal: i.cantidad * i.costoUnitario * (1 - i.descuentoPct / 100),
+    }));
+
     const formValue = this.compraForm.getRawValue();
     const compra: Compra = {
       proveedorId: formValue.proveedorId!,
       observacion: formValue.observacion ?? undefined,
-      subtotal: this.subtotal(),
-      iva:      this.iva(),
-      total:    this.total(),
+      subtotal: this.subtotalItems(),
+      iva: this.ivaTotal(),
+      total: this.totalFinal(),
       detalles,
     };
 
@@ -278,12 +346,14 @@ export class CompraFormulario implements OnInit {
       });
   }
 
-  resetFormulario(): void {
+  public resetFormulario(): void {
     this.compraForm.reset();
-    this.gridApi?.setGridOption('rowData', []);
-    this._totales.set({ subtotal: 0, iva: 0, total: 0 });
-    this.productoSeleccionado = null;
-    this.cantidad = 1;
-    this.costoUnitario = 0;
+    this._items.set([]);
+    this.condicionPago.set('CONTADO');
+    this.plazo.set(30);
+    this.fechaFacturaDate.set(new Date());
+    this.productoScanner = null;
+    this.cantidadScanner.set(1);
+    this.costoScanner.set(0);
   }
 }

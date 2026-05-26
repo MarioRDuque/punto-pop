@@ -1,8 +1,6 @@
 import { Component, DestroyRef, inject, OnInit, effect } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FieldsetModule } from 'primeng/fieldset';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
 import { InputComponent } from '../../../../component/input/input.component';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { ProveedorService } from '../proveedor.service';
@@ -19,7 +17,7 @@ import { rucValidator } from '../../../../directives/identificacion-rules';
 @Component({
   selector: 'app-proveedor-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, FieldsetModule, HeaderCrud, InputComponent, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputComponent, ToggleSwitchComponent],
   templateUrl: './proveedor-formulario.html',
 })
 export class ProveedorFormulario implements OnInit {
@@ -65,6 +63,14 @@ export class ProveedorFormulario implements OnInit {
       const obj = this.formsService.objetoSeleccionado();
       if (obj) this.proveedorForm.patchValue(obj);
     }
+  }
+
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
   }
 
   realizarAccion(): void {

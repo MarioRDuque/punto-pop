@@ -22,7 +22,6 @@ import {
 } from 'ag-grid-community';
 import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
 import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
-import { HeaderTransaccion } from '../../../../component/header-transaccion/header-transaccion';
 import { ClienteFormulario } from '../../cliente/cliente-formulario/cliente-formulario';
 import { ProductoCampos } from '../../../catalogo/producto/producto-campos/producto-campos';
 import { VentaService } from '../venta.service';
@@ -46,7 +45,6 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
     ReactiveFormsModule,
     FormsModule,
     DecimalPipe,
-    HeaderTransaccion,
     ProductoCampos,
     SelectModule,
     InputNumberModule,
@@ -89,6 +87,10 @@ export class VentaFormulario implements OnInit {
 
   public productoSeleccionado: CatProducto | null = null;
   public productosFiltrados = signal<CatProducto[]>([]);
+  public readonly termino = signal('');
+  public readonly mostrarCrearProducto = computed(
+    () => this.termino().length > 2 && this.productosFiltrados().length === 0
+  );
   public cantidad = 1;
 
   public dialogClienteVisible = signal(false);
@@ -408,6 +410,7 @@ export class VentaFormulario implements OnInit {
 
   filtrarProductos(event: { query: string }): void {
     const q = event.query.toLowerCase().trim();
+    this.termino.set(event.query.trim());
     this.productosFiltrados.set(
       this.productos()
         .filter((p) => p.codigo.toLowerCase().includes(q) || p.nombre.toLowerCase().includes(q))
@@ -417,7 +420,7 @@ export class VentaFormulario implements OnInit {
 
   onProductoSelect(event: { value: CatProducto }): void {
     this.productoSeleccionado = event.value;
-    // Al seleccionar desde el dropdown, agrega inmediatamente
+    this.termino.set('');
     setTimeout(() => this.agregarItem(), 0);
   }
 

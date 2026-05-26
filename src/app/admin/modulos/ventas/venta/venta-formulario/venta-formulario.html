@@ -1,93 +1,86 @@
 <form [formGroup]="ventaForm" autocomplete="off" novalidate>
 
-    <app-header-transaccion
-        [titulo]="accion() === accionEnum.EDITAR ? subtitulo : 'Nueva Venta'"
-        [modo]="accion() === accionEnum.EDITAR ? 'editar' : 'nuevo'"
-        [labelGuardar]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : 'Cobrar'"
-        [cargando]="false"
-        (guardar)="guardarVenta()"
-        (cancelar)="irAlListado()">
-    </app-header-transaccion>
-
-    <div class="flex flex-col xl:flex-row gap-4 mt-4">
+    <div class="flex flex-col xl:flex-row gap-4">
 
         <!-- ══ IZQUIERDA ════════════════════════════════════════════════════ -->
-        <div class="flex-1 min-w-0 flex flex-col gap-3">
+        <div class="flex-1 min-w-0">
 
-            <!-- Fila 1: CLIENTE + OBSERVACIÓN (mismo alto fijo) -->
-            <div class="flex gap-3 items-stretch" style="height:135px; overflow:hidden">
+            <!-- CARD UNIFICADO: CLIENTE + OBSERVACIÓN + ITEMS EN LA VENTA -->
+            <div class="card p-0 overflow-hidden flex flex-col">
 
-                <!-- CLIENTE -->
-                <div class="card flex flex-col gap-3 shrink-0" style="width:280px; height:100%; overflow:hidden; margin-bottom:0">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
-                            <i class="pi pi-user text-surface-400" style="font-size:.8rem"></i>
-                            <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
+                <!-- Fila superior: CLIENTE | divisor | OBSERVACIÓN -->
+                <div class="flex items-stretch">
+
+                    <!-- CLIENTE -->
+                    <div class="flex flex-col gap-3 shrink-0 p-4" style="width:260px">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <i class="pi pi-user text-surface-400" style="font-size:.8rem"></i>
+                                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
+                            </div>
+                            @if (getClienteSeleccionado()) {
+                                <button type="button"
+                                    class="text-xs font-medium text-primary hover:underline"
+                                    (click)="limpiarCliente()">Cambiar</button>
+                            }
                         </div>
-                        @if (getClienteSeleccionado()) {
-                            <button type="button"
-                                class="text-xs font-medium text-primary hover:underline"
-                                (click)="limpiarCliente()">Cambiar</button>
+
+                        @if (getClienteSeleccionado(); as c) {
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 cursor-pointer transition-colors"
+                                style="background: var(--surface-hover)">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 bg-primary">
+                                    {{ getInitials(c.nombre) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-semibold text-sm truncate">{{ c.nombre }}</div>
+                                    <div class="text-xs text-surface-400 truncate">{{ c.tipoIdentificacion }} {{ c.identificacion }}</div>
+                                </div>
+                                <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0"
+                                    style="background: var(--surface-card)">
+                                    <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
+                                </div>
+                            </div>
+                        } @else {
+                            <p-select formControlName="clienteId" [options]="clientesActivos()"
+                                optionLabel="nombre" optionValue="id" [filter]="true"
+                                filterBy="nombre" [showClear]="true" placeholder="Consumidor final"
+                                [style]="{'width':'100%'}" appendTo="body"
+                                [virtualScroll]="true" [virtualScrollItemSize]="43"
+                                [scrollHeight]="clientesScrollHeight()">
+                            </p-select>
                         }
+
+                        <button type="button"
+                            class="flex items-center gap-1 text-sm font-semibold text-primary w-fit"
+                            (click)="abrirDialogCliente()">
+                            <i class="pi pi-plus" style="font-size:.7rem"></i>
+                            Nuevo cliente
+                        </button>
                     </div>
 
-                    @if (getClienteSeleccionado(); as c) {
-                        <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 cursor-pointer transition-colors"
-                            style="background: var(--surface-hover)">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 bg-primary">
-                                {{ getInitials(c.nombre) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-semibold text-sm truncate">{{ c.nombre }}</div>
-                                <div class="text-xs text-surface-400 truncate">{{ c.tipoIdentificacion }} {{ c.identificacion }}</div>
-                            </div>
-                            <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0"
-                                style="background: var(--surface-card)">
-                                <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
-                            </div>
-                        </div>
-                    } @else {
-                        <p-select formControlName="clienteId" [options]="clientesActivos()"
-                            optionLabel="nombre" optionValue="id" [filter]="true"
-                            filterBy="nombre" [showClear]="true" placeholder="Consumidor final"
-                            [style]="{'width':'100%'}" appendTo="body"
-                            [virtualScroll]="true" [virtualScrollItemSize]="43"
-                            [scrollHeight]="clientesScrollHeight()">
-                        </p-select>
-                    }
+                    <!-- Divisor vertical -->
+                    <div class="w-px bg-surface-200 self-stretch shrink-0"></div>
 
-                    <button type="button"
-                        class="flex items-center gap-1 text-sm font-semibold text-primary w-fit"
-                        (click)="abrirDialogCliente()">
-                        <i class="pi pi-plus" style="font-size:.7rem"></i>
-                        Nuevo cliente
-                    </button>
-                </div>
-
-                <!-- OBSERVACIÓN -->
-                <div class="card flex-1 flex flex-col gap-2" style="height:100%; overflow:hidden; margin-bottom:0">
-                    <div class="flex items-center justify-between shrink-0">
-                        <div class="flex items-center gap-1.5">
-                            <i class="pi pi-file-edit text-surface-400" style="font-size:.8rem"></i>
-                            <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
+                    <!-- OBSERVACIÓN -->
+                    <div class="flex-1 flex flex-col gap-2 p-4">
+                        <div class="flex items-center justify-between shrink-0">
+                            <div class="flex items-center gap-1.5">
+                                <i class="pi pi-file-edit text-surface-400" style="font-size:.8rem"></i>
+                                <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Observación</span>
+                            </div>
+                            <span class="text-xs text-surface-300">Opcional</span>
                         </div>
-                        <span class="text-xs text-surface-300">Opcional</span>
+                        <textarea formControlName="observacion"
+                            rows="4"
+                            class="w-full resize-none rounded-lg border border-surface-200 p-2 text-sm outline-none focus:border-primary"
+                            style="flex:1"
+                            placeholder="Notas internas, referencia, mesa...">
+                        </textarea>
                     </div>
-                    <textarea formControlName="observacion"
-                        rows="3"
-                        class="w-full resize-none rounded-lg border border-surface-200 p-2 text-sm outline-none focus:border-primary"
-                        style="height:60px; max-height:100px"
-                        placeholder="Notas internas, referencia, mesa...">
-                    </textarea>
                 </div>
 
-            </div>
-
-            <!-- Fila 2: ITEMS EN LA VENTA (card separada) -->
-            <div class="card p-0 overflow-hidden flex flex-col" style="padding:0; margin-bottom:0">
-
-                <!-- Header -->
-                <div class="flex items-center justify-between px-4 py-3 border-b border-surface-200">
+                <!-- ITEMS EN LA VENTA: header -->
+                <div class="flex items-center justify-between px-4 py-3 border-t border-b border-surface-200">
                     <div class="flex items-center gap-2.5">
                         <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Items en la venta</span>
                         @if (itemCount() > 0) {
@@ -106,28 +99,8 @@
                     }
                 </div>
 
-                <!-- AG-Grid -->
-                <ag-grid-angular
-                    style="width:100%"
-                    [style.minHeight]="itemCount() === 0 ? '160px' : null"
-                    domLayout="autoHeight"
-                    [theme]="theme"
-                    [columnDefs]="columnDefs"
-                    [defaultColDef]="defaultColDef"
-                    [getRowId]="getRowId"
-                    [rowData]="[]"
-                    [rowHeight]="rowHeight"
-                    [context]="gridContext"
-                    [localeText]="localeText"
-                    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-                    [stopEditingWhenCellsLoseFocus]="true"
-                    [singleClickEdit]="true"
-                    (gridReady)="onGridReady($event)"
-                    (cellValueChanged)="onCellValueChanged($event)">
-                </ag-grid-angular>
-
-                <!-- Barra de búsqueda inferior -->
-                <div class="flex items-center gap-2 mx-3 mb-3 mt-2 px-3 py-2.5 rounded-xl"
+                <!-- Barra de búsqueda (ENCIMA de la tabla) -->
+                <div class="flex items-center gap-2 mx-3 mt-3 mb-2 px-3 py-2.5 rounded-xl"
                     style="border:2px dashed color-mix(in srgb, var(--primary-color) 50%, transparent); background:color-mix(in srgb, var(--primary-color) 8%, var(--surface-card))">
 
                     <i class="pi pi-qrcode shrink-0 text-primary" style="font-size:1.1rem"></i>
@@ -175,8 +148,40 @@
                         <i class="pi pi-arrow-return-left" style="font-size:9px"></i>
                         Enter
                     </button>
-
                 </div>
+
+                <!-- Hint: producto no encontrado -->
+                @if (mostrarCrearProducto()) {
+                    <div class="mx-3 mb-2 flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-amber-300 bg-amber-50 text-xs text-amber-700">
+                        <i class="pi pi-exclamation-circle shrink-0"></i>
+                        <span>No se encontró "<strong>{{ termino() }}</strong>"</span>
+                        <button type="button"
+                            class="ml-auto font-semibold text-primary hover:underline shrink-0"
+                            (click)="abrirDialogProducto()">
+                            + Crear producto
+                        </button>
+                    </div>
+                }
+
+                <!-- AG-Grid -->
+                <ag-grid-angular
+                    style="width:100%"
+                    [style.minHeight]="itemCount() === 0 ? '120px' : null"
+                    domLayout="autoHeight"
+                    [theme]="theme"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    [getRowId]="getRowId"
+                    [rowData]="[]"
+                    [rowHeight]="rowHeight"
+                    [context]="gridContext"
+                    [localeText]="localeText"
+                    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                    [stopEditingWhenCellsLoseFocus]="true"
+                    [singleClickEdit]="true"
+                    (gridReady)="onGridReady($event)"
+                    (cellValueChanged)="onCellValueChanged($event)">
+                </ag-grid-angular>
 
             </div>
 
