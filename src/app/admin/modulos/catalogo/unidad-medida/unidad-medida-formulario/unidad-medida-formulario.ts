@@ -70,6 +70,14 @@ export class UnidadMedidaFormulario implements OnInit {
     this.unidadForm.controls.estado.setValue(true);
   }
 
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
   realizarAccion() {
     if (!this.utilService.validarFormulario(this.unidadForm)) return;
     this.cargando.activar();

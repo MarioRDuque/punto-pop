@@ -1,12 +1,6 @@
-<p-fluid>
-    <p-panel value="0">
-        <div class="card">
-            <app-header-crud [subtitulo]="subtitulo" (exportar)="exportarDesdeHeader()"
-                (imprimir)="imprimirDesdeHeader()"></app-header-crud>
+<app-header-crud [subtitulo]="subtitulo" (exportar)="exportarDesdeHeader()"
+    (imprimir)="imprimirDesdeHeader()"></app-header-crud>
 
-            <app-grid [rowData]="listaComprobantes()" (buscarEnBdd)="buscar($event)"
-                [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
-                [subtitulo]="subtitulo"></app-grid>
-        </div>
-    </p-panel>
-</p-fluid>
+<app-grid [rowData]="listaComprobantes()" (buscarEnBdd)="buscar($event)"
+    [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
+    [subtitulo]="subtitulo"></app-grid>

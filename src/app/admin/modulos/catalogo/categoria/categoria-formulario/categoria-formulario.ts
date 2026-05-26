@@ -70,6 +70,14 @@ export class CategoriaFormulario implements OnInit {
     this.categoriaForm.controls.estado.setValue(true);
   }
 
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
   realizarAccion() {
     if (!this.utilService.validarFormulario(this.categoriaForm)) return;
     this.cargando.activar();

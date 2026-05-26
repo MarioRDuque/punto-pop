@@ -68,6 +68,14 @@ export class ProductoFormulario implements OnInit {
     }
   }
 
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
   realizarAccion(): void {
     if (!this.utilService.validarFormulario(this.productoForm)) return;
     this.cargando.activar();

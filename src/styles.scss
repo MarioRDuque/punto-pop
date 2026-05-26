@@ -115,6 +115,26 @@
 //FIN
 
 .card {
+  padding: 1rem !important;
+  margin-bottom: 0 !important;
+  border: 1px solid var(--surface-border) !important;
+}
+
+.p-tablist {
+  background: transparent !important;
+}
+
+.p-tablist-tab-list {
+  width: 100% !important;
+}
+
+.p-tabpanels {
+  background: transparent !important;
+  padding: 1rem !important;
+}
+
+.p-tabpanel {
+  background: transparent !important;
   padding: 0 !important;
 }
 

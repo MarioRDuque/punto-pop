@@ -2,14 +2,10 @@ import { Component, DestroyRef, inject, OnInit, effect } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
 import { InputComponent } from '../../../../component/input/input.component';
 import { MultiselectComponent } from '../../../../component/multiselect/multiselect';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { PasswordComponent } from '../../../../component/password/password';
-import { FluidModule } from 'primeng/fluid';
-import { PanelModule } from 'primeng/panel';
-import { FieldsetModule } from 'primeng/fieldset';
 import { ToastService } from '../../../../service/toast.service';
 import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
@@ -28,12 +24,8 @@ const ROLES_ADMIN = ['ADMIN', 'SUPERADMIN'] as const;
 @Component({
   selector: 'app-usuario-formulario',
   imports: [
-    FluidModule,
-    PanelModule,
-    FieldsetModule,
     FileuploadComponent,
     ReactiveFormsModule,
-    HeaderCrud,
     InputComponent,
     MultiselectComponent,
     ToggleSwitchComponent,
@@ -115,6 +107,14 @@ export class UsuarioFormulario implements OnInit {
     this.usuarioForm.enable();
     this.usuarioForm.reset();
     this.usuarioForm.controls.usuEstado.setValue(true);
+  }
+
+  guardar(): void {
+    this.realizarAccion();
+  }
+
+  irAlListado(): void {
+    this.tabsState.irATab(TabsEnum.LISTADO);
   }
 
   realizarAccion(): void {

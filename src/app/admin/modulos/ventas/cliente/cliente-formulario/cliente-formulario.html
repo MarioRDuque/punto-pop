@@ -1,63 +1,253 @@
 <form [formGroup]="clienteForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
-    @if (!modoDialog) {
-        <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
-    }
-    <div class="flex flex-col md:flex-row gap-4 w-full" style="padding-top: 8px;">
-        <div class="card flex flex-col gap-0 w-full p-0">
+    <div class="flex flex-col xl:flex-row gap-4">
 
-            <!-- Fila 1: Tipo Identificación e Identificación -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div class="field">
-                    <p-floatlabel>
-                        <p-select id="tipoIdentificacion" formControlName="tipoIdentificacion"
-                            [options]="tiposIdentificacion"
-                            optionLabel="label"
-                            optionValue="value"
-                            [style]="{'width': '100%'}">
-                        </p-select>
-                        <label for="tipoIdentificacion">Tipo de Identificación</label>
-                    </p-floatlabel>
+        <!-- ══ SECCIONES PRINCIPALES ══════════════════════════════════════════ -->
+        <div class="flex-1 min-w-0 flex flex-col gap-3">
+
+            <!-- CARD UNIFICADO: secciones 1-5 -->
+            <div class="card flex flex-col gap-0 p-0 overflow-hidden">
+
+                <!-- 1. IDENTIFICACIÓN -->
+                <div class="flex flex-col gap-4 p-5">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">1</div>
+                        <div>
+                            <div class="text-sm font-semibold">Identificación</div>
+                            <div class="text-xs text-surface-400">Documento legal del cliente</div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 items-start">
+                        <div class="flex flex-col gap-1 shrink-0" style="width:175px">
+                            <label class="text-xs font-medium text-surface-500">Tipo</label>
+                            <p-select formControlName="tipoIdentificacion"
+                                [options]="tiposIdentificacion"
+                                optionLabel="label" optionValue="value"
+                                [style]="{'width':'100%'}">
+                            </p-select>
+                        </div>
+                        <div class="flex flex-col gap-1 flex-1">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-medium text-surface-500">
+                                    Número de identificación <span class="text-red-400">*</span>
+                                </label>
+                                <span class="text-xs font-mono text-surface-400">{{ idActualLength() }}/{{ idMaxLength() }}</span>
+                            </div>
+                            <input pInputText formControlName="identificacion"
+                                [maxlength]="idMaxLength()" class="w-full" />
+                        </div>
+                    </div>
+                    <p class="text-xs text-surface-400 m-0 -mt-2">Buscaremos si ya existe al terminar</p>
                 </div>
-                <div class="field">
-                    <app-input label="Identificación" id="identificacion" [autofocus]="accion() === accionEnum.CREAR" />
+
+                <!-- 2. DATOS PERSONALES -->
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">2</div>
+                        <div>
+                            <div class="text-sm font-semibold">Datos personales</div>
+                            <div class="text-xs text-surface-400">Cómo se mostrará en facturas y tickets</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-medium text-surface-500">
+                            Nombre completo <span class="text-red-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
+                                style="font-size:.875rem"></i>
+                            <input pInputText formControlName="nombre"
+                                placeholder="Nombre completo"
+                                class="w-full" style="padding-left: 2.25rem" />
+                        </div>
+                        <p class="text-xs text-surface-400 m-0">Formato Title Case aplicado automáticamente</p>
+                    </div>
+                </div>
+
+                <!-- 3. CONTACTO -->
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">3</div>
+                        <div>
+                            <div class="text-sm font-semibold">Contacto</div>
+                            <div class="text-xs text-surface-400">Al menos uno para notificaciones</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-medium text-surface-500">Correo electrónico</label>
+                            <div class="relative">
+                                <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
+                                    style="font-size:.875rem"></i>
+                                <input pInputText formControlName="email"
+                                    placeholder="cliente@correo.com"
+                                    class="w-full" style="padding-left: 2.25rem" />
+                            </div>
+                            <p class="text-xs text-surface-400 m-0">Para enviar comprobantes electrónicos</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-medium text-surface-500">Teléfono</label>
+                            <div class="flex">
+                                <span class="flex items-center gap-1.5 px-3 border border-surface-200 border-r-0 rounded-l-lg text-sm text-surface-500 shrink-0"
+                                    style="background: var(--surface-hover)">
+                                    <i class="pi pi-phone" style="font-size:.75rem"></i>+593
+                                </span>
+                                <input pInputText formControlName="telefono"
+                                    placeholder="98 765 4321" class="w-full"
+                                    style="border-top-left-radius:0; border-bottom-left-radius:0" />
+                            </div>
+                            <p class="text-xs text-surface-400 m-0">Móvil o fijo · sin código de país</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. DIRECCIÓN -->
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">4</div>
+                        <div>
+                            <div class="text-sm font-semibold">
+                                Dirección <span class="font-normal text-surface-400 text-xs">· opcional</span>
+                            </div>
+                            <div class="text-xs text-surface-400">Para entregas y facturación a domicilio</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-medium text-surface-500">País</label>
+                            <p-select formControlName="pais" [options]="paises"
+                                [style]="{'width':'100%'}"></p-select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-medium text-surface-500">Provincia</label>
+                            <p-select formControlName="provincia" [options]="provincias"
+                                placeholder="Provincia" [showClear]="true"
+                                [style]="{'width':'100%'}"></p-select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-medium text-surface-500">Ciudad</label>
+                            <input pInputText formControlName="ciudad" placeholder="Ciudad" class="w-full" />
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-medium text-surface-500">Calle y número</label>
+                        <div class="relative">
+                            <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
+                                style="font-size:.875rem"></i>
+                            <input pInputText formControlName="direccion"
+                                placeholder="Av. Amazonas N32-123 y Roca, Edif. Torre, Of. 502"
+                                class="w-full" style="padding-left: 2.25rem" />
+                        </div>
+                        <p class="text-xs text-surface-400 m-0">Calle, número, referencia (opcional)</p>
+                    </div>
+                </div>
+
+                <!-- 5. ESTADO -->
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">5</div>
+                        <div>
+                            <div class="text-sm font-semibold">Estado</div>
+                            <div class="text-xs text-surface-400">Solo los activos aparecen en ventas nuevas</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200"
+                        style="background: var(--surface-hover)">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-green-100">
+                            <i class="pi pi-check text-green-600" style="font-size:.75rem"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-semibold">Cliente activo</div>
+                            <div class="text-xs text-surface-400">Disponible para registrar nuevas ventas y facturas</div>
+                        </div>
+                        <app-toggle-switch label="Estado" id="estado" />
+                    </div>
                 </div>
             </div>
-            <br>
 
-            <!-- Fila 2: Nombre -->
-            <div class="grid grid-cols-1 gap-6 w-full">
-                <div class="field">
-                    <app-input label="Nombre completo" id="nombre" [autofocus]="accion() === accionEnum.EDITAR" />
-                </div>
-            </div>
-            <br>
-
-            <!-- Fila 3: Email y Teléfono -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div class="field">
-                    <app-input label="Email" id="email" />
-                </div>
-                <div class="field">
-                    <app-input label="Teléfono" id="telefono" />
-                </div>
-            </div>
-            <br>
-
-            <!-- Fila 4: Dirección -->
-            <div class="grid grid-cols-1 gap-6 w-full">
-                <div class="field">
-                    <app-input label="Dirección" id="direccion" />
-                </div>
-            </div>
-            <br>
-
-            <!-- Estado -->
-            <div class="grid grid-cols-1 gap-6 w-full">
-                <div class="flex justify-center">
-                    <app-toggle-switch label="Estado" id="estado" />
-                </div>
-            </div>
-
+            <p class="text-xs text-surface-400 px-1 m-0">* Campos requeridos</p>
         </div>
+
+        <!-- ══ VISTA PREVIA ══════════════════════════════════════════════════ -->
+        @if (!modoDialog) {
+            <div class="w-full xl:w-72 shrink-0">
+                <div class="card flex flex-col gap-4 xl:sticky xl:top-4">
+
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Vista previa</span>
+                        <span class="flex items-center gap-1.5 text-xs font-semibold text-green-600 px-2 py-0.5 rounded-full"
+                            style="background: color-mix(in srgb, #22c55e 12%, transparent)">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
+                            En vivo
+                        </span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-3 py-1">
+                        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
+                            style="background: var(--primary-color)">
+                            {{ previewIniciales() }}
+                        </div>
+                        <div class="text-center">
+                            @if (previewNombre()) {
+                                <div class="font-semibold text-sm">{{ previewNombre() }}</div>
+                            } @else {
+                                <div class="text-sm text-surface-300 italic">Sin nombre</div>
+                            }
+                            <div class="mt-1.5">
+                                <span class="text-xs bg-surface-100 text-surface-500 px-2.5 py-0.5 rounded-full">
+                                    {{ previewTipoId() }} · {{ previewEstado() ? 'activo' : 'inactivo' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-surface-100 pt-3 flex flex-col gap-3">
+                        <div class="flex items-start gap-2.5">
+                            <i class="pi pi-envelope text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <div class="flex flex-col gap-0.5 min-w-0">
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Email</span>
+                                <span class="text-xs text-surface-500 break-all">{{ previewEmail() || '— pendiente —' }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <i class="pi pi-phone text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Teléfono</span>
+                                <span class="text-xs text-surface-500">{{ previewTelefono() || '— pendiente —' }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <i class="pi pi-map-marker text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <div class="flex flex-col gap-0.5 min-w-0">
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Ubicación</span>
+                                <span class="text-xs text-surface-500">{{ previewUbicacion() || '— pendiente —' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-surface-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-surface-500">Datos completados</span>
+                            <span class="text-xs font-bold" style="color: var(--primary-color)">{{ previewCompletadoPct() }}%</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-surface-100 overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-300"
+                                style="background: var(--primary-color)"
+                                [style.width.%]="previewCompletadoPct()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </form>

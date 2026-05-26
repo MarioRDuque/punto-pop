@@ -1,68 +1,88 @@
 <form [formGroup]="usuarioForm" (ngSubmit)="realizarAccion()" autocomplete="off" novalidate>
-    <app-header-crud [subtitulo]="subtitulo" [esFormulario]="true"></app-header-crud>
-    <div class="flex flex-col md:flex-row gap-4 w-full">
-        <div class="card flex flex-col gap-0 w-full p-0">
-            <p-fieldset legend="Datos" [toggleable]="true">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    <!-- Usuario -->
-                    <div class="field">
-                        <app-input label="Usuario" [icon]="ICONSCONSTANT.USER" id="usuEmail" [uppercase]="false"
-                            [autofocus]="accion() === accionEnum.CREAR" />
-                    </div>
-                    <!-- Nombre -->
-                    <div class="field">
-                        <app-input label="Nombre" id="usuNombre" [autofocus]="accion() === accionEnum.EDITAR" />
-                    </div>
-                    <!-- Apellidos -->
-                    <div class="field">
-                        <app-input label="Apellidos" id="usuApellidos" />
-                    </div>
-                    <!-- Correo -->
-                    <div class="field md:col-span-2">
-                        <app-input label="Correo electrónico" id="usuEmail" [uppercase]="false" />
-                    </div>
-                    <!-- Contraseña -->
-                    <div class="field">
-                        <app-password label="Clave" id="usuClave" [uppercase]="false" />
-                    </div>
-                </div>
-            </p-fieldset>
-            <p-fieldset legend="Contacto" [toggleable]="true">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    <!-- Telefono -->
-                    <div class="field">
-                        <app-input label="Teléfono" id="usuTelefono" keyFilter="num" />
-                    </div>
-                    <!-- Dirección -->
-                    <div class="field md:col-span-2">
-                        <app-input label="Dirección" [icon]="ICONSCONSTANT.MAPA" id="usuDireccion" />
-                    </div>
-                </div>
-            </p-fieldset>
-            <p-fieldset legend="Datos adicionales" [toggleable]="true">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    <!-- Roles -->
-                    <div class="field">
-                        <app-multiselect label="Seleccionar rol" [options]="roles()" optionLabel="rolDescripcion"
-                            optionValue="rolCodigo" id="roles" [showClear]="true" />
-                    </div>
-                    <!-- Estado Usuario-->
-                    <div class="flex justify-center">
-                        <app-toggle-switch label="Estado" id="usuEstado" />
-                    </div>
-                </div>
-                <!-- Imagen -->
-                <p-fieldset legend="Foto">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                        <div class="md:col-span-3 w-full">
-                            <app-fileupload
-                                [fotoActual]="usuarioForm.get('usuFoto')?.value"
-                                [readonly]="accion() === accionEnum.CONSULTAR"
-                                (fotoSeleccionada)="usuarioForm.get('usuFoto')?.setValue($event)" />
+    <div class="flex flex-col xl:flex-row gap-3">
+
+        <!-- ══ IZQUIERDA ══════════════════════════════ -->
+        <div class="flex-1 min-w-0 flex flex-col gap-3">
+
+            <!-- CARD UNIFICADO: secciones 1-2 -->
+            <div class="card flex flex-col gap-0 p-0 overflow-hidden">
+
+                <!-- 1. DATOS PERSONALES -->
+                <div class="flex flex-col gap-4 p-5">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">1</div>
+                        <div>
+                            <div class="text-sm font-semibold">Datos personales</div>
+                            <div class="text-xs text-surface-400">Información de identificación del usuario</div>
                         </div>
                     </div>
-                </p-fieldset>
-            </p-fieldset>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="field">
+                            <app-input label="Nombre" id="usuNombre"
+                                [autofocus]="accion() === accionEnum.EDITAR" />
+                        </div>
+                        <div class="field">
+                            <app-input label="Apellidos" id="usuApellidos" />
+                        </div>
+                        <div class="field">
+                            <app-input label="Usuario (email)" [icon]="ICONSCONSTANT.USER" id="usuEmail"
+                                [uppercase]="false" [autofocus]="accion() === accionEnum.CREAR" />
+                        </div>
+                        <div class="field">
+                            <app-password label="Clave" id="usuClave" [uppercase]="false" />
+                        </div>
+                        <div class="field">
+                            <app-input label="Teléfono" id="usuTelefono" keyFilter="num" />
+                        </div>
+                        <div class="field">
+                            <app-input label="Dirección" [icon]="ICONSCONSTANT.MAPA" id="usuDireccion" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PERMISOS Y ESTADO -->
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                            style="background: var(--primary-color)">2</div>
+                        <div>
+                            <div class="text-sm font-semibold">Permisos y estado</div>
+                            <div class="text-xs text-surface-400">Roles asignados y disponibilidad de la cuenta</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="field">
+                            <app-multiselect label="Seleccionar rol" [options]="roles()"
+                                optionLabel="rolDescripcion" optionValue="rolCodigo"
+                                id="roles" [showClear]="true" />
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <app-toggle-switch label="Estado" id="usuEstado" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-surface-400 px-1 m-0">* Campos requeridos</p>
+        </div>
+
+        <!-- ══ DERECHA: FOTO ══════════════════════════ -->
+        <div class="w-full xl:w-64 shrink-0">
+            <div class="card flex flex-col gap-4 xl:sticky xl:top-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        style="background: var(--primary-color)">3</div>
+                    <div>
+                        <div class="text-sm font-semibold">Foto de perfil</div>
+                        <div class="text-xs text-surface-400">Imagen de identificación del usuario</div>
+                    </div>
+                </div>
+                <app-fileupload
+                    [fotoActual]="usuarioForm.get('usuFoto')?.value"
+                    [readonly]="accion() === accionEnum.CONSULTAR"
+                    (fotoSeleccionada)="usuarioForm.get('usuFoto')?.setValue($event)" />
+            </div>
         </div>
     </div>
 </form>

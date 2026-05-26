@@ -1,22 +1,36 @@
-<p-fluid>
-    <p-panel value="0">
-        <div class="card">
-            <p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
-                <p-tablist>
-                    <p-tab [value]="Tabs.LISTADO"><i class="pi pi-list"></i><span> Compras</span></p-tab>
-                    <p-tab [value]="Tabs.CREAR"><i class="pi pi-plus"></i><span> Nueva Compra</span></p-tab>
-                </p-tablist>
-                <p-tabpanels>
-                    <p-tabpanel [value]="Tabs.LISTADO">
-                        <app-compra-listado></app-compra-listado>
-                    </p-tabpanel>
-                    <p-tabpanel [value]="Tabs.CREAR">
-                        @if (tabsState.tabActivo() === Tabs.CREAR) {
-                        <app-compra-formulario></app-compra-formulario>
-                        }
-                    </p-tabpanel>
-                </p-tabpanels>
-            </p-tabs>
+<p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
+    <p-tablist>
+        <p-tab [value]="Tabs.LISTADO"><i class="pi pi-list"></i><span> Listado de compras</span></p-tab>
+        <p-tab [value]="Tabs.CREAR"><i class="pi pi-plus"></i><span> Nueva compra</span></p-tab>
+        <p-tab [value]="Tabs.EDITAR" [disabled]="tabsState.tabDeshabilitado()">
+            <i class="pi pi-eye"></i><span> Ver compra</span>
+        </p-tab>
+
+        @if (showFormActions) {
+        <div class="ml-auto flex items-center gap-1 px-3">
+            <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary" />
+            <p-button label="Guardar" icon="pi pi-save" size="small" [outlined]="true"
+                [loading]="cargando.loading()"
+                (onClick)="onGuardar()" />
+            <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
+                pTooltip="Cerrar" tooltipPosition="top"
+                (onClick)="onCancelar()" />
         </div>
-    </p-panel>
-</p-fluid>
+        }
+    </p-tablist>
+    <p-tabpanels>
+        <p-tabpanel [value]="Tabs.LISTADO">
+            <app-compra-listado></app-compra-listado>
+        </p-tabpanel>
+        <p-tabpanel [value]="Tabs.CREAR">
+            @if (tabsState.tabActivo() === Tabs.CREAR) {
+            <app-compra-formulario></app-compra-formulario>
+            }
+        </p-tabpanel>
+        <p-tabpanel [value]="Tabs.EDITAR">
+            @if (tabsState.tabActivo() === Tabs.EDITAR) {
+            <app-compra-formulario></app-compra-formulario>
+            }
+        </p-tabpanel>
+    </p-tabpanels>
+</p-tabs>
