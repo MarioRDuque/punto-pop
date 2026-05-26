@@ -7,7 +7,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
 import { Grid } from '../../../../component/grid/grid';
 import { VentaService } from '../venta.service';
 import { VentaDetalle } from '../venta-detalle/venta-detalle';
@@ -21,7 +20,7 @@ import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 @Component({
   selector: 'app-venta-listado',
   standalone: true,
-  imports: [HeaderCrud, Grid, FormsModule, DatePickerModule, SelectModule, ButtonModule, TooltipModule],
+  imports: [Grid, FormsModule, DatePickerModule, SelectModule, ButtonModule, TooltipModule],
   templateUrl: './venta-listado.html',
   providers: [DialogService]
 })

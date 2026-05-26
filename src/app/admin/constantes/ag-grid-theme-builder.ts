@@ -8,10 +8,11 @@ const baseParams = {
     headerFontSize: 10,
     headerFontWeight: 600,
     headerVerticalPaddingScale: 0.4,
-    rowVerticalPaddingScale: 0.52,
+    rowVerticalPaddingScale: 0,
     wrapperBorderRadius: 0,
 } as const;
 
 export const myTheme: Theme = themeQuartz
     .withParams({ ...baseParams, browserColorScheme: 'light' }, 'light')
-    .withParams({ ...baseParams, browserColorScheme: 'dark' }, 'dark');
+    .withParams({ ...baseParams, browserColorScheme: 'dark' }, 'dark')
+;

@@ -1,4 +1,4 @@
-<div class="mb-2 mt-2">
+<div class="mb-2 mt-2" *ngIf="mostrarFiltro">
     <!-- INPUT FLOTANTE PARA FILTRAR -->
     <p-floatlabel variant="on" class="w-full">
         <p-iconfield class="w-full">
@@ -16,9 +16,8 @@
 <ag-grid-angular style="width: 100%; height: calc(100vh - 275px);" [localeText]="localeText"
     [context]="gridContext" [defaultColDef]="defaultColDef" [theme]="theme" [statusBar]="statusBar" [rowData]="rowData"
     [columnDefs]="colDefs" [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems"
+    [rowHeight]="rowHeight"
     (gridReady)="onGridReady($event)" (firstDataRendered)="onFirstDataRendered()"
     (gridSizeChanged)="onGridSizeChanged($event)" (cellDoubleClicked)="consultar($event.node.data)" />
 
-<div class="card flex justify-center gap-2">
-    <p-confirmdialog />
-</div>
+<p-confirmdialog />

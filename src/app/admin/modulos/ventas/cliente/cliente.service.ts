@@ -73,20 +73,92 @@ export class ClienteService {
   generarColumnasListado(): ColDef[] {
     return [
       { headerName: 'ID', field: 'id', hide: true },
-      { headerName: 'Tipo ID', field: 'tipoIdentificacion', width: 110, minWidth: 100 },
-      { headerName: 'Identificación', field: 'identificacion', width: 150, minWidth: 120 },
-      { headerName: 'Nombre', field: 'nombre', width: 200, minWidth: 150, flex: 1 },
-      { headerName: 'Email', field: 'email', width: 200, minWidth: 150 },
-      { headerName: 'Teléfono', field: 'telefono', width: 130, minWidth: 100 },
+      {
+        headerName: '',
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        width: 44,
+        minWidth: 44,
+        maxWidth: 44,
+        resizable: false,
+        sortable: false,
+        filter: false,
+        suppressHeaderMenuButton: true,
+      },
+      {
+        headerName: 'Cliente',
+        colId: 'nombre',
+        valueGetter: (p: { data: VentaCliente }) => p.data?.nombre,
+        flex: 2,
+        minWidth: 200,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: VentaCliente }) => {
+          const c = params.data;
+          const initials = this.getInitials(c.nombre);
+          const color = this.getAvatarColor(c.nombre);
+          return `<div style="display:flex;align-items:center;gap:10px">
+            <div style="width:30px;height:30px;border-radius:7px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">${initials}</div>
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-size:13px;font-weight:600;line-height:1.3">${c.nombre}</span>
+              <span style="font-size:11px;opacity:0.55;line-height:1.3">${c.tipoIdentificacion} · ${c.identificacion}</span>
+            </div>
+          </div>`;
+        },
+      },
+      {
+        headerName: 'Contacto',
+        colId: 'email',
+        valueGetter: (p: { data: VentaCliente }) => p.data?.email,
+        flex: 2,
+        minWidth: 180,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: VentaCliente }) => {
+          const c = params.data;
+          const em = c.email
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-envelope" style="font-size:9px;opacity:0.45"></i>${c.email}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.45;font-style:italic"><i class="pi pi-envelope" style="font-size:9px"></i>— sin email</span>`;
+          const ph = c.telefono
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-phone" style="font-size:9px;opacity:0.45"></i>${c.telefono}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.45;font-style:italic"><i class="pi pi-phone" style="font-size:9px"></i>— sin teléfono</span>`;
+          return `<div style="display:flex;flex-direction:column;justify-content:center;gap:3px;font-size:12px;line-height:1.3">${em}${ph}</div>`;
+        },
+      },
       {
         headerName: 'Estado',
         field: 'estado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
-        width: 100, minWidth: 100, maxWidth: 100,
-        cellStyle: { textAlign: 'center' },
+        width: 115,
+        minWidth: 100,
+        maxWidth: 130,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { value: boolean }) => {
+          const activo = params.value;
+          const dot  = activo ? '#16a34a' : '#dc2626';
+          const text = activo ? '#374151' : '#9ca3af';
+          return `<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:${text}">
+            <span style="width:7px;height:7px;border-radius:50%;background:${dot};flex-shrink:0"></span>
+            ${activo ? 'Activo' : 'Inactivo'}
+          </span>`;
+        },
       },
       this.utilService.getColumnaAcciones(),
     ];
+  }
+
+  private getInitials(nombre: string): string {
+    const parts = (nombre ?? '').trim().split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (nombre ?? '??').substring(0, 2).toUpperCase();
+  }
+
+  private readonly avatarColors = [
+    '#16a34a', '#ea580c', '#7c3aed', '#dc2626',
+    '#0d9488', '#2563eb', '#a855f7', '#d97706',
+    '#0891b2', '#db2777', '#65a30d', '#9333ea',
+  ];
+
+  private getAvatarColor(nombre: string): string {
+    let hash = 0;
+    for (const char of nombre ?? '') hash = ((hash * 31) + char.charCodeAt(0)) | 0;
+    return this.avatarColors[Math.abs(hash) % this.avatarColors.length];
   }
 }

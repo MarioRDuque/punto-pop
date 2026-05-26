@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="outer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4d4d8"/>
+      <stop offset="100%" stop-color="#a0a0a8"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6098ee"/>
+      <stop offset="50%" stop-color="#2c5cd6"/>
+      <stop offset="100%" stop-color="#0e2898"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer gray rounded square (same as original logo frame) -->
+  <rect width="100" height="100" rx="22" fill="url(#outer)"/>
+  <!-- Inner blue gradient rounded square -->
+  <rect x="5" y="5" width="90" height="90" rx="18" fill="url(#blue)"/>
+  <!-- White P letter — evenodd makes the bowl hollow -->
+  <path fill="white" fill-rule="evenodd"
+    d="M20,14 L20,86 L35,86 L35,52 L62,52 C84,52 84,14 62,14 Z
+       M35,24 L60,24 C72,24 72,42 60,42 L35,42 Z"/>
+</svg>

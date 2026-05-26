@@ -1,4 +1,5 @@
 import { Component, effect, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
@@ -30,7 +31,8 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     AgGridAngular,
     InputTextModule,
     TooltipModule,
-    ConfirmDialog
+    ConfirmDialog,
+    CommonModule
   ],
   templateUrl: './grid.html',
   styleUrl: './grid.scss',
@@ -49,6 +51,8 @@ export class Grid<T> {
   @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
   @Input() subtitulo!: string;
+  @Input() rowHeight: number | undefined = undefined;
+  @Input() mostrarFiltro: boolean = true;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
   @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
