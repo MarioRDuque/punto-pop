@@ -1,13 +1,14 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColDef } from 'ag-grid-community';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { VentaService } from '../venta.service';
 import { VentaDetalle } from '../venta-detalle/venta-detalle';
 import { ToastService } from '../../../../service/toast.service';
@@ -17,10 +18,12 @@ import { Venta, EstadoVenta } from '../../../../entities/Venta';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 
+type FilterTab = 'todos' | 'PENDIENTE' | 'COMPLETADA' | 'ANULADA';
+
 @Component({
   selector: 'app-venta-listado',
   standalone: true,
-  imports: [Grid, FormsModule, DatePickerModule, SelectModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, Grid, FormsModule, DatePickerModule, ButtonModule, TooltipModule, ListadoToolbar],
   templateUrl: './venta-listado.html',
   providers: [DialogService]
 })
@@ -44,27 +47,45 @@ export class VentaListado implements OnInit {
 
   readonly desde = signal<Date>(this.hace7Dias());
   readonly hasta = signal<Date>(new Date());
-  readonly estado = signal<EstadoVenta | null>(null);
+  readonly activeFilter = signal<FilterTab>('todos');
 
   readonly hayMasDatos = computed(() => this.totalVentas() > this.listaVentas().length);
 
-  readonly estadosOptions: { label: string; value: EstadoVenta | null }[] = [
-    { label: 'Todos los estados', value: null },
-    { label: 'Pendiente', value: 'PENDIENTE' },
-    { label: 'Completada', value: 'COMPLETADA' },
-    { label: 'Anulada', value: 'ANULADA' },
-  ];
+  readonly counts = computed(() => {
+    const list = this.listaVentas();
+    return {
+      todos: list.length,
+      PENDIENTE: list.filter(v => v.estado === 'PENDIENTE').length,
+      COMPLETADA: list.filter(v => v.estado === 'COMPLETADA').length,
+      ANULADA: list.filter(v => v.estado === 'ANULADA').length,
+    };
+  });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',      label: 'Todos',       count: this.counts().todos },
+    { key: 'PENDIENTE',  label: 'Pendientes',  count: this.counts().PENDIENTE },
+    { key: 'COMPLETADA', label: 'Completadas', count: this.counts().COMPLETADA },
+    { key: 'ANULADA',    label: 'Anuladas',    count: this.counts().ANULADA },
+  ]);
+
+  readonly filteredVentas = computed(() => {
+    const tab = this.activeFilter();
+    if (tab === 'todos') return this.listaVentas();
+    return this.listaVentas().filter(v => v.estado === tab);
+  });
 
   ngOnInit(): void {
     this.cargarConFiltros();
     this.colDefs = this.ventaService.generarColumnasListado();
   }
 
+  setFilter(tab: FilterTab) { this.activeFilter.set(tab); }
+
   cargarConFiltros(): void {
     const hastaFin = new Date(this.hasta());
     hastaFin.setHours(23, 59, 59, 999);
     this.ventaService.cargar(
-      this.estado() ?? undefined,
+      undefined,
       this.desde(),
       hastaFin
     ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();

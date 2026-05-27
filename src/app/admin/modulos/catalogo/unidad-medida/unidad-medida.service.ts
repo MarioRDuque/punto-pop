@@ -77,10 +77,7 @@ export class UnidadMedidaService {
       { headerName: 'Nombre', field: 'nombre', width: 180, minWidth: 150 },
       { headerName: 'Abreviatura', field: 'abreviatura', width: 130, minWidth: 100 },
       {
-        headerName: 'Estado',
-        field: 'estado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('estado'),
         width: 100, minWidth: 100, maxWidth: 100,
         cellStyle: { textAlign: 'center' },
       },

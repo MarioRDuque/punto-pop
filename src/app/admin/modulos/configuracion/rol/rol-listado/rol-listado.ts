@@ -1,7 +1,9 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HeaderCrud } from "../../../../component/header-crud/header-crud";
-import { Grid } from "../../../../component/grid/grid";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { RolService } from '../rol.service';
 import { ToastService } from '../../../../service/toast.service';
 import { CargandoService } from '../../../../service/cargando.service';
@@ -15,11 +17,12 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
+type FilterType = 'todos' | 'activos' | 'inactivos';
+
 @Component({
   selector: 'app-rol-listado',
-  imports: [HeaderCrud, Grid],
+  imports: [CommonModule, FormsModule, Grid, ListadoToolbar],
   templateUrl: './rol-listado.html',
-  styleUrl: './rol-listado.scss',
   providers: [DialogService]
 })
 export class RolListado implements OnInit {
@@ -40,10 +43,42 @@ export class RolListado implements OnInit {
   public exportarSignal = signal(false);
   public imprimirSignal = signal(false);
 
+  readonly searchQuery = signal('');
+  readonly activeFilter = signal<FilterType>('todos');
+
+  readonly counts = computed(() => {
+    const list = this.listaRol();
+    return {
+      todos: list.length,
+      activos: list.filter(r => r.rolEstado).length,
+      inactivos: list.filter(r => !r.rolEstado).length,
+    };
+  });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',     label: 'Todos',     count: this.counts().todos },
+    { key: 'activos',   label: 'Activos',   count: this.counts().activos },
+    { key: 'inactivos', label: 'Inactivos', count: this.counts().inactivos },
+  ]);
+
+  readonly filteredRoles = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    const tab = this.activeFilter();
+    return this.listaRol().filter(r => {
+      const matchTab = tab === 'todos' ? true : tab === 'activos' ? r.rolEstado : !r.rolEstado;
+      if (!matchTab) return false;
+      if (!q) return true;
+      return r.rolCodigo?.toLowerCase().includes(q) || r.rolDescripcion?.toLowerCase().includes(q);
+    });
+  });
+
   ngOnInit(): void {
     this.rolService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.rolService.generarColumnasListado();
   }
+
+  setFilter(tab: FilterType) { this.activeFilter.set(tab); }
+  onSearch(q: string) { this.searchQuery.set(q); }
 
   buscar(event: EventCrudBusqueda): void {
     if (event.filtro) {
@@ -113,5 +148,4 @@ export class RolListado implements OnInit {
     this.rolService.eliminarDelGrid(data);
     this.cargando.inactivar();
   }
-
 }

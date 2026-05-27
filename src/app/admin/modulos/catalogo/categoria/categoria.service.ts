@@ -77,10 +77,7 @@ export class CategoriaService {
       { headerName: 'Nombre', field: 'nombre', width: 180, minWidth: 150 },
       { headerName: 'Descripción', field: 'descripcion', width: 220, minWidth: 150, flex: 1 },
       {
-        headerName: 'Estado',
-        field: 'estado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('estado'),
         width: 100, minWidth: 100, maxWidth: 100,
         cellStyle: { textAlign: 'center' },
       },

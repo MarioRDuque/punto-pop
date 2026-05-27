@@ -4,8 +4,8 @@
         <p-tab [value]="Tabs.CREAR"><i class="pi pi-plus"></i><span> Crear cliente</span></p-tab>
         <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i class="pi pi-pencil"></i><span> Editar cliente</span></p-tab>
 
-        @if (showFormActions) {
         <div class="ml-auto flex items-center gap-1 px-3">
+          @if (showFormActions) {
             <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary" />
             <p-button label="Guardar" icon="pi pi-save" size="small" [outlined]="true"
                 [loading]="cargando.loading()"
@@ -13,8 +13,17 @@
             <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
                 pTooltip="Cerrar" tooltipPosition="top"
                 (onClick)="onCancelar()" />
+          } @else if (showListActions) {
+            <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"
+                pTooltip="Importar" tooltipPosition="top" (onClick)="importar()" />
+            <p-button icon="pi pi-download" size="small" [text]="true" severity="secondary"
+                pTooltip="Exportar" tooltipPosition="top"
+                (onClick)="exportar()" />
+            <p-button icon="pi pi-print" size="small" [text]="true" severity="secondary"
+                pTooltip="Imprimir" tooltipPosition="top"
+                (onClick)="imprimir()" />
+          }
         </div>
-        }
     </p-tablist>
     <p-tabpanels>
         <p-tabpanel [value]="Tabs.LISTADO">

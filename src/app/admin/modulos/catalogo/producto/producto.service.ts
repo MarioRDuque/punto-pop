@@ -94,10 +94,7 @@ export class ProductoService {
         type: 'numericColumn',
       },
       {
-        headerName: 'Estado',
-        field: 'estado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('estado'),
         width: 100, minWidth: 100, maxWidth: 100,
         cellStyle: { textAlign: 'center' },
       },

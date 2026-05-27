@@ -1,7 +1,9 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { UsuariosService } from '../usuarios.service';
 import { ColDef } from 'ag-grid-enterprise';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
@@ -15,11 +17,12 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
+type FilterType = 'todos' | 'activos' | 'inactivos';
+
 @Component({
   selector: 'app-usuario-listado',
-  imports: [HeaderCrud, Grid],
+  imports: [CommonModule, FormsModule, Grid, ListadoToolbar],
   templateUrl: './usuario-listado.html',
-  styleUrl: './usuario-listado.scss',
   providers: [DialogService],
 })
 export class UsuarioListado implements OnInit {
@@ -40,10 +43,44 @@ export class UsuarioListado implements OnInit {
   public readonly exportarSignal = signal(false);
   public readonly imprimirSignal = signal(false);
 
+  readonly searchQuery = signal('');
+  readonly activeFilter = signal<FilterType>('todos');
+
+  readonly counts = computed(() => {
+    const list = this.listaUsuarios();
+    return {
+      todos: list.length,
+      activos: list.filter(u => u.usuEstado).length,
+      inactivos: list.filter(u => !u.usuEstado).length,
+    };
+  });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',     label: 'Todos',     count: this.counts().todos },
+    { key: 'activos',   label: 'Activos',   count: this.counts().activos },
+    { key: 'inactivos', label: 'Inactivos', count: this.counts().inactivos },
+  ]);
+
+  readonly filteredUsuarios = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    const tab = this.activeFilter();
+    return this.listaUsuarios().filter(u => {
+      const matchTab = tab === 'todos' ? true : tab === 'activos' ? u.usuEstado : !u.usuEstado;
+      if (!matchTab) return false;
+      if (!q) return true;
+      return u.usuNombre?.toLowerCase().includes(q) ||
+        u.usuApellidos?.toLowerCase().includes(q) ||
+        u.usuEmail?.toLowerCase().includes(q);
+    });
+  });
+
   ngOnInit(): void {
     this.usuariosService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.usuariosService.generarColumnasListado();
   }
+
+  setFilter(tab: FilterType) { this.activeFilter.set(tab); }
+  onSearch(q: string) { this.searchQuery.set(q); }
 
   buscar(event: EventCrudBusqueda): void {
     this.usuariosService

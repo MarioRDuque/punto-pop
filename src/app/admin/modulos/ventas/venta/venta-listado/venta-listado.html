@@ -1,23 +1,21 @@
-<!-- Barra de filtros -->
-<div class="flex flex-wrap items-center gap-2 p-2 mb-2 surface-ground border-round">
-  <div class="flex items-center gap-1">
+<app-listado-toolbar
+  [showSearch]="false"
+  [tabs]="tabs()"
+  [activeTab]="activeFilter()"
+  (tabChange)="setFilter($any($event))"
+>
+  <div slot="start" class="flex items-center gap-2 flex-shrink-0">
     <span class="text-sm text-color-secondary white-space-nowrap">Desde:</span>
     <p-datepicker [ngModel]="desde()" (ngModelChange)="desde.set($event)"
                   dateFormat="dd/mm/yy" [showIcon]="true" size="small" />
-  </div>
-  <div class="flex items-center gap-1">
     <span class="text-sm text-color-secondary white-space-nowrap">Hasta:</span>
     <p-datepicker [ngModel]="hasta()" (ngModelChange)="hasta.set($event)"
                   dateFormat="dd/mm/yy" [showIcon]="true" size="small" />
+    <p-button label="Buscar" icon="pi pi-search" size="small" (onClick)="cargarConFiltros()" />
   </div>
-  <p-select [ngModel]="estado()" (ngModelChange)="estado.set($event ?? null)"
-            [options]="estadosOptions" optionLabel="label" optionValue="value"
-            placeholder="Todos los estados" [showClear]="true" size="small" styleClass="min-w-44" />
-  <p-button label="Buscar" icon="pi pi-search" size="small" (onClick)="cargarConFiltros()" />
-
   @if (totalVentas() > 0) {
-    <span class="ml-auto text-sm text-color-secondary">
-      {{ listaVentas().length }}
+    <span slot="end" class="ml-auto text-sm text-color-secondary flex-shrink-0">
+      {{ filteredVentas().length }}
       @if (hayMasDatos()) {
         <span> de {{ totalVentas() }}
           <i class="pi pi-exclamation-triangle text-orange-400 ml-1"
@@ -28,9 +26,16 @@
       ventas
     </span>
   }
-</div>
+</app-listado-toolbar>
 
-<app-grid [rowData]="listaVentas()" (buscarEnBdd)="buscar($event)"
-    (consultarObj)="consultarObj($event)"
-    [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
-    [subtitulo]="subtitulo"></app-grid>
+<app-grid
+  [rowData]="filteredVentas()"
+  [rowHeight]="52"
+  [mostrarFiltro]="false"
+  (buscarEnBdd)="buscar($event)"
+  (consultarObj)="consultarObj($event)"
+  [colDefs]="colDefs"
+  [exportarSignal]="exportarSignal"
+  [imprimirSignal]="imprimirSignal"
+  [subtitulo]="subtitulo">
+</app-grid>

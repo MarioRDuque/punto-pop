@@ -1,9 +1,11 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColDef } from 'ag-grid-community';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
 import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { UnidadMedidaService } from '../unidad-medida.service';
 import { UnidadMedidaFormulario } from '../unidad-medida-formulario/unidad-medida-formulario';
 import { ToastService } from '../../../../service/toast.service';
@@ -15,10 +17,12 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 
+type FilterType = 'todos' | 'activos' | 'inactivos';
+
 @Component({
   selector: 'app-unidad-medida-listado',
   standalone: true,
-  imports: [HeaderCrud, Grid],
+  imports: [CommonModule, FormsModule, Grid, ListadoToolbar],
   templateUrl: './unidad-medida-listado.html',
   providers: [DialogService]
 })
@@ -40,10 +44,42 @@ export class UnidadMedidaListado implements OnInit {
   public exportarSignal = signal(false);
   public imprimirSignal = signal(false);
 
+  readonly searchQuery = signal('');
+  readonly activeFilter = signal<FilterType>('todos');
+
+  readonly counts = computed(() => {
+    const list = this.listaUnidades();
+    return {
+      todos: list.length,
+      activos: list.filter(u => u.estado).length,
+      inactivos: list.filter(u => !u.estado).length,
+    };
+  });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',     label: 'Todos',     count: this.counts().todos },
+    { key: 'activos',   label: 'Activos',   count: this.counts().activos },
+    { key: 'inactivos', label: 'Inactivos', count: this.counts().inactivos },
+  ]);
+
+  readonly filteredUnidades = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    const tab = this.activeFilter();
+    return this.listaUnidades().filter(u => {
+      const matchTab = tab === 'todos' ? true : tab === 'activos' ? u.estado : !u.estado;
+      if (!matchTab) return false;
+      if (!q) return true;
+      return u.nombre?.toLowerCase().includes(q) || u.codigo?.toLowerCase().includes(q) || u.abreviatura?.toLowerCase().includes(q);
+    });
+  });
+
   ngOnInit(): void {
     this.unidadMedidaService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.unidadMedidaService.generarColumnasListado();
   }
+
+  setFilter(tab: FilterType) { this.activeFilter.set(tab); }
+  onSearch(q: string) { this.searchQuery.set(q); }
 
   buscar(event: EventCrudBusqueda) {
     this.unidadMedidaService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();

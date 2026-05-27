@@ -1,0 +1,30 @@
+<div class="lt-toolbar">
+  @if (showSearch) {
+    <div class="lt-search">
+      <i class="pi pi-search lt-search-icon"></i>
+      <input
+        type="text"
+        class="lt-search-input"
+        [placeholder]="placeholder"
+        [value]="searchValue"
+        (input)="searchChange.emit($any($event.target).value)"
+      />
+      @if (searchShortcut) {
+        <kbd class="lt-kbd">{{ searchShortcut }}</kbd>
+      }
+    </div>
+  }
+  <ng-content select="[slot=start]"></ng-content>
+  <div class="lt-tabs">
+    @for (tab of tabs; track tab.key) {
+      <button
+        class="lt-tab"
+        [class.lt-tab-on]="activeTab === tab.key"
+        (click)="tabChange.emit(tab.key)"
+      >
+        {{ tab.label }} <span class="lt-count">{{ tab.count }}</span>
+      </button>
+    }
+  </div>
+  <ng-content select="[slot=end]"></ng-content>
+</div>

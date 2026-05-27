@@ -1,40 +1,13 @@
-<!-- ── Toolbar: buscador + tabs de filtro ── -->
-<div class="cl-toolbar">
-  <div class="cl-search">
-    <i class="pi pi-search cl-search-icon"></i>
-    <input
-      type="text"
-      class="cl-search-input"
-      placeholder="Buscar por nombre, cédula, email o teléfono..."
-      [value]="searchQuery()"
-      (input)="onSearch($any($event.target).value)"
-    />
-    <kbd class="cl-kbd">/</kbd>
-  </div>
+<app-listado-toolbar
+  placeholder="Buscar por nombre, cédula, email o teléfono..."
+  searchShortcut="/"
+  [tabs]="tabs()"
+  [activeTab]="activeFilter()"
+  [searchValue]="searchQuery()"
+  (tabChange)="setFilter($any($event))"
+  (searchChange)="onSearch($event)"
+/>
 
-  <div class="cl-tabs">
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='todos'"       (click)="setFilter('todos')">
-      Todos <span class="cl-count">{{ counts().todos }}</span>
-    </button>
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='activos'"     (click)="setFilter('activos')">
-      Activos <span class="cl-count">{{ counts().activos }}</span>
-    </button>
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='inactivos'"   (click)="setFilter('inactivos')">
-      Inactivos <span class="cl-count">{{ counts().inactivos }}</span>
-    </button>
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='cedula'"      (click)="setFilter('cedula')">
-      Cédula <span class="cl-count">{{ counts().cedula }}</span>
-    </button>
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='ruc'"         (click)="setFilter('ruc')">
-      RUC <span class="cl-count">{{ counts().ruc }}</span>
-    </button>
-    <button class="cl-tab" [class.cl-tab-on]="activeFilter()==='incompletos'" (click)="setFilter('incompletos')">
-      Datos incompletos <span class="cl-count">{{ counts().incompletos }}</span>
-    </button>
-  </div>
-</div>
-
-<!-- ── AG-Grid con datos filtrados ── -->
 <app-grid
   [rowData]="filteredClientes()"
   [rowHeight]="52"
@@ -48,5 +21,4 @@
   [imprimirSignal]="imprimirSignal"
   [campoEstado]="'estado'"
   [subtitulo]="subtitulo"
->
-</app-grid>
+/>

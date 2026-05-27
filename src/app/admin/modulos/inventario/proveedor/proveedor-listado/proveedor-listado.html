@@ -1,16 +1,22 @@
-<app-header-crud [subtitulo]="subtitulo"
-    (exportar)="exportarDesdeHeader()"
-    (imprimir)="imprimirDesdeHeader()">
-</app-header-crud>
+<app-listado-toolbar
+  placeholder="Buscar por RUC, razón social, nombre comercial o email..."
+  [tabs]="tabs()"
+  [activeTab]="activeFilter()"
+  [searchValue]="searchQuery()"
+  (tabChange)="setFilter($any($event))"
+  (searchChange)="onSearch($event)"
+/>
 
 <app-grid
-    [rowData]="listaProveedores()"
-    [colDefs]="colDefs"
-    [exportarSignal]="exportarSignal"
-    [imprimirSignal]="imprimirSignal"
-    [subtitulo]="subtitulo"
-    campoEstado="estado"
-    (buscarEnBdd)="buscar($event)"
-    (cambiarEstados)="cambiarEstados($event)"
-    (eliminarObj)="eliminarObj($event)">
+  [rowData]="filteredProveedores()"
+  [rowHeight]="52"
+  [mostrarFiltro]="false"
+  [colDefs]="colDefs"
+  [exportarSignal]="exportarSignal"
+  [imprimirSignal]="imprimirSignal"
+  [subtitulo]="subtitulo"
+  campoEstado="estado"
+  (buscarEnBdd)="buscar($event)"
+  (cambiarEstados)="cambiarEstados($event)"
+  (eliminarObj)="eliminarObj($event)">
 </app-grid>

@@ -82,10 +82,7 @@ export class RolService {
       { headerName: 'Código',      field: 'rolCodigo',      width: 120, minWidth: 120 },
       { headerName: 'Descripción', field: 'rolDescripcion',  width: 120, minWidth: 120 },
       {
-        headerName: 'Estado',
-        field: 'rolEstado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('rolEstado'),
         width: 100, minWidth: 100, maxWidth: 100,
         cellStyle: { textAlign: 'center' },
       },

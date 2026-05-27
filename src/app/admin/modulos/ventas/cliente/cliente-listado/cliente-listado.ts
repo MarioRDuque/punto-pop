@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColDef } from 'ag-grid-community';
 import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { ClienteService } from '../cliente.service';
 import { ClienteFormulario } from '../cliente-formulario/cliente-formulario';
 import { ToastService } from '../../../../service/toast.service';
@@ -21,9 +22,8 @@ type FilterTab = 'todos' | 'activos' | 'inactivos' | 'cedula' | 'ruc' | 'incompl
 @Component({
   selector: 'app-cliente-listado',
   standalone: true,
-  imports: [CommonModule, FormsModule, Grid],
+  imports: [CommonModule, FormsModule, Grid, ListadoToolbar],
   templateUrl: './cliente-listado.html',
-  styleUrls: ['./cliente-listado.scss'],
   providers: [DialogService],
 })
 export class ClienteListado implements OnInit {
@@ -57,6 +57,15 @@ export class ClienteListado implements OnInit {
       incompletos: list.filter((c) => !c.email || !c.telefono).length,
     };
   });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',       label: 'Todos',            count: this.counts().todos },
+    { key: 'activos',     label: 'Activos',           count: this.counts().activos },
+    { key: 'inactivos',   label: 'Inactivos',         count: this.counts().inactivos },
+    { key: 'cedula',      label: 'Cédula',            count: this.counts().cedula },
+    { key: 'ruc',         label: 'RUC',               count: this.counts().ruc },
+    { key: 'incompletos', label: 'Datos incompletos', count: this.counts().incompletos },
+  ]);
 
   readonly filteredClientes = computed(() => {
     const q = this.searchQuery().toLowerCase().trim();

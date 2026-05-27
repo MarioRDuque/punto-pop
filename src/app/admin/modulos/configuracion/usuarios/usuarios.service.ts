@@ -91,10 +91,7 @@ export class UsuariosService {
       { headerName: 'Teléfono',   field: 'usuTelefono', width: 100, minWidth: 100 },
       { headerName: 'Dirección',  field: 'usuDireccion', width: 250, minWidth: 250 },
       {
-        headerName: 'Estado',
-        field: 'usuEstado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('usuEstado'),
         width: 100, minWidth: 100, maxWidth: 100,
         cellStyle: { textAlign: 'center' },
       },

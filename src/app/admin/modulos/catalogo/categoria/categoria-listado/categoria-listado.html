@@ -1,7 +1,23 @@
-<app-header-crud [subtitulo]="subtitulo" (exportar)="exportarDesdeHeader()"
-    (imprimir)="imprimirDesdeHeader()"></app-header-crud>
+<app-listado-toolbar
+  placeholder="Buscar por nombre, código o descripción..."
+  [tabs]="tabs()"
+  [activeTab]="activeFilter()"
+  [searchValue]="searchQuery()"
+  (tabChange)="setFilter($any($event))"
+  (searchChange)="onSearch($event)"
+/>
 
-<app-grid [rowData]="listaCategorias()" (buscarEnBdd)="buscar($event)" (consultarObj)="consultarObj($event)"
-    (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)"
-    [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
-    [campoEstado]="'estado'" [subtitulo]="subtitulo"></app-grid>
+<app-grid
+  [rowData]="filteredCategorias()"
+  [rowHeight]="52"
+  [mostrarFiltro]="false"
+  (buscarEnBdd)="buscar($event)"
+  (consultarObj)="consultarObj($event)"
+  (cambiarEstados)="cambiarEstados($event)"
+  (eliminarObj)="eliminarObj($event)"
+  [colDefs]="colDefs"
+  [exportarSignal]="exportarSignal"
+  [imprimirSignal]="imprimirSignal"
+  [campoEstado]="'estado'"
+  [subtitulo]="subtitulo">
+</app-grid>

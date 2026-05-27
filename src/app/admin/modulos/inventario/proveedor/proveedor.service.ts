@@ -76,10 +76,7 @@ export class ProveedorService {
       { headerName: 'Teléfono',         field: 'telefono',        width: 120 },
       { headerName: 'Email',            field: 'email',           width: 200 },
       {
-        headerName: 'Estado',
-        field: 'estado',
-        cellRenderer: 'agCheckboxCellRenderer',
-        cellRendererParams: { disabled: true },
+        ...this.utilService.getColumnaEstado('estado'),
         width: 90, maxWidth: 90,
         cellStyle: { textAlign: 'center' },
       },

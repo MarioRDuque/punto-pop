@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
     selector: 'app-footer',
     templateUrl: './app.footer.html'
 })
-export class AppFooter {}
+export class AppFooter {
+    readonly year = new Date().getFullYear();
+}

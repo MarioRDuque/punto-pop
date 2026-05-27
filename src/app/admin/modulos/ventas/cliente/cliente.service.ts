@@ -96,11 +96,11 @@ export class ClienteService {
           const c = params.data;
           const initials = this.getInitials(c.nombre);
           const color = this.getAvatarColor(c.nombre);
-          return `<div style="display:flex;align-items:center;gap:10px">
-            <div style="width:30px;height:30px;border-radius:7px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">${initials}</div>
+          return `<div style="display:flex;align-items:center;gap:8px">
+            <div style="width:26px;height:26px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0">${initials}</div>
             <div style="display:flex;flex-direction:column;gap:1px">
-              <span style="font-size:13px;font-weight:600;line-height:1.3">${c.nombre}</span>
-              <span style="font-size:11px;opacity:0.55;line-height:1.3">${c.tipoIdentificacion} · ${c.identificacion}</span>
+              <span style="font-size:12px;font-weight:600;line-height:1.3">${c.nombre}</span>
+              <span style="font-size:10px;opacity:0.5;line-height:1.3">${c.tipoIdentificacion} · ${c.identificacion}</span>
             </div>
           </div>`;
         },
@@ -115,31 +115,15 @@ export class ClienteService {
         cellRenderer: (params: { data: VentaCliente }) => {
           const c = params.data;
           const em = c.email
-            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-envelope" style="font-size:9px;opacity:0.45"></i>${c.email}</span>`
-            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.45;font-style:italic"><i class="pi pi-envelope" style="font-size:9px"></i>— sin email</span>`;
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-envelope" style="font-size:8px;opacity:0.4"></i>${c.email}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.4;font-style:italic"><i class="pi pi-envelope" style="font-size:8px"></i>— sin email</span>`;
           const ph = c.telefono
-            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-phone" style="font-size:9px;opacity:0.45"></i>${c.telefono}</span>`
-            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.45;font-style:italic"><i class="pi pi-phone" style="font-size:9px"></i>— sin teléfono</span>`;
-          return `<div style="display:flex;flex-direction:column;justify-content:center;gap:3px;font-size:12px;line-height:1.3">${em}${ph}</div>`;
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-phone" style="font-size:8px;opacity:0.4"></i>${c.telefono}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.4;font-style:italic"><i class="pi pi-phone" style="font-size:8px"></i>— sin teléfono</span>`;
+          return `<div style="display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:11px;line-height:1.3">${em}${ph}</div>`;
         },
       },
-      {
-        headerName: 'Estado',
-        field: 'estado',
-        width: 115,
-        minWidth: 100,
-        maxWidth: 130,
-        cellStyle: { display: 'flex', alignItems: 'center' },
-        cellRenderer: (params: { value: boolean }) => {
-          const activo = params.value;
-          const dot  = activo ? '#16a34a' : '#dc2626';
-          const text = activo ? '#374151' : '#9ca3af';
-          return `<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:${text}">
-            <span style="width:7px;height:7px;border-radius:50%;background:${dot};flex-shrink:0"></span>
-            ${activo ? 'Activo' : 'Inactivo'}
-          </span>`;
-        },
-      },
+      this.utilService.getColumnaEstado('estado'),
       this.utilService.getColumnaAcciones(),
     ];
   }

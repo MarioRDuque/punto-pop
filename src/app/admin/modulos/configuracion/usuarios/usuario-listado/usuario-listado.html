@@ -1,8 +1,23 @@
-<!-- HEADER -->
-<app-header-crud [subtitulo]="subtitulo" (exportar)="exportarDesdeHeader()"
-    (imprimir)="imprimirDesdeHeader()"></app-header-crud>
-<!-- COMPONENTE GRID CRUD -->
-<app-grid [rowData]="listaUsuarios()" (buscarEnBdd)="buscar($event)" (consultarObj)="consultarObj($event)"
-    (cambiarEstados)="cambiarEstados($event)" (eliminarObj)="eliminarObj($event)"
-    [colDefs]="colDefs" [exportarSignal]="exportarSignal" [imprimirSignal]="imprimirSignal"
-    [campoEstado]="'usuEstado'" [subtitulo]="subtitulo"></app-grid>
+<app-listado-toolbar
+  placeholder="Buscar por nombre, apellidos o email..."
+  [tabs]="tabs()"
+  [activeTab]="activeFilter()"
+  [searchValue]="searchQuery()"
+  (tabChange)="setFilter($any($event))"
+  (searchChange)="onSearch($event)"
+/>
+
+<app-grid
+  [rowData]="filteredUsuarios()"
+  [rowHeight]="52"
+  [mostrarFiltro]="false"
+  (buscarEnBdd)="buscar($event)"
+  (consultarObj)="consultarObj($event)"
+  (cambiarEstados)="cambiarEstados($event)"
+  (eliminarObj)="eliminarObj($event)"
+  [colDefs]="colDefs"
+  [exportarSignal]="exportarSignal"
+  [imprimirSignal]="imprimirSignal"
+  [campoEstado]="'usuEstado'"
+  [subtitulo]="subtitulo">
+</app-grid>

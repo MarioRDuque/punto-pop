@@ -4,8 +4,8 @@ import type { Theme } from 'ag-grid-community';
 const baseParams = {
     accentColor: "#416273",
     columnBorder: true,
-    fontSize: 10,
-    headerFontSize: 10,
+    fontSize: 12,
+    headerFontSize: 11,
     headerFontWeight: 600,
     headerVerticalPaddingScale: 0.4,
     rowVerticalPaddingScale: 0,

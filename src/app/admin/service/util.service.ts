@@ -64,6 +64,25 @@ export class UtilService {
     `;
   }
 
+  getColumnaEstado(field: string, width = 90): ColDef {
+    return {
+      headerName: 'Estado',
+      field,
+      width,
+      minWidth: width,
+      maxWidth: width + 20,
+      cellStyle: { display: 'flex', alignItems: 'center' },
+      cellRenderer: (params: { value: boolean }) => {
+        const on = params.value;
+        const track = on ? '#16a34a' : '#d1d5db';
+        const thumb = on ? 'right:2px' : 'left:2px';
+        return `<div style="width:34px;height:18px;border-radius:9px;background:${track};position:relative;flex-shrink:0;cursor:default">
+          <div style="position:absolute;top:2px;${thumb};width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.25)"></div>
+        </div>`;
+      },
+    };
+  }
+
   getColumnaAcciones(): ColDef {
     return {
       colId: "acciones",

@@ -1,8 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ColDef } from 'ag-grid-enterprise';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
 import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { ProveedorService } from '../proveedor.service';
 import { ToastService } from '../../../../service/toast.service';
 import { CargandoService } from '../../../../service/cargando.service';
@@ -13,10 +15,12 @@ import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 
+type FilterType = 'todos' | 'activos' | 'inactivos';
+
 @Component({
   selector: 'app-proveedor-listado',
   standalone: true,
-  imports: [HeaderCrud, Grid],
+  imports: [CommonModule, FormsModule, Grid, ListadoToolbar],
   templateUrl: './proveedor-listado.html',
 })
 export class ProveedorListado implements OnInit {
@@ -35,10 +39,45 @@ export class ProveedorListado implements OnInit {
   public readonly exportarSignal = signal(false);
   public readonly imprimirSignal = signal(false);
 
+  readonly searchQuery = signal('');
+  readonly activeFilter = signal<FilterType>('todos');
+
+  readonly counts = computed(() => {
+    const list = this.listaProveedores();
+    return {
+      todos: list.length,
+      activos: list.filter(p => p.estado).length,
+      inactivos: list.filter(p => !p.estado).length,
+    };
+  });
+
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',     label: 'Todos',     count: this.counts().todos },
+    { key: 'activos',   label: 'Activos',   count: this.counts().activos },
+    { key: 'inactivos', label: 'Inactivos', count: this.counts().inactivos },
+  ]);
+
+  readonly filteredProveedores = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    const tab = this.activeFilter();
+    return this.listaProveedores().filter(p => {
+      const matchTab = tab === 'todos' ? true : tab === 'activos' ? p.estado : !p.estado;
+      if (!matchTab) return false;
+      if (!q) return true;
+      return p.ruc?.toLowerCase().includes(q) ||
+        p.razonSocial?.toLowerCase().includes(q) ||
+        p.nombreComercial?.toLowerCase().includes(q) ||
+        p.email?.toLowerCase().includes(q);
+    });
+  });
+
   ngOnInit(): void {
     this.proveedorService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.proveedorService.generarColumnasListado();
   }
+
+  setFilter(tab: FilterType) { this.activeFilter.set(tab); }
+  onSearch(q: string) { this.searchQuery.set(q); }
 
   buscar(event: EventCrudBusqueda): void {
     this.proveedorService.cargar(event.texto).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
