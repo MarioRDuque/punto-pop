@@ -84,9 +84,10 @@ export class ClienteService {
         sortable: false,
         filter: false,
         suppressHeaderMenuButton: true,
+        cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
       },
       {
-        headerName: 'Cliente',
+        headerName: 'Nombre',
         colId: 'nombre',
         valueGetter: (p: { data: VentaCliente }) => p.data?.nombre,
         flex: 2,
@@ -105,8 +106,10 @@ export class ClienteService {
           </div>`;
         },
       },
+      { headerName: 'Tipo Identificación', field: 'tipoIdentificacion', hide: true },
+      { headerName: 'Identificación', field: 'identificacion', hide: true },
       {
-        headerName: 'Contacto',
+        headerName: 'Email',
         colId: 'email',
         valueGetter: (p: { data: VentaCliente }) => p.data?.email,
         flex: 2,
@@ -123,6 +126,7 @@ export class ClienteService {
           return `<div style="display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:11px;line-height:1.3">${em}${ph}</div>`;
         },
       },
+      { headerName: 'Teléfono', field: 'telefono', hide: true },
       this.utilService.getColumnaEstado('estado'),
       this.utilService.getColumnaAcciones(),
     ];
@@ -135,14 +139,27 @@ export class ClienteService {
   }
 
   private readonly avatarColors = [
-    '#16a34a', '#ea580c', '#7c3aed', '#dc2626',
-    '#0d9488', '#2563eb', '#a855f7', '#d97706',
-    '#0891b2', '#db2777', '#65a30d', '#9333ea',
+    '#5271df', // azul medio
+    '#3ea882', // verde esmeralda
+    '#e0834e', // terracota
+    '#9b6dd4', // violeta suave
+    '#3a9fc4', // azul cielo
+    '#d4646e', // rosa oscuro
+    '#4aab8e', // teal
+    '#c47f3a', // ámbar oscuro
+    '#6b7fd4', // índigo suave
+    '#5aa87b', // verde medio
+    '#c45c8c', // rosa frambuesa
+    '#4d98c4', // azul acero
   ];
 
   private getAvatarColor(nombre: string): string {
-    let hash = 0;
-    for (const char of nombre ?? '') hash = ((hash * 31) + char.charCodeAt(0)) | 0;
-    return this.avatarColors[Math.abs(hash) % this.avatarColors.length];
+    const str = nombre ?? '';
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = (Math.imul(h, 0x01000193)) >>> 0;
+    }
+    return this.avatarColors[h % this.avatarColors.length];
   }
 }

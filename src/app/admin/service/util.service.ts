@@ -64,7 +64,7 @@ export class UtilService {
     `;
   }
 
-  getColumnaEstado(field: string, width = 90): ColDef {
+  getColumnaEstado(field: string, width = 110): ColDef {
     return {
       headerName: 'Estado',
       field,
@@ -72,13 +72,16 @@ export class UtilService {
       minWidth: width,
       maxWidth: width + 20,
       cellStyle: { display: 'flex', alignItems: 'center' },
+      valueFormatter: (params: { value: boolean }) => params.value ? 'Activo' : 'Inactivo',
       cellRenderer: (params: { value: boolean }) => {
         const on = params.value;
-        const track = on ? '#16a34a' : '#d1d5db';
-        const thumb = on ? 'right:2px' : 'left:2px';
-        return `<div style="width:34px;height:18px;border-radius:9px;background:${track};position:relative;flex-shrink:0;cursor:default">
-          <div style="position:absolute;top:2px;${thumb};width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.25)"></div>
-        </div>`;
+        const bg   = on ? '#dcfce7' : '#f3f4f6';
+        const dot  = on ? '#16a34a' : '#9ca3af';
+        const text = on ? '#15803d' : '#6b7280';
+        return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:9999px;background:${bg};font-size:11px;font-weight:500;color:${text};line-height:1">
+          <span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0"></span>
+          ${on ? 'Activo' : 'Inactivo'}
+        </span>`;
       },
     };
   }
@@ -86,11 +89,16 @@ export class UtilService {
   getColumnaAcciones(): ColDef {
     return {
       colId: "acciones",
-      headerName: "Opciones",
+      headerName: "",
       cellRenderer: AccionButton,
-      width: 70,
-      minWidth: 70,
-      maxWidth: 70
+      cellStyle: { display: 'flex', alignItems: 'center' },
+      width: 100,
+      minWidth: 100,
+      maxWidth: 100,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressHeaderMenuButton: true
     };
   }
 

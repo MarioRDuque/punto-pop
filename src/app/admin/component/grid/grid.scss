@@ -6,6 +6,18 @@
   padding-right: 12px;
 }
 
+:host ::ng-deep .ag-cell-wrapper {
+  align-items: center;
+  height: 100%;
+}
+
+:host ::ng-deep .ag-selection-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .search {
   color: var(--p-primary-color);
   cursor: pointer;

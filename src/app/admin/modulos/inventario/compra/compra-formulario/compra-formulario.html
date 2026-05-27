@@ -5,7 +5,7 @@
         <div class="flex-1 min-w-0">
 
             <!-- CARD UNIFICADO: PROVEEDOR + FOLIO + POR REABASTECER + ITEMS -->
-            <div class="card p-0 overflow-hidden flex flex-col">
+            <div class="card p-0 overflow-hidden flex flex-col" style="height: calc(100vh - 140px)">
 
                 <!-- Fila superior: PROVEEDOR | divisor | FOLIO / FECHA / OBSERVACIÓN -->
                 <div class="flex items-stretch">
@@ -227,6 +227,7 @@
                 </div>
 
                 <!-- Filas -->
+                <div class="flex-1 overflow-y-auto min-h-0">
                 @for (item of items(); track item.productoId) {
                     <div class="grid px-4 py-3 border-b border-surface-100 items-center hover:bg-surface-50 transition-colors"
                         style="grid-template-columns: 88px 1fr 140px 110px 130px 36px">
@@ -309,12 +310,13 @@
                         <span class="text-sm">Escanea o busca un producto para agregarlo</span>
                     </div>
                 }
+                </div>
 
             </div>
         </div>
 
         <!-- ══ DERECHA ════════════════════════════════════════════════════════ -->
-        <div class="flex flex-col gap-3 w-full xl:w-72 shrink-0">
+        <div class="flex flex-col gap-3 w-full xl:w-72 shrink-0 overflow-y-auto">
 
             <!-- CARD: CONDICIONES DE PAGO -->
             <div class="card flex flex-col gap-3">

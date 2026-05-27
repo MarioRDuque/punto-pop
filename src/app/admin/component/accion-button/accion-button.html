@@ -1,2 +1,11 @@
-<p-button [icon]="ICONSCONSTANT.OPCIONES" pTooltip="Opciones" tooltipStyleClass="small-tooltip" class="btn-accion"
-    aria-label="Opciones" (click)="mostrarOpciones()" />
+<div class="acciones">
+  <button class="accion-icon" pTooltip="Ver" tooltipPosition="top" (click)="ver()">
+    <i class="pi pi-eye"></i>
+  </button>
+  <button class="accion-icon" pTooltip="Editar" tooltipPosition="top" (click)="editar()">
+    <i class="pi pi-pen-to-square"></i>
+  </button>
+  <button class="accion-icon" pTooltip="Más opciones" tooltipPosition="top" (click)="masOpciones()">
+    <i class="pi pi-ellipsis-v"></i>
+  </button>
+</div>

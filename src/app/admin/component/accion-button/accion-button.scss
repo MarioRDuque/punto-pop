@@ -1,15 +1,35 @@
-:host ::ng-deep .p-button {
-  width: 20px;
-  height: 20px;
-  padding: 0;
+:host {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.accion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
   cursor: pointer;
-}
+  color: #9ca3af;
+  transition: color 0.15s, background 0.15s;
 
-:host ::ng-deep .p-button-icon-only {
-  width: 20px;
-  height: 20px;
-}
+  i {
+    font-size: 13px;
+    line-height: 1;
+  }
 
-:host ::ng-deep .p-button .pi {
-  font-size: 10px;
+  &:hover {
+    color: #374151;
+    background: #f3f4f6;
+  }
 }

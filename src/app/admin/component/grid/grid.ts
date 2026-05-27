@@ -51,7 +51,7 @@ export class Grid<T> {
   @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
   @Input() subtitulo!: string;
-  @Input() rowHeight: number | undefined = undefined;
+  @Input() rowHeight: number = 52;
   @Input() mostrarFiltro: boolean = true;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
@@ -106,9 +106,24 @@ export class Grid<T> {
   }
 
   exportar() {
+    const columnKeys = (this.gridApi?.getColumns() ?? [])
+      .map((col: { getColId: () => string }) => col.getColId())
+      .filter((id: string) => id !== '0' && id !== 'acciones' && id !== 'id');
+
     this.gridApi?.exportDataAsExcel({
       fileName: this.subtitulo + '.xlsx',
-      exportAsExcelTable: true
+      exportAsExcelTable: true,
+      columnKeys,
+      processCellCallback: (params) => {
+        const col = params.column.getColDef();
+        if (col.valueFormatter && typeof col.valueFormatter === 'function') {
+          return col.valueFormatter({ value: params.value } as never);
+        }
+        if (typeof params.value === 'boolean') {
+          return params.value ? 'Activo' : 'Inactivo';
+        }
+        return params.value;
+      },
     });
   }
 
