@@ -17,7 +17,7 @@ export class ListadoToolbar {
   @Input() activeTab = 'todos';
   @Input() searchValue = '';
   @Input() showSearch = true;
-  @Input() searchShortcut = '';
+  @Input() searchShortcut = '/';
   @Output() tabChange = new EventEmitter<string>();
   @Output() searchChange = new EventEmitter<string>();
 
