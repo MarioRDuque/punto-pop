@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlContainer, FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -31,7 +30,6 @@ export type ModoProductoCampos = 'completo' | 'rapido';
     ToggleSwitchComponent,
     SelectModule,
     InputNumberModule,
-    FloatLabelModule,
     ButtonModule,
     DialogModule,
     TooltipModule,
