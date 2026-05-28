@@ -145,14 +145,17 @@
                     </div>
                     <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200"
                         style="background: var(--surface-hover)">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-green-100">
-                            <i class="pi pi-check text-green-600" style="font-size:.75rem"></i>
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                            [class.bg-green-100]="previewEstado()" [class.bg-red-100]="!previewEstado()">
+                            <i class="pi" style="font-size:.75rem"
+                                [class.pi-check]="previewEstado()" [class.text-green-600]="previewEstado()"
+                                [class.pi-times]="!previewEstado()" [class.text-red-500]="!previewEstado()"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="text-sm font-semibold">Usuario activo</div>
-                            <div class="text-xs text-surface-400">Puede iniciar sesión en el sistema</div>
+                            <div class="text-sm font-semibold">{{ previewEstado() ? 'Usuario activo' : 'Usuario inactivo' }}</div>
+                            <div class="text-xs text-surface-400">{{ previewEstado() ? 'Puede iniciar sesión en el sistema' : 'No puede iniciar sesión en el sistema' }}</div>
                         </div>
-                        <app-toggle-switch label="Estado" id="usuEstado" />
+                        <app-toggle-switch label="Estado" id="usuEstado" [showLabel]="false" />
                     </div>
                 </div>
             </div>

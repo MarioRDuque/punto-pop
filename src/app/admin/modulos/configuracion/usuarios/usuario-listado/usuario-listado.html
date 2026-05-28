@@ -1,5 +1,6 @@
 <app-listado-toolbar
-  placeholder="Buscar por nombre, apellidos o email..."
+  placeholder="Buscar por nombre, apellidos, email o teléfono..."
+  searchShortcut="/"
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
@@ -11,13 +12,13 @@
   [rowData]="filteredUsuarios()"
   [rowHeight]="52"
   [mostrarFiltro]="false"
-  (buscarEnBdd)="buscar($event)"
-  (consultarObj)="consultarObj($event)"
-  (cambiarEstados)="cambiarEstados($event)"
-  (eliminarObj)="eliminarObj($event)"
   [colDefs]="colDefs"
   [exportarSignal]="exportarSignal"
   [imprimirSignal]="imprimirSignal"
   [campoEstado]="'usuEstado'"
-  [subtitulo]="subtitulo">
-</app-grid>
+  [subtitulo]="subtitulo"
+  (buscarEnBdd)="buscar($event)"
+  (consultarObj)="consultarObj($event)"
+  (cambiarEstados)="cambiarEstados($event)"
+  (eliminarObj)="eliminarObj($event)"
+/>

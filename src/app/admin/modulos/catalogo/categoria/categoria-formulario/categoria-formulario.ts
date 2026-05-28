@@ -1,8 +1,8 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
-import { InputComponent } from '../../../../component/input/input.component';
+import { startWith } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { CategoriaService } from '../categoria.service';
 import { FormsService } from '../../../../service/forms-service';
@@ -17,7 +17,7 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 @Component({
   selector: 'app-categoria-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderCrud, InputComponent, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent],
   templateUrl: './categoria-formulario.html',
 })
 export class CategoriaFormulario implements OnInit {
@@ -41,6 +41,26 @@ export class CategoriaFormulario implements OnInit {
     nombre: ['', [Validators.required]],
     descripcion: [''],
     estado: [true, [Validators.required]],
+  });
+
+  private readonly _fv = toSignal(
+    this.categoriaForm.valueChanges.pipe(startWith(this.categoriaForm.value)),
+    { requireSync: true }
+  );
+
+  public readonly previewCodigo      = computed(() => this._fv().codigo?.trim()      ?? '');
+  public readonly previewNombre      = computed(() => this._fv().nombre?.trim()      ?? '');
+  public readonly previewDescripcion = computed(() => this._fv().descripcion?.trim() ?? '');
+  public readonly previewEstado      = computed(() => this._fv().estado              ?? true);
+  public readonly previewIniciales   = computed(() => {
+    const n = this.previewNombre();
+    if (!n) return '?';
+    return n.split(' ').filter(Boolean).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('');
+  });
+  public readonly previewCompletadoPct = computed(() => {
+    const v = this._fv();
+    const campos = [v.codigo?.trim(), v.nombre?.trim(), v.descripcion?.trim()];
+    return Math.round((campos.filter(c => c && c.length > 0).length / campos.length) * 100);
   });
 
   ngOnInit() {

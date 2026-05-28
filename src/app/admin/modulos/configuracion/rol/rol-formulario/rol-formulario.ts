@@ -1,5 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { startWith } from 'rxjs';
 import { HeaderCrud } from "../../../../component/header-crud/header-crud";
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { FormsService } from '../../../../service/forms-service';
@@ -42,6 +44,12 @@ export class RolFormulario implements OnInit {
     rolEstado: [true, [Validators.required]],
     permisos: [[] as string[]],
   });
+
+  private readonly _fv = toSignal(
+    this.rolForm.valueChanges.pipe(startWith(this.rolForm.value)),
+    { requireSync: true }
+  );
+  public readonly previewEstado = computed(() => this._fv().rolEstado ?? true);
 
   ngOnInit() {
     switch (this.accion()) {

@@ -84,18 +84,102 @@ export class UsuariosService {
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'Usuario',    field: 'usuEmail', width: 120, minWidth: 120 },
-      { headerName: 'Nombre',     field: 'usuNombre',   width: 120, minWidth: 120 },
-      { headerName: 'Apellidos',  field: 'usuApellidos', width: 250, minWidth: 250 },
-      { headerName: 'E-mail',     field: 'usuEmail',    width: 200, minWidth: 200 },
-      { headerName: 'Teléfono',   field: 'usuTelefono', width: 100, minWidth: 100 },
-      { headerName: 'Dirección',  field: 'usuDireccion', width: 250, minWidth: 250 },
+      { headerName: 'ID', field: 'usuEmail', hide: true },
       {
-        ...this.utilService.getColumnaEstado('usuEstado'),
-        width: 100, minWidth: 100, maxWidth: 100,
-        cellStyle: { textAlign: 'center' },
+        headerName: '',
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        width: 44, minWidth: 44, maxWidth: 44,
+        resizable: false, sortable: false, filter: false,
+        suppressHeaderMenuButton: true,
+        cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
       },
+      {
+        headerName: 'Usuario',
+        colId: 'usuario',
+        valueGetter: (p: { data: ConfUsuario }) => `${p.data?.usuNombre ?? ''} ${p.data?.usuApellidos ?? ''}`.trim(),
+        flex: 2,
+        minWidth: 220,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: ConfUsuario }) => {
+          const u           = params.data;
+          const nombreCompleto = `${u.usuNombre ?? ''} ${u.usuApellidos ?? ''}`.trim() || '—';
+          const avatar      = u.usuFoto
+            ? `<img src="${u.usuFoto}" style="width:26px;height:26px;border-radius:6px;object-fit:cover;flex-shrink:0" />`
+            : (() => {
+                const ini1  = (u.usuNombre?.trim()    ?? '').charAt(0).toUpperCase();
+                const ini2  = (u.usuApellidos?.trim() ?? '').charAt(0).toUpperCase();
+                const inits = (ini1 + ini2) || ini1 || '?';
+                const color = this.getAvatarColor(u.usuEmail ?? '');
+                return `<div style="width:26px;height:26px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0">${inits}</div>`;
+              })();
+          return `<div style="display:flex;align-items:center;gap:8px">
+            ${avatar}
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-size:12px;font-weight:600;line-height:1.3">${nombreCompleto}</span>
+              <span style="font-size:10px;opacity:0.5;line-height:1.3">${u.usuEmail ?? ''}</span>
+            </div>
+          </div>`;
+        },
+      },
+      { headerName: 'Nombre',    field: 'usuNombre',    hide: true },
+      { headerName: 'Apellidos', field: 'usuApellidos', hide: true },
+      { headerName: 'Email',     field: 'usuEmail',     hide: true },
+      {
+        headerName: 'Roles',
+        colId: 'roles',
+        valueGetter: (p: { data: ConfUsuario }) =>
+          p.data?.roles?.map(r => r.rolDescripcion || r.rolCodigo).join(', ') ?? '',
+        flex: 1,
+        minWidth: 140,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: ConfUsuario }) => {
+          const roles = params.data?.roles ?? [];
+          if (!roles.length) return `<span style="font-size:10px;opacity:0.4;font-style:italic">Sin roles</span>`;
+          const badges = roles.map(r =>
+            `<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:9999px;background:var(--surface-border);color:var(--text-color-secondary)">${r.rolDescripcion || r.rolCodigo}</span>`
+          ).join('');
+          return `<div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center">${badges}</div>`;
+        },
+      },
+      {
+        headerName: 'Contacto',
+        colId: 'contacto',
+        valueGetter: (p: { data: ConfUsuario }) => p.data?.usuTelefono,
+        flex: 1,
+        minWidth: 160,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: ConfUsuario }) => {
+          const u  = params.data;
+          const ph = u.usuTelefono
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-phone" style="font-size:8px;opacity:0.4"></i>${u.usuTelefono}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.4;font-style:italic"><i class="pi pi-phone" style="font-size:8px"></i>— sin teléfono</span>`;
+          const dir = u.usuDireccion
+            ? `<span style="display:flex;align-items:center;gap:4px"><i class="pi pi-map-marker" style="font-size:8px;opacity:0.4"></i>${u.usuDireccion}</span>`
+            : `<span style="display:flex;align-items:center;gap:4px;opacity:0.4;font-style:italic"><i class="pi pi-map-marker" style="font-size:8px"></i>— sin dirección</span>`;
+          return `<div style="display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:11px;line-height:1.3">${ph}${dir}</div>`;
+        },
+      },
+      { headerName: 'Teléfono',  field: 'usuTelefono',  hide: true },
+      { headerName: 'Dirección', field: 'usuDireccion', hide: true },
+      this.utilService.getColumnaEstado('usuEstado'),
       this.utilService.getColumnaAcciones(),
     ];
+  }
+
+  private readonly avatarColors = [
+    '#5271df', '#3ea882', '#e0834e', '#9b6dd4', '#3a9fc4',
+    '#d4646e', '#4aab8e', '#c47f3a', '#6b7fd4', '#5aa87b',
+    '#c45c8c', '#4d98c4',
+  ];
+
+  private getAvatarColor(key: string): string {
+    const str = key ?? '';
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = (Math.imul(h, 0x01000193)) >>> 0;
+    }
+    return this.avatarColors[h % this.avatarColors.length];
   }
 }
