@@ -1,9 +1,9 @@
 import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { startWith } from 'rxjs';
 import { ControlContainer, FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -31,7 +31,6 @@ export type ModoProductoCampos = 'completo' | 'rapido';
     ToggleSwitchComponent,
     SelectModule,
     InputNumberModule,
-    FloatLabelModule,
     ButtonModule,
     DialogModule,
     TooltipModule,
@@ -61,6 +60,7 @@ export class ProductoCampos implements OnInit {
 
   public dialogCategoriaVisible = signal(false);
   public dialogUnidadVisible    = signal(false);
+  public readonly previewEstado = signal(true);
 
   public categoriaForm = this.fb.group({
     codigo:      ['', [Validators.required]],
@@ -85,6 +85,10 @@ export class ProductoCampos implements OnInit {
       this.unidadService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     if (this.tarifasIva().length === 0)
       this.tarifaIvaService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+
+    this.form.get('estado')?.valueChanges
+      .pipe(startWith(this.form.get('estado')?.value), takeUntilDestroyed(this.destroyRef))
+      .subscribe(v => this.previewEstado.set(v ?? true));
   }
 
   refrescarCategorias(): void {

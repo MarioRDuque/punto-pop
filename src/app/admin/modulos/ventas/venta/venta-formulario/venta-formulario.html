@@ -18,28 +18,30 @@
                                 <i class="pi pi-user text-surface-400" style="font-size:.8rem"></i>
                                 <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Cliente</span>
                             </div>
-                            @if (getClienteSeleccionado()) {
+                            @if (clienteSeleccionado()) {
                                 <button type="button"
                                     class="text-xs font-medium text-primary hover:underline"
-                                    (click)="limpiarCliente()">Cambiar</button>
+                                    (click)="clientePanel.toggle($event)">Cambiar</button>
                             }
                         </div>
 
-                        @if (getClienteSeleccionado(); as c) {
-                            <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 cursor-pointer transition-colors"
-                                style="background: var(--surface-hover)">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 bg-primary">
+                        @if (clienteSeleccionado(); as c) {
+                            <button type="button"
+                                class="flex items-center gap-2 px-2.5 py-2 rounded-xl border border-surface-200 w-full text-left"
+                                style="background: var(--surface-100)"
+                                (click)="clientePanel.toggle($event)">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
+                                    style="background: linear-gradient(to right, #3CB8A9, #6DD4C5)">
                                     {{ getInitials(c.nombre) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="font-semibold text-sm truncate">{{ c.nombre }}</div>
-                                    <div class="text-xs text-surface-400 truncate">{{ c.tipoIdentificacion }} {{ c.identificacion }}</div>
+                                    <div class="font-medium text-xs truncate">{{ c.nombre }}</div>
+                                    <div class="text-[11px] text-surface-400 truncate">{{ c.tipoIdentificacion }} · {{ c.identificacion }}</div>
                                 </div>
-                                <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0"
-                                    style="background: var(--surface-card)">
-                                    <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
+                                <div class="w-5 h-5 rounded-full border border-surface-200 flex items-center justify-center shrink-0">
+                                    <i class="pi pi-chevron-right text-surface-400" style="font-size:.5rem"></i>
                                 </div>
-                            </div>
+                            </button>
                         } @else {
                             <p-select formControlName="clienteId" [options]="clientesActivos()"
                                 optionLabel="nombre" optionValue="id" [filter]="true"
@@ -323,6 +325,43 @@
     </div>
 
 </form>
+
+<!-- ─── Popover: Selector de cliente ─────────────────────────────────────── -->
+<p-popover #clientePanel appendTo="body">
+    <div class="flex flex-col gap-2" style="width:240px">
+        <input pInputText type="text"
+            [ngModel]="filtroCliente()"
+            (ngModelChange)="filtroCliente.set($event)"
+            placeholder="Buscar cliente..."
+            style="font-size:.875rem;padding:.4rem .6rem;width:100%" />
+        <div class="overflow-y-auto flex flex-col gap-0.5" style="max-height:220px">
+            <button type="button"
+                class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-surface-100 text-left w-full"
+                (click)="limpiarClienteDesdePanel()">
+                <div class="w-8 h-8 rounded-full bg-surface-200 flex items-center justify-center text-surface-400 shrink-0">
+                    <i class="pi pi-user" style="font-size:.75rem"></i>
+                </div>
+                <span class="text-sm text-surface-500">Consumidor final</span>
+            </button>
+            @for (c of clientesFiltrados(); track c.id) {
+                <button type="button"
+                    class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-surface-100 text-left w-full"
+                    (click)="seleccionarClienteDesdePanel(c)">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        style="background: linear-gradient(to right, #3CB8A9, #6DD4C5)">
+                        {{ getInitials(c.nombre) }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-sm font-medium truncate">{{ c.nombre }}</div>
+                        <div class="text-xs text-surface-400 truncate">{{ c.identificacion }}</div>
+                    </div>
+                </button>
+            } @empty {
+                <div class="text-xs text-surface-400 text-center py-3">Sin resultados</div>
+            }
+        </div>
+    </div>
+</p-popover>
 
 <!-- ─── Modal: Venta registrada ─────────────────────────────────────────── -->
 <p-dialog [(visible)]="dialogImprimirVisible" [modal]="true" [closable]="false"

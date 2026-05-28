@@ -14,6 +14,7 @@ export class ToggleSwitchComponent {
 
   @Input({ required: true }) label!: string;
   @Input() id!: string;
+  @Input() showLabel = true;
   @Optional() private controlContainer = inject(ControlContainer)
 
   get control(): FormControl {

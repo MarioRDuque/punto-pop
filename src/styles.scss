@@ -59,9 +59,34 @@
   border-color: #ef4444 !important;
 }
 
-// PrimeNG aplica ng-invalid.ng-dirty al HOST del componente.
-// p-select agrega sus clases al HOST, por lo que el selector funciona directamente.
-// p-inputnumber delega el input interno via [invalid] que requiere propagación manual.
+// PrimeNG 20 — validación reactiva: ng-invalid.ng-touched se aplica al HOST o al input
+// tras markAllAsTouched() en validarFormulario().
+
+// input nativo con directiva pInputText
+input.p-inputtext.ng-invalid.ng-touched,
+input.p-inputtext.ng-invalid.ng-dirty {
+  border-color: #ef4444 !important;
+}
+
+// p-password — el HOST recibe ng-invalid, el input interno necesita el estilo
+p-password.ng-invalid.ng-touched input,
+p-password.ng-invalid.ng-dirty input {
+  border-color: #ef4444 !important;
+}
+
+// p-select — .p-select es el div interno del HOST
+p-select.ng-invalid.ng-touched .p-select,
+p-select.ng-invalid.ng-dirty .p-select {
+  border-color: #ef4444 !important;
+}
+
+// p-multiselect — .p-multiselect es el div interno del HOST
+p-multiselect.ng-invalid.ng-touched .p-multiselect,
+p-multiselect.ng-invalid.ng-dirty .p-multiselect {
+  border-color: #ef4444 !important;
+}
+
+// p-inputnumber
 p-inputnumber.ng-invalid.ng-dirty .p-inputtext,
 p-inputnumber.ng-invalid.ng-touched .p-inputtext {
   border-color: #ef4444 !important;
