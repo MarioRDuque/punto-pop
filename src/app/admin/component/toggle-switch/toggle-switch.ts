@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, Optional } from '@angular/core';
-import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 
 @Component({
@@ -8,6 +8,7 @@ import { ToggleSwitchModule } from "primeng/toggleswitch";
   imports: [ToggleSwitchModule, ReactiveFormsModule, CommonModule],
   templateUrl: './toggle-switch.html',
   styleUrl: './toggle-switch.scss',
+  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class ToggleSwitchComponent {
 

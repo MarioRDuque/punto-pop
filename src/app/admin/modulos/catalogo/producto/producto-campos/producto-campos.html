@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" [formGroup]="form">
 
     <!-- Fila 1: Código + Nombre -->
     <div class="grid grid-cols-2 gap-4">
@@ -33,7 +33,7 @@
             <p-floatlabel variant="on" class="w-full">
                 <p-select id="tarifaIvaId" formControlName="tarifaIvaId"
                     [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
-                    [style]="{'width':'100%'}" />
+                    [style]="{'width':'100%'}" appendTo="body" />
                 <label for="tarifaIvaId">Tarifa IVA</label>
             </p-floatlabel>
         </div>
@@ -59,7 +59,7 @@
                     <p-select id="categoriaId" formControlName="categoriaId"
                         [options]="categorias()" optionLabel="nombre" optionValue="id"
                         [filter]="true" filterBy="nombre"
-                        [style]="{'width':'100%'}" />
+                        [style]="{'width':'100%'}" appendTo="body" />
                     <label for="categoriaId">Categoría</label>
                 </p-floatlabel>
                 <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
@@ -76,7 +76,7 @@
                     <p-select id="unidadMedidaId" formControlName="unidadMedidaId"
                         [options]="unidades()" optionLabel="nombre" optionValue="id"
                         [filter]="true" filterBy="nombre,abreviatura"
-                        [style]="{'width':'100%'}" />
+                        [style]="{'width':'100%'}" appendTo="body" />
                     <label for="unidadMedidaId">Unidad de medida</label>
                 </p-floatlabel>
                 <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
@@ -95,9 +95,9 @@
             <p-floatlabel variant="on" class="w-full">
                 <p-inputnumber id="stock" formControlName="stock"
                     [min]="0" [style]="{'width':'100%'}"
-                    [readonly]="modo === 'completo'" />
+                    [readonly]="modo === 'completo' && accion !== accionEnum.CREAR" />
                 <label for="stock">
-                    {{ modo === 'completo' ? 'Stock (calculado)' : 'Stock inicial' }}
+                    {{ modo === 'completo' && accion !== accionEnum.CREAR ? 'Stock (calculado)' : 'Stock inicial' }}
                 </label>
             </p-floatlabel>
         </div>
