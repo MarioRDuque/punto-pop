@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { ToastService } from './toast.service';
 import { ColDef } from 'ag-grid-community';
 import { AccionButton } from '../component/accion-button/accion-button';
@@ -14,10 +14,18 @@ export class UtilService {
   validarFormulario(form: FormGroup): boolean {
     if (form.invalid) {
       form.markAllAsTouched();
+      this.marcarTodosDirty(form);
       this.toast.error('Complete los campos obligatorios.');
       return false;
     }
     return true;
+  }
+
+  private marcarTodosDirty(group: AbstractControl): void {
+    group.markAsDirty();
+    if (group instanceof FormGroup) {
+      Object.values(group.controls).forEach(ctrl => this.marcarTodosDirty(ctrl));
+    }
   }
 
   getAgGridPrintStyle(): string {

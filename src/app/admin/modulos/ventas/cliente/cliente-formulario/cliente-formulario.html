@@ -178,7 +178,7 @@
         </div>
 
         <!-- ══ VISTA PREVIA ══════════════════════════════════════════════════ -->
-        @if (!modoDialog) {
+        @if (!modoDialog && accion() !== accionEnum.CONSULTAR) {
             <div class="w-full xl:w-72 shrink-0">
                 <div class="card flex flex-col gap-4 xl:sticky xl:top-4">
 

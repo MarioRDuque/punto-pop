@@ -74,7 +74,7 @@ export class ProductoCampos implements OnInit {
     abreviatura: ['', [Validators.required]],
   });
 
-  private get form(): FormGroup {
+  get form(): FormGroup {
     return this.controlContainer.control as FormGroup;
   }
 
