@@ -90,18 +90,96 @@ export class VentaService {
   generarColumnasListado(): ColDef[] {
     return [
       { headerName: 'ID', field: 'id', hide: true },
-      { headerName: 'Número', field: 'numero', width: 130, minWidth: 100 },
-      { headerName: 'Fecha', field: 'fecha', width: 160, minWidth: 130 },
-      { headerName: 'Estado', field: 'estado', width: 120, minWidth: 100 },
-      { headerName: 'Forma Pago', field: 'formaPago', width: 130, minWidth: 100 },
+      {
+        headerName: '',
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        width: 44, minWidth: 44, maxWidth: 44,
+        resizable: false, sortable: false, filter: false,
+        suppressHeaderMenuButton: true,
+        cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      },
+      {
+        headerName: 'Venta',
+        colId: 'venta',
+        valueGetter: (p: { data: Venta }) => p.data?.numero,
+        flex: 2,
+        minWidth: 200,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: Venta }) => {
+          const v      = params.data;
+          const num    = v.numero ?? '—';
+          const client = v.clienteNombre ?? v.cliente?.nombre ?? '';
+          const sub    = client || (v.usuEmail ?? '');
+          return `<div style="display:flex;align-items:center;gap:8px">
+            <div style="width:26px;height:26px;border-radius:6px;background:#5271df;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;flex-shrink:0">FV</div>
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-size:12px;font-weight:600;line-height:1.3;font-family:monospace">${num}</span>
+              <span style="font-size:10px;opacity:0.5;line-height:1.3">${sub}</span>
+            </div>
+          </div>`;
+        },
+      },
+      { headerName: 'Número',   field: 'numero',       hide: true },
+      { headerName: 'Cliente',  field: 'clienteNombre', hide: true },
+      { headerName: 'Usuario',  field: 'usuEmail',      hide: true },
+      {
+        headerName: 'Fecha',
+        field: 'fecha',
+        width: 150,
+        minWidth: 120,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: Venta }) => {
+          const fecha = params.data?.fecha;
+          if (!fecha) return `<span style="font-size:11px;opacity:0.4">—</span>`;
+          const d = new Date(fecha);
+          const fmt = d.toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
+          return `<span style="font-size:11px">${fmt}</span>`;
+        },
+      },
+      {
+        headerName: 'Estado',
+        colId: 'estadoVenta',
+        field: 'estado',
+        width: 130,
+        minWidth: 110,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: Venta }) => {
+          const e = params.data?.estado ?? '';
+          const map: Record<string, { bg: string; color: string; label: string }> = {
+            PENDIENTE:  { bg: '#fef9c3', color: '#854d0e', label: 'Pendiente' },
+            COMPLETADA: { bg: '#dcfce7', color: '#166534', label: 'Completada' },
+            ANULADA:    { bg: '#fee2e2', color: '#991b1b', label: 'Anulada' },
+          };
+          const s = map[e] ?? { bg: 'var(--surface-border)', color: 'var(--text-color-secondary)', label: e };
+          return `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;background:${s.bg};color:${s.color}">${s.label}</span>`;
+        },
+      },
+      {
+        headerName: 'Forma Pago',
+        field: 'formaPago',
+        width: 120,
+        minWidth: 100,
+        cellStyle: { display: 'flex', alignItems: 'center' },
+        cellRenderer: (params: { data: Venta }) => {
+          const f = params.data?.formaPago ?? '';
+          return `<span style="font-size:11px">${f}</span>`;
+        },
+      },
       {
         headerName: 'Total',
         field: 'total',
-        width: 120, minWidth: 100,
+        width: 110,
+        minWidth: 90,
         type: 'numericColumn',
-        valueFormatter: (params) => params.value != null ? `$${Number(params.value).toFixed(2)}` : '',
+        cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end' },
+        cellRenderer: (params: { data: Venta }) => {
+          const t = params.data?.total;
+          return t != null
+            ? `<span style="font-size:12px;font-weight:700">${'$' + Number(t).toFixed(2)}</span>`
+            : `<span style="opacity:0.4">—</span>`;
+        },
       },
-      { headerName: 'Usuario', field: 'usuEmail', width: 150, minWidth: 120 },
       this.utilService.getColumnaAcciones(),
     ];
   }
