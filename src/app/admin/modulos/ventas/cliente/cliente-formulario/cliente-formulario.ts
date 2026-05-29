@@ -55,7 +55,6 @@ export class ClienteFormulario implements OnInit {
   ];
 
   public clienteForm = this.fb.group({
-    id:                 [null as string | null],
     tipoIdentificacion: ['CEDULA' as TipoIdentificacion, [Validators.required]],
     identificacion:     ['', [Validators.required, identificacionValidator('EC')]],
     nombre:             ['', [Validators.required]],

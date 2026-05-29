@@ -40,7 +40,7 @@
                             </div>
                         } @else {
                             <p-select formControlName="proveedorId" [options]="proveedores()"
-                                optionLabel="razonSocial" optionValue="id"
+                                optionLabel="razonSocial" optionValue="ruc"
                                 [filter]="true" filterBy="razonSocial,ruc"
                                 placeholder="Buscar proveedor"
                                 [style]="{'width':'100%'}" appendTo="body">
@@ -274,26 +274,22 @@
                         </div>
 
                         <!-- P. Costo -->
-                        <span class="text-sm font-semibold text-right tabular-nums pr-2">
-                            ${{ item.costoUnitario | number:'1.2-2' }}
-                        </span>
+                        <div class="flex items-center justify-end pr-2">
+                            <span class="text-sm text-surface-400 mr-0.5">$</span>
+                            <input type="number" min="0" step="0.01"
+                                [value]="item.costoUnitario"
+                                (change)="actualizarCosto(item.productoId, +$any($event.target).value)"
+                                class="w-20 text-right text-sm font-semibold tabular-nums rounded border border-transparent hover:border-surface-200 focus:border-primary outline-none bg-transparent px-1 py-0.5 transition-colors" />
+                        </div>
 
                         <!-- Descuento -->
-                        <div class="flex justify-end pr-2">
-                            @if (item.descuentoPct > 0) {
-                                <button type="button"
-                                    class="px-2 py-1 rounded-lg border-2 text-xs font-bold"
-                                    style="border-color: var(--primary-color); color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 10%, transparent)"
-                                    (click)="aplicarDescuento(item.productoId)">
-                                    -{{ item.descuentoPct }}%
-                                </button>
-                            } @else {
-                                <button type="button"
-                                    class="flex items-center gap-1 text-xs text-surface-400 hover:text-primary transition-colors"
-                                    (click)="aplicarDescuento(item.productoId)">
-                                    <i class="pi pi-tag" style="font-size:.65rem"></i> Descto.
-                                </button>
-                            }
+                        <div class="flex items-center justify-end pr-2 gap-1">
+                            <input type="number" min="0" max="100" step="1"
+                                [value]="item.descuentoPct"
+                                (change)="actualizarDescuento(item.productoId, +$any($event.target).value)"
+                                class="w-14 text-right text-sm tabular-nums rounded border border-transparent hover:border-surface-200 focus:border-primary outline-none bg-transparent px-1 py-0.5 transition-colors"
+                                placeholder="0" />
+                            <span class="text-xs text-surface-400 shrink-0">%</span>
                         </div>
 
                         <!-- Eliminar -->

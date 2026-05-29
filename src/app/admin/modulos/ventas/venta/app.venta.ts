@@ -49,10 +49,10 @@ export class AppVenta implements OnInit {
   }
 
   onGuardar(): void {
-    this.ventaFormulario?.guardarVenta();
+    this.ventaFormulario?.abrirConfirmacion();
   }
 
   onCancelar(): void {
-    this.ventaFormulario?.irAlListado();
+    this.tabsState.irATab(TabsEnum.LISTADO);
   }
 }

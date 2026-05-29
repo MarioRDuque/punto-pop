@@ -110,8 +110,9 @@ export class VentaFormulario implements OnInit {
 
   public dialogClienteVisible = signal(false);
   public dialogProductoVisible = signal(false);
-  public dialogImprimirVisible = signal(false);
-  public ventaRegistrada = signal<{ numero: string; total: number } | null>(null);
+  public dialogConfirmacionVisible = signal(false);
+  public dialogRegistradaVisible = signal(false);
+  public ventaRegistrada = signal<{ numero: string; total: number; completada: boolean } | null>(null);
 
   private gridApi!: GridApi<ItemVenta>;
   public theme: Theme = myTheme;
@@ -179,12 +180,12 @@ export class VentaFormulario implements OnInit {
   public readonly clienteSeleccionado = signal<VentaCliente | null>(null);
 
   seleccionarCliente(id: string | null): void {
-    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.id === id) ?? null) : null);
+    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.identificacion === id) ?? null) : null);
   }
 
   private sincronizarClienteSeleccionado(): void {
     const id = this.ventaForm.controls.clienteId.value;
-    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.id === id) ?? null) : null);
+    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.identificacion === id) ?? null) : null);
   }
 
   public productoRapidoForm = this.fb.group({
@@ -236,7 +237,7 @@ export class VentaFormulario implements OnInit {
       minWidth: 160,
       cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
         const component = (params.context as { component: VentaFormulario }).component;
-        const product = component.productos().find(p => p.id === params.data?.productoId);
+        const product = component.productos().find(p => p.codigo === params.data?.productoId);
         const name: string = params.data?.productoNombre ?? '';
         const initials = name
           .split(' ')
@@ -389,7 +390,7 @@ export class VentaFormulario implements OnInit {
   onF2(event: Event): void {
     if (this.itemCount() > 0) {
       event.preventDefault();
-      this.guardarVenta();
+      this.abrirConfirmacion();
     }
   }
 
@@ -471,7 +472,7 @@ export class VentaFormulario implements OnInit {
     return (
       this.productoSeleccionado !== null &&
       typeof this.productoSeleccionado === 'object' &&
-      !!this.productoSeleccionado.id
+      !!this.productoSeleccionado.codigo
     );
   }
 
@@ -495,7 +496,7 @@ export class VentaFormulario implements OnInit {
   }
 
   seleccionarClienteDesdePanel(c: VentaCliente): void {
-    this.ventaForm.controls.clienteId.setValue(c.id ?? null);
+    this.ventaForm.controls.clienteId.setValue(c.identificacion ?? null);
     this.clienteSeleccionado.set(c);
     this.filtroCliente.set('');
     this.clientePanel.hide();
@@ -523,14 +524,14 @@ export class VentaFormulario implements OnInit {
       return;
     }
     const producto = this.productoSeleccionado!;
-    const existingNode = this.gridApi?.getRowNode(producto.id!);
+    const existingNode = this.gridApi?.getRowNode(producto.codigo);
 
     if (existingNode?.data) {
       const item = existingNode.data;
       this.gridApi.applyTransaction({ update: [{ ...item, cantidad: item.cantidad + this.cantidad }] });
     } else {
       const nuevoItem: ItemVenta = {
-        productoId:     producto.id!,
+        productoId:     producto.codigo,
         productoCodigo: producto.codigo,
         productoNombre: producto.nombre,
         cantidad:       this.cantidad,
@@ -590,7 +591,7 @@ export class VentaFormulario implements OnInit {
   }
 
   onClienteGuardado(data: VentaCliente): void {
-    this.ventaForm.controls.clienteId.setValue(data.id ?? null);
+    this.ventaForm.controls.clienteId.setValue(data.identificacion ?? null);
     this.clienteSeleccionado.set(data);
     this.dialogClienteVisible.set(false);
   }
@@ -685,17 +686,20 @@ export class VentaFormulario implements OnInit {
     return items;
   }
 
-  guardarVenta(): void {
+  abrirConfirmacion(): void {
     if (!this.utilService.validarFormulario(this.ventaForm)) return;
-    const items = this.getItems();
-    if (items.length === 0) {
+    if (this.getItems().length === 0) {
       this.toast.error('Agregue al menos un producto');
       return;
     }
+    this.dialogConfirmacionVisible.set(true);
+  }
 
+  procesarComo(completar: boolean): void {
+    this.dialogConfirmacionVisible.set(false);
     this.cargando.activar();
-    const formValue = this.ventaForm.getRawValue();
 
+    const formValue = this.ventaForm.getRawValue();
     const payload: Venta = {
       formaPago:   formValue.formaPago as FormaPago,
       observacion: formValue.observacion ?? undefined,
@@ -706,7 +710,14 @@ export class VentaFormulario implements OnInit {
       baseExenta:  0,
       iva:         this.iva(),
       total:       this.total(),
-      items,
+      items:       this.getItems(),
+    };
+
+    const mostrarRegistrada = (venta: Venta, completada: boolean) => {
+      this.cargando.inactivar();
+      this.ventaRegistrada.set({ numero: venta.numero ?? '', total: this.total(), completada });
+      this.resetFormulario();
+      this.dialogRegistradaVisible.set(true);
     };
 
     if (this.accion() === AccionEnum.EDITAR) {
@@ -716,10 +727,14 @@ export class VentaFormulario implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (data) => {
-            this.cargando.inactivar();
             this.ventaService.actualizarElGrid(data);
-            this.toast.success('Venta ' + data.numero + ' actualizada correctamente');
-            this.tabsState.irATab(TabsEnum.LISTADO);
+            if (completar) {
+              this.ventaService.completar(data.id!)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: (c) => { this.ventaService.actualizarElGrid(c); mostrarRegistrada(c, true); } });
+            } else {
+              mostrarRegistrada(data, false);
+            }
           },
         });
     } else {
@@ -728,23 +743,26 @@ export class VentaFormulario implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (data) => {
-            this.cargando.inactivar();
             this.ventaService.agregarAlGrid(data);
-            this.ventaRegistrada.set({ numero: data.numero ?? '', total: this.total() });
-            this.dialogImprimirVisible.set(true);
-            this.resetFormulario();
+            if (completar) {
+              this.ventaService.completar(data.id!)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: (c) => { this.ventaService.actualizarElGrid(c); mostrarRegistrada(c, true); } });
+            } else {
+              mostrarRegistrada(data, false);
+            }
           },
         });
     }
   }
 
   irAlListado(): void {
-    this.dialogImprimirVisible.set(false);
+    this.dialogRegistradaVisible.set(false);
     this.tabsState.irATab(TabsEnum.LISTADO);
   }
 
   imprimirVenta(): void {
-    this.dialogImprimirVisible.set(false);
+    this.dialogRegistradaVisible.set(false);
     window.print();
     this.tabsState.irATab(TabsEnum.LISTADO);
   }

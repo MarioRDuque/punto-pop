@@ -34,7 +34,6 @@ export class ProductoFormulario implements OnInit {
   public accionEnum = AccionEnum;
 
   public productoForm = this.fb.group({
-    id:             [null as string | null],
     codigo:         ['', [Validators.required]],
     nombre:         ['', [Validators.required]],
     descripcion:    [''],

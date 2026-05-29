@@ -28,13 +28,13 @@ export class ClienteService {
   }
 
   actualizar(cliente: VentaCliente): Observable<VentaCliente> {
-    return this.api.put<VentaCliente>(`/ventas/cliente/${cliente.id}`, cliente).pipe(
+    return this.api.put<VentaCliente>(`/ventas/cliente/${cliente.identificacion}`, cliente).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(cliente: VentaCliente): Observable<VentaCliente> {
-    return this.api.delete<VentaCliente>(`/ventas/cliente/${cliente.id}`).pipe(
+    return this.api.delete<VentaCliente>(`/ventas/cliente/${cliente.identificacion}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -58,21 +58,21 @@ export class ClienteService {
 
   actualizarElGrid(item: VentaCliente): void {
     this.listaClientes.update((list) =>
-      list.map((c) => (c.id === item.id ? item : c))
+      list.map((c) => (c.identificacion === item.identificacion ? item : c))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(item: VentaCliente): void {
     this.listaClientes.update((list) =>
-      list.filter((c) => c.id !== item.id)
+      list.filter((c) => c.identificacion !== item.identificacion)
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'ID', field: 'id', hide: true },
+      { headerName: 'Identificación', field: 'identificacion', hide: true },
       {
         headerName: '',
         checkboxSelection: true,

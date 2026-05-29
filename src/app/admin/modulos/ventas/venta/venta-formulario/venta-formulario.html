@@ -21,34 +21,35 @@
                             @if (clienteSeleccionado()) {
                                 <button type="button"
                                     class="text-xs font-medium text-primary hover:underline"
-                                    (click)="clientePanel.toggle($event)">Cambiar</button>
+                                    (click)="limpiarCliente()">Cambiar</button>
                             }
                         </div>
 
                         @if (clienteSeleccionado(); as c) {
-                            <button type="button"
-                                class="flex items-center gap-2 px-2.5 py-2 rounded-xl border border-surface-200 w-full text-left"
-                                style="background: var(--surface-100)"
-                                (click)="clientePanel.toggle($event)">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 transition-colors"
+                                style="background: var(--surface-hover)">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
                                     style="background: linear-gradient(to right, #3CB8A9, #6DD4C5)">
                                     {{ getInitials(c.nombre) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="font-medium text-xs truncate">{{ c.nombre }}</div>
-                                    <div class="text-[11px] text-surface-400 truncate">{{ c.tipoIdentificacion }} · {{ c.identificacion }}</div>
+                                    <div class="font-semibold text-sm truncate">{{ c.nombre }}</div>
+                                    <div class="text-xs text-surface-400 truncate">{{ c.tipoIdentificacion }} · {{ c.identificacion }}</div>
                                 </div>
-                                <div class="w-5 h-5 rounded-full border border-surface-200 flex items-center justify-center shrink-0">
-                                    <i class="pi pi-chevron-right text-surface-400" style="font-size:.5rem"></i>
+                                <div class="w-8 h-8 rounded-xl border-2 border-primary flex items-center justify-center shrink-0"
+                                    style="background: var(--surface-card)">
+                                    <i class="pi pi-chevron-right text-primary" style="font-size:.65rem"></i>
                                 </div>
-                            </button>
+                            </div>
                         } @else {
                             <p-select formControlName="clienteId" [options]="clientesActivos()"
-                                optionLabel="nombre" optionValue="id" [filter]="true"
-                                filterBy="nombre" [showClear]="true" placeholder="Consumidor final"
+                                optionLabel="nombre" optionValue="identificacion" [filter]="true"
+                                filterBy="nombre,identificacion" [showClear]="true"
+                                placeholder="Consumidor final"
                                 [style]="{'width':'100%'}" appendTo="body"
                                 [virtualScroll]="true" [virtualScrollItemSize]="43"
-                                [scrollHeight]="clientesScrollHeight()">
+                                [scrollHeight]="clientesScrollHeight()"
+                                (onChange)="seleccionarCliente($event.value)">
                             </p-select>
                         }
 
@@ -309,7 +310,7 @@
                     [label]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : labelCobrar()"
                     size="large"
                     [disabled]="itemCount() === 0"
-                    (onClick)="guardarVenta()"
+                    (onClick)="abrirConfirmacion()"
                     styleClass="w-full justify-center">
                 </p-button>
 
@@ -363,30 +364,57 @@
     </div>
 </p-popover>
 
-<!-- ─── Modal: Venta registrada ─────────────────────────────────────────── -->
-<p-dialog [(visible)]="dialogImprimirVisible" [modal]="true" [closable]="false"
+<!-- ─── Modal 1: Confirmar tipo de registro ──────────────────────────────── -->
+<p-dialog [(visible)]="dialogConfirmacionVisible" [modal]="true" [closable]="true"
+    [style]="{'width':'400px'}" [draggable]="false" appendTo="body">
+    <div class="flex flex-col items-center gap-4 py-6 text-center">
+        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-blue-50">
+            <i class="pi pi-credit-card text-blue-500" style="font-size:2.25rem"></i>
+        </div>
+        <div>
+            <p class="text-lg font-bold m-0">¿Cómo desea registrar la venta?</p>
+            <p class="text-sm text-surface-500 mt-1 m-0">
+                Total: <strong class="text-primary">${{ total() | number:'1.2-2' }}</strong>
+            </p>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex gap-3 justify-center w-full">
+            <p-button label="Pendiente" icon="pi pi-clock" severity="secondary" [outlined]="true"
+                (onClick)="procesarComo(false)" />
+            <p-button label="Cobrado" icon="pi pi-check"
+                (onClick)="procesarComo(true)" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Modal 2: Venta registrada ───────────────────────────────────────── -->
+<p-dialog [(visible)]="dialogRegistradaVisible" [modal]="true" [closable]="false"
     [style]="{'width':'400px'}" [draggable]="false" appendTo="body">
     <div class="flex flex-col items-center gap-4 py-6 text-center">
         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
             <i class="pi pi-check-circle text-green-500" style="font-size:2.25rem"></i>
         </div>
-        <div>
-            <p class="text-lg font-bold m-0">¡Venta registrada!</p>
-            @if (ventaRegistrada(); as v) {
+        @if (ventaRegistrada(); as v) {
+            <div>
+                <p class="text-lg font-bold m-0">¡Venta registrada!</p>
                 <p class="text-sm text-surface-500 mt-1 m-0">
                     N° <strong>{{ v.numero }}</strong> · Total:
                     <strong class="text-green-600">${{ v.total | number:'1.2-2' }}</strong>
                 </p>
-            }
-        </div>
+                <p class="text-xs mt-1 m-0" [class]="v.completada ? 'text-green-600' : 'text-yellow-600'">
+                    {{ v.completada ? '✓ Cobrada' : '⏳ Pendiente de cobro' }}
+                </p>
+            </div>
+        }
         <p class="text-surface-600 m-0">¿Desea imprimir el comprobante?</p>
     </div>
     <ng-template pTemplate="footer">
-        <div class="flex gap-2 w-full">
+        <div class="flex gap-3 justify-center w-full">
             <p-button label="No, gracias" severity="secondary" [outlined]="true"
-                styleClass="flex-1 justify-center" (onClick)="irAlListado()" />
+                (onClick)="irAlListado()" />
             <p-button label="Imprimir" icon="pi pi-print"
-                styleClass="flex-1 justify-center" (onClick)="imprimirVenta()" />
+                (onClick)="imprimirVenta()" />
         </div>
     </ng-template>
 </p-dialog>

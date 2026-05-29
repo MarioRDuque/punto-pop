@@ -28,13 +28,13 @@ export class ProductoService {
   }
 
   actualizar(producto: CatProducto): Observable<CatProducto> {
-    return this.api.put<CatProducto>(`/catalogo/producto/${producto.id}`, producto).pipe(
+    return this.api.put<CatProducto>(`/catalogo/producto/${producto.codigo}`, producto).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(producto: CatProducto): Observable<CatProducto> {
-    return this.api.delete<CatProducto>(`/catalogo/producto/${producto.id}`).pipe(
+    return this.api.delete<CatProducto>(`/catalogo/producto/${producto.codigo}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -60,21 +60,21 @@ export class ProductoService {
 
   actualizarElGrid(item: CatProducto): void {
     this.listaProductos.update((list) =>
-      list.map((p) => (p.id === item.id ? item : p))
+      list.map((p) => (p.codigo === item.codigo ? item : p))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(item: CatProducto): void {
     this.listaProductos.update((list) =>
-      list.filter((p) => p.id !== item.id)
+      list.filter((p) => p.codigo !== item.codigo)
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'ID', field: 'id', hide: true },
+      { headerName: 'Código', field: 'codigo', hide: true },
       {
         headerName: '',
         checkboxSelection: true,

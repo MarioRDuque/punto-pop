@@ -36,7 +36,6 @@ export class UnidadMedidaFormulario implements OnInit {
   public accionEnum = AccionEnum;
 
   public unidadForm = this.fb.group({
-    id: [null as string | null],
     codigo: ['', [Validators.required]],
     nombre: ['', [Validators.required]],
     abreviatura: ['', [Validators.required]],
