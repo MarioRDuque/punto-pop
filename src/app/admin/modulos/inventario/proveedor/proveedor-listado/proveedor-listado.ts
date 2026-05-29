@@ -138,7 +138,7 @@ export class ProveedorListado implements OnInit {
   }
 
   eliminarObj(data: Proveedor): void {
-    if (!data?.id) return;
+    if (!data?.ruc) return;
     this.cargando.activar();
     this.proveedorService
       .eliminar(data)

@@ -28,13 +28,13 @@ export class UnidadMedidaService {
   }
 
   actualizar(unidad: CatUnidadMedida): Observable<CatUnidadMedida> {
-    return this.api.put<CatUnidadMedida>(`/catalogo/unidad-medida/${unidad.id}`, unidad).pipe(
+    return this.api.put<CatUnidadMedida>(`/catalogo/unidad-medida/${unidad.codigo}`, unidad).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(unidad: CatUnidadMedida): Observable<CatUnidadMedida> {
-    return this.api.delete<CatUnidadMedida>(`/catalogo/unidad-medida/${unidad.id}`).pipe(
+    return this.api.delete<CatUnidadMedida>(`/catalogo/unidad-medida/${unidad.codigo}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -58,21 +58,21 @@ export class UnidadMedidaService {
 
   actualizarElGrid(item: CatUnidadMedida): void {
     this.listaUnidades.update((list) =>
-      list.map((u) => (u.id === item.id ? item : u))
+      list.map((u) => (u.codigo === item.codigo ? item : u))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(item: CatUnidadMedida): void {
     this.listaUnidades.update((list) =>
-      list.filter((u) => u.id !== item.id)
+      list.filter((u) => u.codigo !== item.codigo)
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'ID', field: 'id', hide: true },
+      { headerName: 'Código', field: 'codigo', hide: true },
       {
         headerName: '',
         checkboxSelection: true,

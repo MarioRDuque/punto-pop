@@ -179,12 +179,12 @@ export class VentaFormulario implements OnInit {
   public readonly clienteSeleccionado = signal<VentaCliente | null>(null);
 
   seleccionarCliente(id: string | null): void {
-    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.id === id) ?? null) : null);
+    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.identificacion === id) ?? null) : null);
   }
 
   private sincronizarClienteSeleccionado(): void {
     const id = this.ventaForm.controls.clienteId.value;
-    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.id === id) ?? null) : null);
+    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.identificacion === id) ?? null) : null);
   }
 
   public productoRapidoForm = this.fb.group({
@@ -236,7 +236,7 @@ export class VentaFormulario implements OnInit {
       minWidth: 160,
       cellRenderer: (params: ICellRendererParams<ItemVenta>) => {
         const component = (params.context as { component: VentaFormulario }).component;
-        const product = component.productos().find(p => p.id === params.data?.productoId);
+        const product = component.productos().find(p => p.codigo === params.data?.productoId);
         const name: string = params.data?.productoNombre ?? '';
         const initials = name
           .split(' ')
@@ -471,7 +471,7 @@ export class VentaFormulario implements OnInit {
     return (
       this.productoSeleccionado !== null &&
       typeof this.productoSeleccionado === 'object' &&
-      !!this.productoSeleccionado.id
+      !!this.productoSeleccionado.codigo
     );
   }
 
@@ -495,7 +495,7 @@ export class VentaFormulario implements OnInit {
   }
 
   seleccionarClienteDesdePanel(c: VentaCliente): void {
-    this.ventaForm.controls.clienteId.setValue(c.id ?? null);
+    this.ventaForm.controls.clienteId.setValue(c.identificacion ?? null);
     this.clienteSeleccionado.set(c);
     this.filtroCliente.set('');
     this.clientePanel.hide();
@@ -523,14 +523,14 @@ export class VentaFormulario implements OnInit {
       return;
     }
     const producto = this.productoSeleccionado!;
-    const existingNode = this.gridApi?.getRowNode(producto.id!);
+    const existingNode = this.gridApi?.getRowNode(producto.codigo);
 
     if (existingNode?.data) {
       const item = existingNode.data;
       this.gridApi.applyTransaction({ update: [{ ...item, cantidad: item.cantidad + this.cantidad }] });
     } else {
       const nuevoItem: ItemVenta = {
-        productoId:     producto.id!,
+        productoId:     producto.codigo,
         productoCodigo: producto.codigo,
         productoNombre: producto.nombre,
         cantidad:       this.cantidad,
@@ -590,7 +590,7 @@ export class VentaFormulario implements OnInit {
   }
 
   onClienteGuardado(data: VentaCliente): void {
-    this.ventaForm.controls.clienteId.setValue(data.id ?? null);
+    this.ventaForm.controls.clienteId.setValue(data.identificacion ?? null);
     this.clienteSeleccionado.set(data);
     this.dialogClienteVisible.set(false);
   }

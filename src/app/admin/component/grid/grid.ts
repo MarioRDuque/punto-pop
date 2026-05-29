@@ -1,6 +1,6 @@
 import { Component, effect, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -72,7 +72,11 @@ export class Grid<T> {
   public defaultColDef: ColDef = {
     filter: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+  };
+
+  public autoSizeStrategy: SizeColumnsToFitGridStrategy = {
+    type: 'fitGridWidth',
   };
   public statusBar = {
     statusPanels: [
@@ -141,9 +145,11 @@ export class Grid<T> {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    this.gridApi.sizeColumnsToFit();
   }
 
   onFirstDataRendered() {
+    this.gridApi.sizeColumnsToFit();
     const firstCol = this.gridApi
       .getDisplayedCenterColumns()
       .find(col => col.isVisible());

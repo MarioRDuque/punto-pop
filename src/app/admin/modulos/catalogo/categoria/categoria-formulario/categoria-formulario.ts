@@ -36,7 +36,6 @@ export class CategoriaFormulario implements OnInit {
   public accionEnum = AccionEnum;
 
   public categoriaForm = this.fb.group({
-    id: [null as string | null],
     codigo: ['', [Validators.required]],
     nombre: ['', [Validators.required]],
     descripcion: [''],

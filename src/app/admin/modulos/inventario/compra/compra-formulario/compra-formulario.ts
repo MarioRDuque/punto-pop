@@ -151,7 +151,7 @@ export class CompraFormulario implements OnInit {
 
   getProveedorSeleccionado(): Proveedor | null {
     const id = this.compraForm.get('proveedorId')?.value;
-    return id ? (this.proveedores().find((p) => p.id === id) ?? null) : null;
+    return id ? (this.proveedores().find((p) => p.ruc === id) ?? null) : null;
   }
 
   getInitials(nombre: string): string {
@@ -220,7 +220,7 @@ export class CompraFormulario implements OnInit {
   esScannerValido(): boolean {
     return this.productoScanner !== null &&
       typeof this.productoScanner === 'object' &&
-      !!(this.productoScanner as CatProducto).id;
+      !!(this.productoScanner as CatProducto).codigo;
   }
 
   agregarItem(): void {
@@ -230,14 +230,14 @@ export class CompraFormulario implements OnInit {
     }
     const producto = this.productoScanner!;
     this._items.update((items) => {
-      const idx = items.findIndex((i) => i.productoId === producto.id);
+      const idx = items.findIndex((i) => i.productoId === producto.codigo);
       if (idx >= 0) {
         const updated = [...items];
         updated[idx] = { ...updated[idx], cantidad: updated[idx].cantidad + this.cantidadScanner() };
         return updated;
       }
       return [...items, {
-        productoId: producto.id!,
+        productoId: producto.codigo,
         productoCodigo: producto.codigo,
         productoNombre: producto.nombre,
         unidadMedidaNombre: producto.unidadMedidaNombre,
@@ -265,8 +265,16 @@ export class CompraFormulario implements OnInit {
     this._items.update((items) => items.filter((i) => i.productoId !== productoId));
   }
 
-  aplicarDescuento(_productoId: string): void {
-    // TODO: abrir dialog para ingresar descuento
+  actualizarCosto(productoId: string, costo: number): void {
+    this._items.update((items) =>
+      items.map((i) => i.productoId === productoId ? { ...i, costoUnitario: Math.max(0, costo) } : i)
+    );
+  }
+
+  actualizarDescuento(productoId: string, descuento: number): void {
+    this._items.update((items) =>
+      items.map((i) => i.productoId === productoId ? { ...i, descuentoPct: Math.min(100, Math.max(0, descuento)) } : i)
+    );
   }
 
   vaciarCarrito(): void {

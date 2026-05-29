@@ -1,30 +1,25 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  ColDef,
-  GridApi,
-  GridReadyEvent,
-  ICellRendererParams,
-  Theme,
-} from 'ag-grid-community';
-import { AgGridAngular } from 'ag-grid-angular';
-import { AG_GRID_LOCALE_ES } from '@ag-grid-community/locale';
-import { myTheme } from '../../../../constantes/ag-grid-theme-builder';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
+import { CommonModule } from '@angular/common';
+import { ColDef } from 'ag-grid-community';
+import { Grid } from '../../../../component/grid/grid';
+import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { CompraService } from '../compra.service';
 import { ToastService } from '../../../../service/toast.service';
 import { CargandoService } from '../../../../service/cargando.service';
-import { Compra } from '../../../../entities/Compra';
+import { Compra, EstadoCompra } from '../../../../entities/Compra';
+import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
+
+type FilterTab = 'todos' | 'borrador' | 'recibidas' | 'anuladas';
 
 @Component({
   selector: 'app-compra-listado',
   standalone: true,
-  imports: [HeaderCrud, AgGridAngular],
+  imports: [CommonModule, Grid, ListadoToolbar],
   templateUrl: './compra-listado.html',
 })
 export class CompraListado implements OnInit {
-
-  readonly compraService = inject(CompraService);
+  private readonly compraService = inject(CompraService);
   private readonly toast = inject(ToastService);
   private readonly cargando = inject(CargandoService);
   private readonly destroyRef = inject(DestroyRef);
@@ -33,86 +28,65 @@ export class CompraListado implements OnInit {
   public readonly exportarSignal = signal(false);
   public readonly imprimirSignal = signal(false);
 
-  private gridApi!: GridApi<Compra>;
-  public theme: Theme = myTheme;
-  public localeText = AG_GRID_LOCALE_ES;
-  public gridContext = { component: this };
+  readonly searchQuery = signal('');
+  readonly activeFilter = signal<FilterTab>('todos');
 
-  public readonly defaultColDef: ColDef = {
-    resizable: true,
-    sortable: true,
-    filter: true,
-    suppressMovable: true,
-    suppressHeaderMenuButton: true,
-  };
+  public colDefs: ColDef[] = [];
 
-  public readonly columnDefs: ColDef<Compra>[] = [
-    { field: 'numero',          headerName: 'N°',        width: 110 },
-    { field: 'fecha',           headerName: 'Fecha',     width: 160,
-      valueFormatter: (p) => p.value ? new Date(p.value).toLocaleString('es-EC') : '' },
-    { field: 'proveedorNombre', headerName: 'Proveedor', flex: 1, minWidth: 160 },
-    {
-      field: 'total', headerName: 'Total', width: 110, type: 'rightAligned',
-      valueFormatter: (p) => p.value != null ? `$${Number(p.value).toFixed(2)}` : '',
-    },
-    {
-      field: 'estado', headerName: 'Estado', width: 110,
-      cellStyle: (p) => {
-        const colors: Record<string, string> = {
-          BORRADOR: '#f59e0b', RECIBIDA: '#22c55e', ANULADA: '#ef4444',
-        };
-        return { color: colors[p.value] ?? '', fontWeight: '600' };
-      },
-    },
-    {
-      headerName: 'Acciones',
-      width: 160,
-      sortable: false,
-      filter: false,
-      resizable: false,
-      cellRenderer: (params: ICellRendererParams<Compra>) => {
-        const estado = params.data?.estado;
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex;gap:4px;align-items:center;height:100%;padding:2px 0';
+  private readonly listaCompras = this.compraService.listaCompras;
 
-        if (estado === 'BORRADOR') {
-          const btnRecibir = document.createElement('button');
-          btnRecibir.textContent = 'Recibir';
-          btnRecibir.style.cssText =
-            'background:#22c55e;border:none;color:white;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600';
-          btnRecibir.onclick = () =>
-            (params.context as { component: CompraListado }).component.recibirCompra(params.data!);
-          div.appendChild(btnRecibir);
+  readonly counts = computed(() => {
+    const list = this.listaCompras();
+    return {
+      todos:     list.length,
+      borrador:  list.filter((c) => c.estado === 'BORRADOR').length,
+      recibidas: list.filter((c) => c.estado === 'RECIBIDA').length,
+      anuladas:  list.filter((c) => c.estado === 'ANULADA').length,
+    };
+  });
 
-          const btnAnular = document.createElement('button');
-          btnAnular.textContent = 'Anular';
-          btnAnular.style.cssText =
-            'background:#ef4444;border:none;color:white;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600';
-          btnAnular.onclick = () =>
-            (params.context as { component: CompraListado }).component.anularCompra(params.data!);
-          div.appendChild(btnAnular);
-        }
+  readonly tabs = computed<ToolbarTab[]>(() => [
+    { key: 'todos',     label: 'Todas',     count: this.counts().todos },
+    { key: 'borrador',  label: 'Borrador',  count: this.counts().borrador },
+    { key: 'recibidas', label: 'Recibidas', count: this.counts().recibidas },
+    { key: 'anuladas',  label: 'Anuladas',  count: this.counts().anuladas },
+  ]);
 
-        return div;
-      },
-    },
-  ];
+  readonly filteredCompras = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    const tab = this.activeFilter();
+    const estadoMap: Record<FilterTab, EstadoCompra | null> = {
+      todos: null, borrador: 'BORRADOR', recibidas: 'RECIBIDA', anuladas: 'ANULADA',
+    };
+    return this.listaCompras().filter((c) => {
+      const estadoFiltro = estadoMap[tab];
+      if (estadoFiltro && c.estado !== estadoFiltro) return false;
+      if (!q) return true;
+      return (
+        c.numero?.toLowerCase().includes(q) ||
+        c.proveedorNombre?.toLowerCase().includes(q) ||
+        (c.fecha ? new Date(c.fecha).toLocaleString('es-EC').toLowerCase().includes(q) : false)
+      );
+    });
+  });
 
   ngOnInit(): void {
     this.compraService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    this.colDefs = this.compraService.generarColumnasListado(
+      (compra) => this.recibirCompra(compra),
+      (compra) => this.anularCompra(compra),
+    );
   }
 
-  onGridReady(event: GridReadyEvent<Compra>): void {
-    this.gridApi = event.api;
+  setFilter(tab: FilterTab) { this.activeFilter.set(tab); }
+  onSearch(q: string)       { this.searchQuery.set(q); }
+
+  buscar(_event: EventCrudBusqueda) {
+    this.compraService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
-  exportarDesdeHeader(): void {
-    this.gridApi?.exportDataAsExcel({ fileName: 'Compras.xlsx' });
-  }
-
-  imprimirDesdeHeader(): void {
-    this.imprimirSignal.set(true);
-  }
+  exportarDesdeHeader() { this.exportarSignal.set(true); }
+  imprimirDesdeHeader() { this.imprimirSignal.set(true); }
 
   recibirCompra(compra: Compra): void {
     if (!compra.id) return;

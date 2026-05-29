@@ -39,7 +39,6 @@ export class ProveedorFormulario implements OnInit {
   public accionEnum = AccionEnum;
 
   public readonly proveedorForm = this.fb.group({
-    id:              [null as string | null],
     ruc:             ['', [Validators.required, rucValidator('EC')]],
     razonSocial:     ['', [Validators.required]],
     nombreComercial: [''],

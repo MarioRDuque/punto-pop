@@ -40,13 +40,13 @@ export class ProveedorService {
   }
 
   actualizar(proveedor: Proveedor): Observable<Proveedor> {
-    return this.api.put<Proveedor>(`/inventario/proveedor/${proveedor.id}`, proveedor).pipe(
+    return this.api.put<Proveedor>(`/inventario/proveedor/${proveedor.ruc}`, proveedor).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(proveedor: Proveedor): Observable<void> {
-    return this.api.delete<void>(`/inventario/proveedor/${proveedor.id}`).pipe(
+    return this.api.delete<void>(`/inventario/proveedor/${proveedor.ruc}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -58,19 +58,19 @@ export class ProveedorService {
 
   actualizarElGrid(item: Proveedor): void {
     this.listaProveedores.update((list) =>
-      list.map((p) => (p.id === item.id ? item : p))
+      list.map((p) => (p.ruc === item.ruc ? item : p))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(item: Proveedor): void {
-    this.listaProveedores.update((list) => list.filter((p) => p.id !== item.id));
+    this.listaProveedores.update((list) => list.filter((p) => p.ruc !== item.ruc));
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'ID', field: 'id', hide: true },
+      { headerName: 'RUC', field: 'ruc', hide: true },
       {
         headerName: '',
         checkboxSelection: true,

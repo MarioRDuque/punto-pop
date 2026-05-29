@@ -28,13 +28,13 @@ export class CategoriaService {
   }
 
   actualizar(categoria: CatCategoria): Observable<CatCategoria> {
-    return this.api.put<CatCategoria>(`/catalogo/categoria/${categoria.id}`, categoria).pipe(
+    return this.api.put<CatCategoria>(`/catalogo/categoria/${categoria.codigo}`, categoria).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
 
   eliminar(categoria: CatCategoria): Observable<CatCategoria> {
-    return this.api.delete<CatCategoria>(`/catalogo/categoria/${categoria.id}`).pipe(
+    return this.api.delete<CatCategoria>(`/catalogo/categoria/${categoria.codigo}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
   }
@@ -58,21 +58,21 @@ export class CategoriaService {
 
   actualizarElGrid(item: CatCategoria): void {
     this.listaCategorias.update((list) =>
-      list.map((c) => (c.id === item.id ? item : c))
+      list.map((c) => (c.codigo === item.codigo ? item : c))
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   eliminarDelGrid(item: CatCategoria): void {
     this.listaCategorias.update((list) =>
-      list.filter((c) => c.id !== item.id)
+      list.filter((c) => c.codigo !== item.codigo)
     );
     this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {
     return [
-      { headerName: 'ID', field: 'id', hide: true },
+      { headerName: 'Código', field: 'codigo', hide: true },
       {
         headerName: '',
         checkboxSelection: true,

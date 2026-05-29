@@ -129,7 +129,7 @@ export class ProductoCampos implements OnInit {
         next: (data) => {
           this.toast.success(`Categoría "${data.nombre}" creada`);
           this.categoriaService.agregarAlGrid(data);
-          this.form.get('categoriaId')?.setValue(data.id ?? null);
+          this.form.get('categoriaId')?.setValue(data.codigo ?? null);
           this.dialogCategoriaVisible.set(false);
           this.cargando.inactivar();
         },
@@ -152,7 +152,7 @@ export class ProductoCampos implements OnInit {
         next: (data) => {
           this.toast.success(`Unidad "${data.nombre}" creada`);
           this.unidadService.agregarAlGrid(data);
-          this.form.get('unidadMedidaId')?.setValue(data.id ?? null);
+          this.form.get('unidadMedidaId')?.setValue(data.codigo ?? null);
           this.dialogUnidadVisible.set(false);
           this.cargando.inactivar();
         },
