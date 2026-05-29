@@ -310,7 +310,7 @@
                     [label]="accion() === accionEnum.EDITAR ? 'Guardar cambios' : labelCobrar()"
                     size="large"
                     [disabled]="itemCount() === 0"
-                    (onClick)="guardarVenta()"
+                    (onClick)="abrirConfirmacion()"
                     styleClass="w-full justify-center">
                 </p-button>
 
@@ -364,30 +364,52 @@
     </div>
 </p-popover>
 
-<!-- ─── Modal: Venta registrada ─────────────────────────────────────────── -->
-<p-dialog [(visible)]="dialogImprimirVisible" [modal]="true" [closable]="false"
+<!-- ─── Modal 1: Confirmar tipo de registro ──────────────────────────────── -->
+<p-dialog [(visible)]="dialogConfirmacionVisible" [modal]="true" [closable]="true"
     [style]="{'width':'400px'}" [draggable]="false" appendTo="body">
     <div class="flex flex-col items-center gap-4 py-6 text-center">
-        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
-            <i class="pi pi-check-circle text-green-500" style="font-size:2.25rem"></i>
+        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-blue-50">
+            <i class="pi pi-credit-card text-blue-500" style="font-size:2.25rem"></i>
         </div>
         <div>
-            <p class="text-lg font-bold m-0">¡Venta registrada!</p>
-            @if (ventaRegistrada(); as v) {
-                <p class="text-sm text-surface-500 mt-1 m-0">
-                    N° <strong>{{ v.numero }}</strong> · Total:
-                    <strong class="text-green-600">${{ v.total | number:'1.2-2' }}</strong>
-                </p>
-            }
+            <p class="text-lg font-bold m-0">¿Cómo desea registrar la venta?</p>
+            <p class="text-sm text-surface-500 mt-1 m-0">
+                Total: <strong class="text-primary">${{ total() | number:'1.2-2' }}</strong>
+            </p>
         </div>
-        <p class="text-surface-600 m-0">¿Desea imprimir el comprobante?</p>
     </div>
     <ng-template pTemplate="footer">
         <div class="flex gap-3 justify-center">
-            <p-button label="No, gracias" severity="secondary" [outlined]="true"
-                (onClick)="irAlListado()" />
-            <p-button label="Imprimir" icon="pi pi-print"
-                (onClick)="imprimirVenta()" />
+            <p-button label="Pendiente" icon="pi pi-clock" severity="secondary" [outlined]="true"
+                (onClick)="procesarComo(false)" />
+            <p-button label="Cobrado" icon="pi pi-check"
+                (onClick)="procesarComo(true)" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Modal 2: Cobro exitoso ───────────────────────────────────────────── -->
+<p-dialog [(visible)]="dialogExitoVisible" [modal]="true" [closable]="false"
+    [style]="{'width':'380px'}" [draggable]="false" appendTo="body">
+    <div class="flex flex-col items-center gap-4 py-6 text-center">
+        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
+            <i class="pi pi-check-circle text-green-500" style="font-size:2.5rem"></i>
+        </div>
+        @if (ventaRegistrada(); as v) {
+            <div>
+                <p class="text-xl font-bold m-0 text-green-700">¡Cobrado!</p>
+                <p class="text-sm text-surface-500 mt-2 m-0">
+                    N° <strong>{{ v.numero }}</strong>
+                </p>
+                <p class="text-2xl font-bold text-green-600 mt-1 m-0">
+                    ${{ v.total | number:'1.2-2' }}
+                </p>
+            </div>
+        }
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-center">
+            <p-button label="OK" icon="pi pi-check" (onClick)="cerrarExito()" styleClass="px-8" />
         </div>
     </ng-template>
 </p-dialog>
