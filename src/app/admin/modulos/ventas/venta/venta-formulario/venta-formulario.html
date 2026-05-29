@@ -379,7 +379,7 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <div class="flex gap-3 justify-center">
+        <div class="flex gap-3 justify-center w-full">
             <p-button label="Pendiente" icon="pi pi-clock" severity="secondary" [outlined]="true"
                 (onClick)="procesarComo(false)" />
             <p-button label="Cobrado" icon="pi pi-check"
@@ -388,28 +388,33 @@
     </ng-template>
 </p-dialog>
 
-<!-- ─── Modal 2: Cobro exitoso ───────────────────────────────────────────── -->
-<p-dialog [(visible)]="dialogExitoVisible" [modal]="true" [closable]="false"
-    [style]="{'width':'380px'}" [draggable]="false" appendTo="body">
+<!-- ─── Modal 2: Venta registrada ───────────────────────────────────────── -->
+<p-dialog [(visible)]="dialogRegistradaVisible" [modal]="true" [closable]="false"
+    [style]="{'width':'400px'}" [draggable]="false" appendTo="body">
     <div class="flex flex-col items-center gap-4 py-6 text-center">
         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
-            <i class="pi pi-check-circle text-green-500" style="font-size:2.5rem"></i>
+            <i class="pi pi-check-circle text-green-500" style="font-size:2.25rem"></i>
         </div>
         @if (ventaRegistrada(); as v) {
             <div>
-                <p class="text-xl font-bold m-0 text-green-700">¡Cobrado!</p>
-                <p class="text-sm text-surface-500 mt-2 m-0">
-                    N° <strong>{{ v.numero }}</strong>
+                <p class="text-lg font-bold m-0">¡Venta registrada!</p>
+                <p class="text-sm text-surface-500 mt-1 m-0">
+                    N° <strong>{{ v.numero }}</strong> · Total:
+                    <strong class="text-green-600">${{ v.total | number:'1.2-2' }}</strong>
                 </p>
-                <p class="text-2xl font-bold text-green-600 mt-1 m-0">
-                    ${{ v.total | number:'1.2-2' }}
+                <p class="text-xs mt-1 m-0" [class]="v.completada ? 'text-green-600' : 'text-yellow-600'">
+                    {{ v.completada ? '✓ Cobrada' : '⏳ Pendiente de cobro' }}
                 </p>
             </div>
         }
+        <p class="text-surface-600 m-0">¿Desea imprimir el comprobante?</p>
     </div>
     <ng-template pTemplate="footer">
-        <div class="flex justify-center">
-            <p-button label="OK" icon="pi pi-check" (onClick)="cerrarExito()" styleClass="px-8" />
+        <div class="flex gap-3 justify-center w-full">
+            <p-button label="No, gracias" severity="secondary" [outlined]="true"
+                (onClick)="irAlListado()" />
+            <p-button label="Imprimir" icon="pi pi-print"
+                (onClick)="imprimirVenta()" />
         </div>
     </ng-template>
 </p-dialog>

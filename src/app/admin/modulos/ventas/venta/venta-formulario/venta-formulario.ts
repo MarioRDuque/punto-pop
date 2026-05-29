@@ -111,7 +111,7 @@ export class VentaFormulario implements OnInit {
   public dialogClienteVisible = signal(false);
   public dialogProductoVisible = signal(false);
   public dialogConfirmacionVisible = signal(false);
-  public dialogExitoVisible = signal(false);
+  public dialogRegistradaVisible = signal(false);
   public ventaRegistrada = signal<{ numero: string; total: number; completada: boolean } | null>(null);
 
   private gridApi!: GridApi<ItemVenta>;
@@ -713,6 +713,13 @@ export class VentaFormulario implements OnInit {
       items:       this.getItems(),
     };
 
+    const mostrarRegistrada = (venta: Venta, completada: boolean) => {
+      this.cargando.inactivar();
+      this.ventaRegistrada.set({ numero: venta.numero ?? '', total: this.total(), completada });
+      this.resetFormulario();
+      this.dialogRegistradaVisible.set(true);
+    };
+
     if (this.accion() === AccionEnum.EDITAR) {
       const ventaExistente = this.formsService.objetoSeleccionado();
       this.ventaService
@@ -720,23 +727,13 @@ export class VentaFormulario implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (data) => {
+            this.ventaService.actualizarElGrid(data);
             if (completar) {
               this.ventaService.completar(data.id!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe({
-                  next: (completada) => {
-                    this.cargando.inactivar();
-                    this.ventaService.actualizarElGrid(completada);
-                    this.ventaRegistrada.set({ numero: completada.numero ?? '', total: this.total(), completada: true });
-                    this.resetFormulario();
-                    this.dialogExitoVisible.set(true);
-                  },
-                });
+                .subscribe({ next: (c) => { this.ventaService.actualizarElGrid(c); mostrarRegistrada(c, true); } });
             } else {
-              this.cargando.inactivar();
-              this.ventaService.actualizarElGrid(data);
-              this.toast.success('Venta ' + data.numero + ' guardada como Pendiente');
-              this.tabsState.irATab(TabsEnum.LISTADO);
+              mostrarRegistrada(data, false);
             }
           },
         });
@@ -746,32 +743,27 @@ export class VentaFormulario implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (data) => {
+            this.ventaService.agregarAlGrid(data);
             if (completar) {
               this.ventaService.completar(data.id!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe({
-                  next: (completada) => {
-                    this.cargando.inactivar();
-                    this.ventaService.agregarAlGrid(completada);
-                    this.ventaRegistrada.set({ numero: completada.numero ?? '', total: this.total(), completada: true });
-                    this.resetFormulario();
-                    this.dialogExitoVisible.set(true);
-                  },
-                });
+                .subscribe({ next: (c) => { this.ventaService.actualizarElGrid(c); mostrarRegistrada(c, true); } });
             } else {
-              this.cargando.inactivar();
-              this.ventaService.agregarAlGrid(data);
-              this.toast.success('Venta ' + data.numero + ' guardada como Pendiente');
-              this.resetFormulario();
-              this.tabsState.irATab(TabsEnum.LISTADO);
+              mostrarRegistrada(data, false);
             }
           },
         });
     }
   }
 
-  cerrarExito(): void {
-    this.dialogExitoVisible.set(false);
+  irAlListado(): void {
+    this.dialogRegistradaVisible.set(false);
+    this.tabsState.irATab(TabsEnum.LISTADO);
+  }
+
+  imprimirVenta(): void {
+    this.dialogRegistradaVisible.set(false);
+    window.print();
     this.tabsState.irATab(TabsEnum.LISTADO);
   }
 
