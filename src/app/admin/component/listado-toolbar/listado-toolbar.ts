@@ -44,6 +44,7 @@ export class ListadoToolbar implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.initResizeObserver();
+    requestAnimationFrame(() => this.checkOverflow());
   }
 
   ngOnDestroy() {
@@ -59,11 +60,14 @@ export class ListadoToolbar implements AfterViewInit, OnDestroy {
 
   private checkOverflow() {
     const el = this.tabsContainer.nativeElement;
-    const hasOverflow = el.scrollWidth > el.clientWidth;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (!children.length) return;
+
+    const gap = 6;
+    const totalChildWidth = children.reduce((s, c) => s + c.offsetWidth + gap, 0) - gap;
+    const hasOverflow = totalChildWidth > el.clientWidth;
 
     if (hasOverflow) {
-      const children = Array.from(el.children) as HTMLElement[];
-      const gap = 6;
       const moreW = this.showMore() ? 0 : 36;
       const available = el.clientWidth - moreW - gap;
       let used = 0;

@@ -367,6 +367,10 @@ p-inputnumber.ng-invalid.ng-touched .p-inputtext {
 
 @media screen and (max-width: 991px) {
   
+  .layout-wrapper.layout-static .layout-main-container {
+    margin-left: 0 !important;
+  }
+
   .layout-sidebar {
     min-height: 100% !important;
     height: 100% !important;
