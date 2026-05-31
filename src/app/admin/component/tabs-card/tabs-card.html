@@ -1,0 +1,49 @@
+<div class="tabs-card">
+    <p-tabs lazy [value]="tabActivo" (valueChange)="onTabChange.emit($event)">
+        <p-tablist>
+            <p-tab [value]="Tabs.LISTADO">
+                <i [class]="iconListado"></i>
+                <span class="hidden sm:inline">{{ labelListado }}</span>
+            </p-tab>
+            <p-tab [value]="Tabs.CREAR">
+                <i [class]="iconCrear"></i>
+                <span class="hidden sm:inline">{{ labelCrear }}</span>
+            </p-tab>
+            <p-tab [disabled]="tabDeshabilitado" [value]="Tabs.EDITAR">
+                <i [class]="iconEditar"></i>
+                <span class="hidden sm:inline">{{ labelEditar }}</span>
+            </p-tab>
+
+            @if (showActions) {
+            <div class="ml-auto flex items-center gap-1">
+                @if (showBorrador) {
+                <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary"
+                    (onClick)="onBorrador.emit()" />
+                }
+                <p-button [label]="submitLabel" [icon]="submitIcon" size="small" [outlined]="true"
+                    [loading]="loading" (onClick)="onGuardar.emit()" />
+                <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
+                    pTooltip="Cerrar" tooltipPosition="top"
+                    (onClick)="onCancelar.emit()" />
+            </div>
+            } @else {
+            <ng-content select="[actions]" />
+            }
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel [value]="Tabs.LISTADO">
+                <ng-content select="[panel-listado]"></ng-content>
+            </p-tabpanel>
+            <p-tabpanel [value]="Tabs.CREAR">
+                @if (tabActivo === Tabs.CREAR) {
+                <ng-content select="[panel-crear]"></ng-content>
+                }
+            </p-tabpanel>
+            <p-tabpanel [value]="Tabs.EDITAR">
+                @if (tabActivo === Tabs.EDITAR) {
+                <ng-content select="[panel-editar]"></ng-content>
+                }
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</div>

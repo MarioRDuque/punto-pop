@@ -1,36 +1,16 @@
-<p-tabs [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
-    <p-tablist>
-        <p-tab [value]="Tabs.LISTADO"><i class="{{ICONSCONSTANT.USERS}}"></i><span> Lista de usuarios</span></p-tab>
-        <p-tab [value]="Tabs.CREAR"><i class="{{ICONSCONSTANT.AGREGAR_USER}}"></i><span> Crear usuario</span></p-tab>
-        <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i class="{{ICONSCONSTANT.EDITAR_USUARIO}}"></i><span> Editar usuario</span></p-tab>
-
-        @if (showFormActions) {
-        <div class="ml-auto flex items-center gap-1 px-3">
-            <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary" />
-            <p-button [label]="tabsState.tabActivo() === Tabs.EDITAR ? 'Actualizar' : 'Guardar'"
-                [icon]="tabsState.tabActivo() === Tabs.EDITAR ? 'pi pi-check' : 'pi pi-save'"
-                size="small" [outlined]="true"
-                [loading]="cargando.loading()"
-                (onClick)="onGuardar()" />
-            <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
-                pTooltip="Cerrar" tooltipPosition="top"
-                (onClick)="onCancelar()" />
-        </div>
-        }
-    </p-tablist>
-    <p-tabpanels>
-        <p-tabpanel [value]="Tabs.LISTADO">
-            <app-usuario-listado></app-usuario-listado>
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.CREAR">
-            @if (tabsState.tabActivo() === Tabs.CREAR) {
-            <app-usuario-formulario></app-usuario-formulario>
-            }
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.EDITAR">
-            @if (tabsState.tabActivo() === Tabs.EDITAR) {
-            <app-usuario-formulario></app-usuario-formulario>
-            }
-        </p-tabpanel>
-    </p-tabpanels>
-</p-tabs>
+<app-tabs-card
+    [tabActivo]="tabsState.tabActivo()"
+    [tabDeshabilitado]="tabsState.tabDeshabilitado()"
+    [showActions]="showFormActions"
+    [loading]="cargando.loading()"
+    [iconListado]="ICONSCONSTANT.USERS"
+    [iconCrear]="ICONSCONSTANT.AGREGAR_USER"
+    [iconEditar]="ICONSCONSTANT.EDITAR_USUARIO"
+    (onTabChange)="onTabChange($event)"
+    (onGuardar)="onGuardar()"
+    (onCancelar)="onCancelar()"
+>
+    <app-usuario-listado panel-listado />
+    <app-usuario-formulario panel-crear />
+    <app-usuario-formulario panel-editar />
+</app-tabs-card>

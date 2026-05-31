@@ -1,21 +1,15 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { TabsModule } from 'primeng/tabs';
 import { ProductoFormulario } from './producto-formulario/producto-formulario';
 import { ProductoListado } from './producto-listado/producto-listado';
-import { TabsEnum } from '../../../enums/tabs-enum';
 import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
-import { ICONSCONSTANT } from '../../../constantes/icons-constants';
+import { TabsCard } from '../../../component/tabs-card/tabs-card';
 
 @Component({
   selector: 'app-producto',
   standalone: true,
   imports: [
-    ButtonModule,
-    TooltipModule,
-    TabsModule,
+    TabsCard,
     ProductoFormulario,
     ProductoListado
   ],
@@ -23,10 +17,8 @@ import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 })
 export class AppProducto implements OnInit {
 
-  Tabs = TabsEnum;
   tabsState = inject(TabsStateService);
   cargando = inject(CargandoService);
-  ICONSCONSTANT = ICONSCONSTANT;
 
   @ViewChild(ProductoFormulario) productoFormulario?: ProductoFormulario;
 
@@ -40,7 +32,7 @@ export class AppProducto implements OnInit {
 
   get showFormActions(): boolean {
     const active = this.tabsState.tabActivo();
-    return active === TabsEnum.CREAR || active === TabsEnum.EDITAR;
+    return active === 'crear' || active === 'editar';
   }
 
   onGuardar(): void {

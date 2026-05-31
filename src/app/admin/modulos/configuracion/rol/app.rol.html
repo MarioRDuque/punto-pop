@@ -1,36 +1,17 @@
-<p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
-    <p-tablist>
-        <p-tab [value]="Tabs.LISTADO"><i class="{{ICONSCONSTANT.USERS}}"></i><span> Lista de rol</span></p-tab>
-        <p-tab [value]="Tabs.CREAR"><i class="{{ICONSCONSTANT.AGREGAR_USER}}"></i><span> Crear rol</span></p-tab>
-        <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i class="{{ICONSCONSTANT.EDITAR_USUARIO}}"></i><span> Editar rol</span></p-tab>
-
-        @if (showFormActions) {
-        <div class="ml-auto flex items-center gap-1 px-3">
-            <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary" />
-            <p-button [label]="tabsState.tabActivo() === Tabs.EDITAR ? 'Actualizar' : 'Guardar'"
-                [icon]="tabsState.tabActivo() === Tabs.EDITAR ? 'pi pi-check' : 'pi pi-save'"
-                size="small" [outlined]="true"
-                [loading]="cargando.loading()"
-                (onClick)="onGuardar()" />
-            <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
-                pTooltip="Cerrar" tooltipPosition="top"
-                (onClick)="onCancelar()" />
-        </div>
-        }
-    </p-tablist>
-    <p-tabpanels>
-        <p-tabpanel [value]="Tabs.LISTADO">
-            <app-rol-listado></app-rol-listado>
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.CREAR">
-            @if (tabsState.tabActivo() === Tabs.CREAR) {
-            <app-rol-formulario></app-rol-formulario>
-            }
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.EDITAR">
-            @if (tabsState.tabActivo() === Tabs.EDITAR) {
-            <app-rol-formulario></app-rol-formulario>
-            }
-        </p-tabpanel>
-    </p-tabpanels>
-</p-tabs>
+<app-tabs-card
+    [tabActivo]="tabsState.tabActivo()"
+    [tabDeshabilitado]="tabsState.tabDeshabilitado()"
+    [showActions]="showFormActions"
+    [loading]="cargando.loading()"
+    labelListado="Roles"
+    [iconListado]="ICONSCONSTANT.USERS"
+    [iconCrear]="ICONSCONSTANT.AGREGAR_USER"
+    [iconEditar]="ICONSCONSTANT.EDITAR_USUARIO"
+    (onTabChange)="onTabChange($event)"
+    (onGuardar)="onGuardar()"
+    (onCancelar)="onCancelar()"
+>
+    <app-rol-listado panel-listado />
+    <app-rol-formulario panel-crear />
+    <app-rol-formulario panel-editar />
+</app-tabs-card>

@@ -1,15 +1,13 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { TabsModule } from 'primeng/tabs';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ClienteFormulario } from './cliente-formulario/cliente-formulario';
 import { ClienteListado } from './cliente-listado/cliente-listado';
 import { ClienteImportar } from './cliente-importar/cliente-importar';
-import { TabsEnum } from '../../../enums/tabs-enum';
 import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
-import { ICONSCONSTANT } from '../../../constantes/icons-constants';
+import { TabsCard } from '../../../component/tabs-card/tabs-card';
 
 @Component({
   selector: 'app-cliente',
@@ -17,7 +15,7 @@ import { ICONSCONSTANT } from '../../../constantes/icons-constants';
   imports: [
     ButtonModule,
     TooltipModule,
-    TabsModule,
+    TabsCard,
     DynamicDialogModule,
     ClienteFormulario,
     ClienteListado,
@@ -27,10 +25,8 @@ import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 })
 export class AppCliente implements OnInit {
 
-  Tabs = TabsEnum;
   tabsState = inject(TabsStateService);
   cargando = inject(CargandoService);
-  ICONSCONSTANT = ICONSCONSTANT;
   private dialogService = inject(DialogService);
 
   @ViewChild(ClienteFormulario) clienteFormulario?: ClienteFormulario;
@@ -46,11 +42,11 @@ export class AppCliente implements OnInit {
 
   get showFormActions(): boolean {
     const active = this.tabsState.tabActivo();
-    return active === TabsEnum.CREAR || active === TabsEnum.EDITAR;
+    return active === 'crear' || active === 'editar';
   }
 
   get showListActions(): boolean {
-    return this.tabsState.tabActivo() === TabsEnum.LISTADO;
+    return this.tabsState.tabActivo() === 'listado';
   }
 
   onGuardar(): void {

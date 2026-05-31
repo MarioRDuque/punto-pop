@@ -1,45 +1,25 @@
-<p-tabs lazy [value]="tabsState.tabActivo()" (valueChange)="onTabChange($event)">
-    <p-tablist>
-        <p-tab [value]="Tabs.LISTADO"><i class="pi pi-list"></i><span> Lista de clientes</span></p-tab>
-        <p-tab [value]="Tabs.CREAR"><i class="pi pi-plus"></i><span> Crear cliente</span></p-tab>
-        <p-tab [disabled]="tabsState.tabDeshabilitado()" [value]="Tabs.EDITAR"><i class="pi pi-pencil"></i><span> Editar cliente</span></p-tab>
-
-        <div class="ml-auto flex items-center gap-1 px-3">
-          @if (showFormActions) {
-            <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary" />
-            <p-button [label]="tabsState.tabActivo() === Tabs.EDITAR ? 'Actualizar' : 'Guardar'"
-                [icon]="tabsState.tabActivo() === Tabs.EDITAR ? 'pi pi-check' : 'pi pi-save'"
-                size="small" [outlined]="true"
-                [loading]="cargando.loading()"
-                (onClick)="onGuardar()" />
-            <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
-                pTooltip="Cerrar" tooltipPosition="top"
-                (onClick)="onCancelar()" />
-          } @else if (showListActions) {
-            <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"
-                pTooltip="Importar" tooltipPosition="top" (onClick)="importar()" />
-            <p-button icon="pi pi-download" size="small" [text]="true" severity="secondary"
-                pTooltip="Exportar" tooltipPosition="top"
-                (onClick)="exportar()" />
-            <p-button icon="pi pi-print" size="small" [text]="true" severity="secondary"
-                pTooltip="Imprimir" tooltipPosition="top"
-                (onClick)="imprimir()" />
-          }
-        </div>
-    </p-tablist>
-    <p-tabpanels>
-        <p-tabpanel [value]="Tabs.LISTADO">
-            <app-cliente-listado></app-cliente-listado>
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.CREAR">
-            @if (tabsState.tabActivo() === Tabs.CREAR) {
-            <app-cliente-formulario></app-cliente-formulario>
-            }
-        </p-tabpanel>
-        <p-tabpanel [value]="Tabs.EDITAR">
-            @if (tabsState.tabActivo() === Tabs.EDITAR) {
-            <app-cliente-formulario></app-cliente-formulario>
-            }
-        </p-tabpanel>
-    </p-tabpanels>
-</p-tabs>
+<app-tabs-card
+    [tabActivo]="tabsState.tabActivo()"
+    [tabDeshabilitado]="tabsState.tabDeshabilitado()"
+    [showActions]="showFormActions"
+    [loading]="cargando.loading()"
+    (onTabChange)="onTabChange($event)"
+    (onGuardar)="onGuardar()"
+    (onCancelar)="onCancelar()"
+>
+    <app-cliente-listado panel-listado />
+    <app-cliente-formulario panel-crear />
+    <app-cliente-formulario panel-editar />
+    @if (!showFormActions) {
+    <div actions class="ml-auto flex items-center gap-1">
+        <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"
+            pTooltip="Importar" tooltipPosition="top" (onClick)="importar()" />
+        <p-button icon="pi pi-download" size="small" [text]="true" severity="secondary"
+            pTooltip="Exportar" tooltipPosition="top"
+            (onClick)="exportar()" />
+        <p-button icon="pi pi-print" size="small" [text]="true" severity="secondary"
+            pTooltip="Imprimir" tooltipPosition="top"
+            (onClick)="imprimir()" />
+    </div>
+    }
+</app-tabs-card>

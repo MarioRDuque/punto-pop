@@ -6,6 +6,11 @@
 @use './assets/layout/disabled-primeng.scss';
 @import "primeicons/primeicons.css";
 
+@keyframes tab-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .text-primary-contrast {
   font-size: 10px !important;
 }
@@ -169,6 +174,77 @@ p-inputnumber.ng-invalid.ng-touched .p-inputtext {
 .p-tabpanel {
   background: transparent !important;
   padding: 0 !important;
+}
+
+// ===== TABS CARD (píldora moderna dentro de card gris) =====
+.tabs-card {
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  .p-tablist {
+    background: transparent !important;
+    padding: 0 0.25rem;
+  }
+
+  .p-tablist-tab-list {
+    width: 100% !important;
+    gap: 0.125rem;
+    background: color-mix(in srgb, var(--p-text-color) 6%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .p-tab {
+    border-radius: 0.375rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--p-text-muted-color);
+    transition: all 0.2s ease;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover:not(.p-tab-disabled) {
+      background: color-mix(in srgb, var(--p-text-color) 8%, transparent);
+      color: var(--p-text-color);
+    }
+
+    &.p-tab-active {
+      background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+      color: var(--p-primary-color);
+      font-weight: 600;
+
+      .pi {
+        color: var(--p-primary-color);
+      }
+    }
+
+    &.p-tab-disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .pi {
+      font-size: 0.8125rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  .p-tabpanels {
+    background: transparent !important;
+    padding: 0.75rem 0.25rem 0.25rem !important;
+  }
+
+  .p-tabpanel {
+    background: transparent !important;
+    padding: 0 !important;
+    animation: tab-fade-in 0.2s ease-out;
+  }
 }
 
 //TOAST
