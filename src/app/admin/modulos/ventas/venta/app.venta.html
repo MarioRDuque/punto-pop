@@ -14,4 +14,7 @@
     <ng-template #listado><app-venta-listado /></ng-template>
     <ng-template #crear><app-venta-formulario /></ng-template>
     <ng-template #editar><app-venta-formulario /></ng-template>
+    @if (!showFormActions) {
+    <app-exportar-imprimir actions (exportar)="exportar()" (imprimir)="imprimir()" />
+    }
 </app-tabs-card>

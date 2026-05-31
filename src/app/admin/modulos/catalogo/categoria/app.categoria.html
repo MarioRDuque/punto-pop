@@ -10,4 +10,7 @@
     <ng-template #listado><app-categoria-listado /></ng-template>
     <ng-template #crear><app-categoria-formulario /></ng-template>
     <ng-template #editar><app-categoria-formulario /></ng-template>
+    @if (!showFormActions) {
+    <app-exportar-imprimir actions (exportar)="exportar()" (imprimir)="imprimir()" />
+    }
 </app-tabs-card>

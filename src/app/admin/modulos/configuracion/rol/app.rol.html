@@ -14,4 +14,7 @@
     <ng-template #listado><app-rol-listado /></ng-template>
     <ng-template #crear><app-rol-formulario /></ng-template>
     <ng-template #editar><app-rol-formulario /></ng-template>
+    @if (!showFormActions) {
+    <app-exportar-imprimir actions (exportar)="exportar()" (imprimir)="imprimir()" />
+    }
 </app-tabs-card>

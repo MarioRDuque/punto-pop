@@ -1,0 +1,118 @@
+<!-- PASO 1: UPLOAD -->
+@if (paso() === 'upload') {
+  <div class="import-wrap">
+    <div class="import-drop" [class.import-drop-over]="sobre()"
+      (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event)">
+      <i class="pi pi-cloud-upload import-drop-icon"></i>
+      <span class="import-drop-title">Arrastra tu archivo aquí</span>
+      <span class="import-drop-sub">CSV o Excel (.xlsx)</span>
+      <label class="import-file-label">
+        <i class="pi pi-folder-open" style="font-size:0.75rem"></i>
+        Seleccionar archivo
+        <input type="file" accept=".csv,.xlsx,.xls" (change)="onFile($event)" hidden />
+      </label>
+    </div>
+
+    <div class="import-template-row">
+      <i class="pi pi-info-circle" style="font-size:0.7rem;opacity:0.4"></i>
+      <span>Columnas: ruc, razonSocial, nombreComercial, direccion, telefono, email</span>
+      <button class="import-template-btn" (click)="descargarPlantilla()">
+        <i class="pi pi-download"></i> Descargar plantilla
+      </button>
+    </div>
+  </div>
+}
+
+<!-- PASO 2: PREVIEW -->
+@if (paso() === 'preview') {
+  <div class="import-preview">
+    <div class="import-summary">
+      <span class="import-file-name"><i class="pi pi-file" style="font-size:0.75rem"></i> {{ fileName() }}</span>
+      <div class="import-chips">
+        <span class="chip chip-total">{{ filas().length }} filas</span>
+        @if (validas().length) {
+          <span class="chip chip-ok">{{ validas().length }} válidas</span>
+        }
+        @if (conError().length) {
+          <span class="chip chip-err">{{ conError().length }} con error</span>
+        }
+      </div>
+    </div>
+
+    <div class="import-table-wrap">
+      <table class="import-table">
+        <thead>
+          <tr>
+            <th style="width:2rem">#</th>
+            <th>RUC</th>
+            <th>Razón Social</th>
+            <th>Nombre Comercial</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th style="width:3rem"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (f of filas(); track f._idx) {
+            <tr [class.row-error]="f.errores.length">
+              <td class="td-num">{{ f._idx }}</td>
+              <td>{{ f.ruc || '—' }}</td>
+              <td>{{ f.razonSocial || '—' }}</td>
+              <td class="td-muted">{{ f.nombreComercial || '—' }}</td>
+              <td class="td-muted">{{ f.telefono || '—' }}</td>
+              <td class="td-muted">{{ f.email || '—' }}</td>
+              <td class="td-status">
+                @if (!f.errores.length) {
+                  <i class="pi pi-check-circle" style="color:#16a34a;font-size:0.8rem"
+                     pTooltip="Válido" tooltipPosition="top"></i>
+                } @else {
+                  <i class="pi pi-exclamation-triangle" style="color:#dc2626;font-size:0.8rem"
+                     [pTooltip]="f.errores.join(' · ')" tooltipPosition="top"></i>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="import-footer">
+      <p-button label="Cambiar archivo" icon="pi pi-arrow-left" size="small" [text]="true"
+        severity="secondary" (onClick)="volver()" [disabled]="importando()" />
+      <p-button
+        [label]="'Importar ' + validas().length + ' proveedor' + (validas().length !== 1 ? 'es' : '')"
+        icon="pi pi-cloud-upload" size="small"
+        [loading]="importando()"
+        [disabled]="!validas().length"
+        (onClick)="importar()" />
+    </div>
+
+    @if (importando()) {
+      <p-progressbar [value]="progreso()" [showValue]="false" style="height:3px;margin-top:0.5rem" />
+    }
+  </div>
+}
+
+<!-- PASO 3: RESULTADO -->
+@if (paso() === 'resultado') {
+  <div class="import-resultado">
+    @if (importadas() > 0 && fallidas() === 0) {
+      <i class="pi pi-check-circle result-icon result-icon-ok"></i>
+      <p class="result-title">Importación completada</p>
+      <p class="result-sub">{{ importadas() }} proveedor{{ importadas() !== 1 ? 'es' : '' }} registrado{{ importadas() !== 1 ? 's' : '' }} correctamente.</p>
+    } @else if (fallidas() > 0 && importadas() === 0) {
+      <i class="pi pi-times-circle result-icon result-icon-err"></i>
+      <p class="result-title">No se pudo importar</p>
+      <p class="result-sub">Hubo errores al guardar los proveedores. Verifica la conexión e intenta nuevamente.</p>
+    } @else {
+      <i class="pi pi-info-circle result-icon result-icon-warn"></i>
+      <p class="result-title">Importación parcial</p>
+      <p class="result-sub">{{ importadas() }} importado{{ importadas() !== 1 ? 's' : '' }}, {{ fallidas() }} fallido{{ fallidas() !== 1 ? 's' : '' }}.</p>
+    }
+    <div class="result-actions">
+      <p-button label="Importar otro archivo" icon="pi pi-refresh" size="small" [outlined]="true"
+        severity="secondary" (onClick)="volver()" />
+      <p-button label="Cerrar" size="small" (onClick)="cerrar()" />
+    </div>
+  </div>
+}

@@ -12,4 +12,11 @@
     <ng-template #listado><app-proveedor-listado /></ng-template>
     <ng-template #crear><app-proveedor-formulario /></ng-template>
     <ng-template #editar><app-proveedor-formulario /></ng-template>
+    @if (!showFormActions) {
+    <div actions class="ml-auto flex items-center gap-1">
+        <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"
+            pTooltip="Importar" tooltipPosition="top" (onClick)="importar()" />
+        <app-exportar-imprimir (exportar)="exportar()" (imprimir)="imprimir()" />
+    </div>
+    }
 </app-tabs-card>

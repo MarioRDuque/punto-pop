@@ -14,12 +14,7 @@
     <div actions class="ml-auto flex items-center gap-1">
         <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"
             pTooltip="Importar" tooltipPosition="top" (onClick)="importar()" />
-        <p-button icon="pi pi-download" size="small" [text]="true" severity="secondary"
-            pTooltip="Exportar" tooltipPosition="top"
-            (onClick)="exportar()" />
-        <p-button icon="pi pi-print" size="small" [text]="true" severity="secondary"
-            pTooltip="Imprimir" tooltipPosition="top"
-            (onClick)="imprimir()" />
+        <app-exportar-imprimir (exportar)="exportar()" (imprimir)="imprimir()" />
     </div>
     }
 </app-tabs-card>

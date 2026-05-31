@@ -8,6 +8,7 @@ import { ClienteImportar } from './cliente-importar/cliente-importar';
 import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { TabsCard } from '../../../component/tabs-card/tabs-card';
+import { ExportarImprimir } from '../../../component/exportar-imprimir/exportar-imprimir';
 
 @Component({
   selector: 'app-cliente',
@@ -19,6 +20,7 @@ import { TabsCard } from '../../../component/tabs-card/tabs-card';
     DynamicDialogModule,
     ClienteFormulario,
     ClienteListado,
+    ExportarImprimir,
   ],
   providers: [DialogService],
   templateUrl: './app.cliente.html',

@@ -10,4 +10,7 @@
     <ng-template #listado><app-unidad-medida-listado /></ng-template>
     <ng-template #crear><app-unidad-medida-formulario /></ng-template>
     <ng-template #editar><app-unidad-medida-formulario /></ng-template>
+    @if (!showFormActions) {
+    <app-exportar-imprimir actions (exportar)="exportar()" (imprimir)="imprimir()" />
+    }
 </app-tabs-card>

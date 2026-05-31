@@ -5,6 +5,7 @@ import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { VentaService } from './venta.service';
 import { TabsCard } from '../../../component/tabs-card/tabs-card';
+import { ExportarImprimir } from '../../../component/exportar-imprimir/exportar-imprimir';
 
 @Component({
   selector: 'app-venta',
@@ -13,12 +14,14 @@ import { TabsCard } from '../../../component/tabs-card/tabs-card';
     TabsCard,
     VentaFormulario,
     VentaListado,
+    ExportarImprimir,
   ],
   templateUrl: './app.venta.html',
 })
 export class AppVenta implements OnInit {
 
   @ViewChild(VentaFormulario) ventaFormulario?: VentaFormulario;
+  @ViewChild(VentaListado) ventaListado?: VentaListado;
 
   tabsState = inject(TabsStateService);
   cargando = inject(CargandoService);
@@ -47,4 +50,7 @@ export class AppVenta implements OnInit {
   onCancelar(): void {
     this.tabsState.irATab('listado');
   }
+
+  exportar(): void { this.ventaListado?.exportarSignal.set(true); }
+  imprimir(): void { this.ventaListado?.imprimirSignal.set(true); }
 }

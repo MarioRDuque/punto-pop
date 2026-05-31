@@ -5,13 +5,15 @@ import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 import { TabsCard } from '../../../component/tabs-card/tabs-card';
+import { ExportarImprimir } from '../../../component/exportar-imprimir/exportar-imprimir';
 
 @Component({
   selector: 'app-rol',
   imports: [
     TabsCard,
     RolFormulario,
-    RolListado
+    RolListado,
+    ExportarImprimir,
   ],
   templateUrl: './app.rol.html',
   styleUrl: './app.rol.scss',
@@ -23,6 +25,7 @@ export class AppRol implements OnInit {
   ICONSCONSTANT = ICONSCONSTANT;
 
   @ViewChild(RolFormulario) rolFormulario?: RolFormulario;
+  @ViewChild(RolListado) rolListado?: RolListado;
 
   ngOnInit(): void {
     this.tabsState.onInit();
@@ -44,4 +47,7 @@ export class AppRol implements OnInit {
   onCancelar(): void {
     this.rolFormulario?.irAlListado();
   }
+
+  exportar(): void { this.rolListado?.exportarSignal.set(true); }
+  imprimir(): void { this.rolListado?.imprimirSignal.set(true); }
 }

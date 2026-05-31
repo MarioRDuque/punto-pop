@@ -5,6 +5,7 @@ import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { ICONSCONSTANT } from '../../../constantes/icons-constants';
 import { TabsCard } from '../../../component/tabs-card/tabs-card';
+import { ExportarImprimir } from '../../../component/exportar-imprimir/exportar-imprimir';
 
 @Component({
     selector: 'app-usuarios',
@@ -12,7 +13,8 @@ import { TabsCard } from '../../../component/tabs-card/tabs-card';
     imports: [
         TabsCard,
         UsuarioFormulario,
-        UsuarioListado
+        UsuarioListado,
+        ExportarImprimir,
     ],
     templateUrl: './app.usuarios.html'
 })
@@ -23,6 +25,7 @@ export class AppUsuarios implements OnInit {
     ICONSCONSTANT = ICONSCONSTANT;
 
     @ViewChild(UsuarioFormulario) usuarioFormulario?: UsuarioFormulario;
+    @ViewChild(UsuarioListado) usuarioListado?: UsuarioListado;
 
     ngOnInit(): void {
         this.tabsState.onInit();
@@ -44,4 +47,7 @@ export class AppUsuarios implements OnInit {
     onCancelar(): void {
         this.usuarioFormulario?.irAlListado();
     }
+
+    exportar(): void { this.usuarioListado?.exportarSignal.set(true); }
+    imprimir(): void { this.usuarioListado?.imprimirSignal.set(true); }
 }

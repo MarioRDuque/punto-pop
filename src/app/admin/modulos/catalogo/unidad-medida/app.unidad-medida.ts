@@ -4,6 +4,7 @@ import { UnidadMedidaListado } from './unidad-medida-listado/unidad-medida-lista
 import { TabsStateService } from '../../../service/tabs.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { TabsCard } from '../../../component/tabs-card/tabs-card';
+import { ExportarImprimir } from '../../../component/exportar-imprimir/exportar-imprimir';
 
 @Component({
   selector: 'app-unidad-medida',
@@ -11,7 +12,8 @@ import { TabsCard } from '../../../component/tabs-card/tabs-card';
   imports: [
     TabsCard,
     UnidadMedidaFormulario,
-    UnidadMedidaListado
+    UnidadMedidaListado,
+    ExportarImprimir,
   ],
   templateUrl: './app.unidad-medida.html',
 })
@@ -21,6 +23,7 @@ export class AppUnidadMedida implements OnInit {
   cargando = inject(CargandoService);
 
   @ViewChild(UnidadMedidaFormulario) unidadMedidaFormulario?: UnidadMedidaFormulario;
+  @ViewChild(UnidadMedidaListado) unidadMedidaListado?: UnidadMedidaListado;
 
   ngOnInit(): void {
     this.tabsState.onInit();
@@ -42,4 +45,7 @@ export class AppUnidadMedida implements OnInit {
   onCancelar(): void {
     this.unidadMedidaFormulario?.irAlListado();
   }
+
+  exportar(): void { this.unidadMedidaListado?.exportarSignal.set(true); }
+  imprimir(): void { this.unidadMedidaListado?.imprimirSignal.set(true); }
 }
