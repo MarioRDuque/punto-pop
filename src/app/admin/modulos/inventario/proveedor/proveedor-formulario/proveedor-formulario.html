@@ -30,7 +30,8 @@
                                 style="background: var(--surface-hover)">EC</span>
                             <input pInputText formControlName="ruc"
                                 [maxlength]="rucMaxLength" class="w-full" placeholder="9999999999001"
-                                style="border-top-left-radius:0; border-bottom-left-radius:0" />
+                                style="border-top-left-radius:0; border-bottom-left-radius:0"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">13 dígitos · validación de dígito verificador</p>
                     </div>
@@ -43,8 +44,9 @@
                             <i class="pi pi-building absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                 style="font-size:.875rem"></i>
                             <input pInputText formControlName="razonSocial"
-                                placeholder="Nombre legal completo"
-                                class="w-full" style="padding-left: 2.25rem" />
+                                placeholder="NOMBRE LEGAL COMPLETO"
+                                class="w-full" style="padding-left: 2.25rem"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">Tal como aparece en el RUC del SRI</p>
                     </div>
@@ -57,8 +59,9 @@
                             <i class="pi pi-tag absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                 style="font-size:.875rem"></i>
                             <input pInputText formControlName="nombreComercial"
-                                placeholder="Nombre con que opera en el mercado"
-                                class="w-full" style="padding-left: 2.25rem" />
+                                placeholder="NOMBRE CON QUE OPERA EN EL MERCADO"
+                                class="w-full" style="padding-left: 2.25rem"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">Se usará en comprobantes si está definido</p>
                     </div>
@@ -108,8 +111,9 @@
                             <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                 style="font-size:.875rem"></i>
                             <input pInputText formControlName="direccion"
-                                placeholder="Av. Amazonas N32-123 y Roca, Edif. Torre, Of. 502"
-                                class="w-full" style="padding-left: 2.25rem" />
+                                placeholder="AV. AMAZONAS N32-123 Y ROCA, EDIF. TORRE, OF. 502"
+                                class="w-full" style="padding-left: 2.25rem"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">Calle, número, referencia (opcional)</p>
                     </div>

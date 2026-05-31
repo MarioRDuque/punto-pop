@@ -13,11 +13,12 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { CatCategoria } from '../../../../entities/CatCategoria';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { Uppercase } from '../../../../directives/uppercase';
 
 @Component({
   selector: 'app-categoria-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent, Uppercase],
   templateUrl: './categoria-formulario.html',
 })
 export class CategoriaFormulario implements OnInit {

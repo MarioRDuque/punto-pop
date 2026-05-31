@@ -11,7 +11,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-compra-listado panel-listado />
-    <app-compra-formulario panel-crear />
-    <app-compra-formulario panel-editar />
+    <ng-template #listado><app-compra-listado /></ng-template>
+    <ng-template #crear><app-compra-formulario /></ng-template>
+    <ng-template #editar><app-compra-formulario /></ng-template>
 </app-tabs-card>

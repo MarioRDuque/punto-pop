@@ -23,8 +23,9 @@
                                 Código <span class="text-red-400">*</span>
                             </label>
                             <input pInputText formControlName="codigo"
-                                placeholder="Ej. KG"
-                                class="w-full" />
+                                placeholder="EJ. KG"
+                                class="w-full"
+                                [appUppercase]="true" />
                             <p class="text-xs text-surface-400 m-0">Identificador único · no se puede cambiar al editar</p>
                         </div>
                         <div class="flex flex-col gap-1">
@@ -32,16 +33,18 @@
                                 Nombre <span class="text-red-400">*</span>
                             </label>
                             <input pInputText formControlName="nombre"
-                                placeholder="Ej. Kilogramo"
-                                class="w-full" />
+                                placeholder="EJ. KILOGRAMO"
+                                class="w-full"
+                                [appUppercase]="true" />
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="text-xs font-medium text-surface-500">
                                 Abreviatura <span class="text-red-400">*</span>
                             </label>
                             <input pInputText formControlName="abreviatura"
-                                placeholder="Ej. kg"
-                                class="w-full" />
+                                placeholder="EJ. KG"
+                                class="w-full"
+                                [appUppercase]="true" />
                             <p class="text-xs text-surface-400 m-0">Se muestra en productos y comprobantes</p>
                         </div>
                     </div>

@@ -18,6 +18,7 @@ import { AccionEnum } from '../../../../enums/accion-enum';
 import { UtilService } from '../../../../service/util.service';
 import { RolService } from '../../rol/rol.service';
 import { AuthService } from '../../../../service/auth.service';
+import { Uppercase } from '../../../../directives/uppercase';
 
 const ROLES_ADMIN = ['ADMIN', 'SUPERADMIN'] as const;
 
@@ -30,6 +31,7 @@ const ROLES_ADMIN = ['ADMIN', 'SUPERADMIN'] as const;
     Password,
     MultiSelect,
     ToggleSwitchComponent,
+    Uppercase,
   ],
   templateUrl: './usuario-formulario.html',
   styleUrl: './usuario-formulario.scss',

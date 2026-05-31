@@ -15,11 +15,12 @@ import { VentaCliente, TipoIdentificacion } from '../../../../entities/VentaClie
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { identificacionValidator } from '../../../../directives/identificacion-rules';
+import { Uppercase } from '../../../../directives/uppercase';
 
 @Component({
   selector: 'app-cliente-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent, SelectModule],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent, SelectModule, Uppercase],
   templateUrl: './cliente-formulario.html',
 })
 export class ClienteFormulario implements OnInit {

@@ -22,6 +22,7 @@ import { Compra, DetalleCompra } from '../../../../entities/Compra';
 import { CatProducto } from '../../../../entities/CatProducto';
 import { Proveedor } from '../../../../entities/Proveedor';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { Uppercase } from '../../../../directives/uppercase';
 
 const IVA_PORCENTAJE = 0.15;
 
@@ -44,7 +45,6 @@ export type CondicionPago = 'CONTADO' | 'TRANSFERENCIA' | 'CREDITO_30' | 'CREDIT
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    DecimalPipe,
     SelectModule,
     InputNumberModule,
     InputTextModule,
@@ -53,7 +53,9 @@ export type CondicionPago = 'CONTADO' | 'TRANSFERENCIA' | 'CREDITO_30' | 'CREDIT
     AutoCompleteModule,
     TooltipModule,
     DialogModule,
+    DecimalPipe,
     ProductoCampos,
+    Uppercase,
   ],
   templateUrl: './compra-formulario.html',
 })

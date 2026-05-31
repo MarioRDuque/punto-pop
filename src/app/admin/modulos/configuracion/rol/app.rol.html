@@ -11,7 +11,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-rol-listado panel-listado />
-    <app-rol-formulario panel-crear />
-    <app-rol-formulario panel-editar />
+    <ng-template #listado><app-rol-listado /></ng-template>
+    <ng-template #crear><app-rol-formulario /></ng-template>
+    <ng-template #editar><app-rol-formulario /></ng-template>
 </app-tabs-card>

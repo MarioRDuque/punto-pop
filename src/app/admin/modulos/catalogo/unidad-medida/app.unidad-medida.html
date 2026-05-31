@@ -7,7 +7,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-unidad-medida-listado panel-listado />
-    <app-unidad-medida-formulario panel-crear />
-    <app-unidad-medida-formulario panel-editar />
+    <ng-template #listado><app-unidad-medida-listado /></ng-template>
+    <ng-template #crear><app-unidad-medida-formulario /></ng-template>
+    <ng-template #editar><app-unidad-medida-formulario /></ng-template>
 </app-tabs-card>

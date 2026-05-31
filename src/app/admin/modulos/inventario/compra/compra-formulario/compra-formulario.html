@@ -65,7 +65,8 @@
                                 <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Folio factura</span>
                                 <input pInputText formControlName="folioFactura"
                                     placeholder="A-48291"
-                                    class="w-full" style="height:2rem; font-size:0.875rem" />
+                                    class="w-full" style="height:2rem; font-size:0.875rem"
+                                    [appUppercase]="true" />
                             </div>
                             <!-- Fecha -->
                             <div class="flex flex-col gap-1 flex-1">
@@ -92,7 +93,7 @@
                             </div>
                             <textarea formControlName="observacion"
                                 rows="3"
-                                placeholder="Notas internas, número de pedido, almacén destino..."
+                                    placeholder="NOTAS INTERNAS, NÚMERO DE PEDIDO, ALMACÉN DESTINO..."
                                 class="w-full resize-none rounded-lg border border-surface-200 p-2 text-sm outline-none focus:border-primary"
                                 style="flex:1">
                             </textarea>

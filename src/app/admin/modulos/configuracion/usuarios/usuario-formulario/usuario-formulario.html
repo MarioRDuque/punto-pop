@@ -38,12 +38,14 @@
                                 Nombre <span class="text-red-400">*</span>
                             </label>
                             <input pInputText formControlName="usuNombre"
-                                placeholder="Nombre" class="w-full" />
+                                placeholder="NOMBRE" class="w-full"
+                                [appUppercase]="true" />
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="text-xs font-medium text-surface-500">Apellidos</label>
                             <input pInputText formControlName="usuApellidos"
-                                placeholder="Apellidos" class="w-full" />
+                                placeholder="APELLIDOS" class="w-full"
+                                [appUppercase]="true" />
                         </div>
                     </div>
                 </div>
@@ -126,8 +128,9 @@
                                 <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                     style="font-size:.875rem"></i>
                                 <input pInputText formControlName="usuDireccion"
-                                    placeholder="Dirección (opcional)"
-                                    class="w-full" style="padding-left: 2.25rem" />
+                                    placeholder="DIRECCIÓN (OPCIONAL)"
+                                    class="w-full" style="padding-left: 2.25rem"
+                                    [appUppercase]="true" />
                             </div>
                         </div>
                     </div>

@@ -14,11 +14,12 @@ import { Proveedor } from '../../../../entities/Proveedor';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { rucValidator } from '../../../../directives/identificacion-rules';
+import { Uppercase } from '../../../../directives/uppercase';
 
 @Component({
   selector: 'app-proveedor-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent, Uppercase],
   templateUrl: './proveedor-formulario.html',
 })
 export class ProveedorFormulario implements OnInit {

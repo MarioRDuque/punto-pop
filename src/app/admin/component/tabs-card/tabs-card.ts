@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { TabsModule } from 'primeng/tabs';
@@ -7,11 +8,15 @@ import { TabsEnum } from '../../enums/tabs-enum';
 @Component({
   selector: 'app-tabs-card',
   standalone: true,
-  imports: [ButtonModule, TooltipModule, TabsModule],
+  imports: [NgTemplateOutlet, ButtonModule, TooltipModule, TabsModule],
   templateUrl: './tabs-card.html',
 })
 export class TabsCard {
   readonly Tabs = TabsEnum;
+
+  @ContentChild('listado') listadoTemplate?: TemplateRef<any>;
+  @ContentChild('crear') crearTemplate?: TemplateRef<any>;
+  @ContentChild('editar') editarTemplate?: TemplateRef<any>;
 
   @Input({ required: true }) tabActivo!: string;
   @Input({ required: true }) tabDeshabilitado!: boolean;

@@ -9,7 +9,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-proveedor-listado panel-listado />
-    <app-proveedor-formulario panel-crear />
-    <app-proveedor-formulario panel-editar />
+    <ng-template #listado><app-proveedor-listado /></ng-template>
+    <ng-template #crear><app-proveedor-formulario /></ng-template>
+    <ng-template #editar><app-proveedor-formulario /></ng-template>
 </app-tabs-card>

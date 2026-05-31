@@ -13,11 +13,12 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { CatUnidadMedida } from '../../../../entities/CatUnidadMedida';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { Uppercase } from '../../../../directives/uppercase';
 
 @Component({
   selector: 'app-unidad-medida-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent, Uppercase],
   templateUrl: './unidad-medida-formulario.html',
 })
 export class UnidadMedidaFormulario implements OnInit {

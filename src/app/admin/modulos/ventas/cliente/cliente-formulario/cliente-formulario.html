@@ -35,7 +35,8 @@
                                 <span class="text-xs font-mono text-surface-400">{{ idActualLength() }}/{{ idMaxLength() }}</span>
                             </div>
                             <input pInputText formControlName="identificacion"
-                                [maxlength]="idMaxLength()" class="w-full" />
+                                [maxlength]="idMaxLength()" class="w-full"
+                                [appUppercase]="true" />
                         </div>
                     </div>
                     <p class="text-xs text-surface-400 m-0 -mt-2">Buscaremos si ya existe al terminar</p>
@@ -60,8 +61,9 @@
                             <i class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                 style="font-size:.875rem"></i>
                             <input pInputText formControlName="nombre"
-                                placeholder="Nombre completo"
-                                class="w-full" style="padding-left: 2.25rem" />
+                                    placeholder="NOMBRE COMPLETO"
+                                class="w-full" style="padding-left: 2.25rem"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">Formato Title Case aplicado automáticamente</p>
                     </div>
@@ -133,7 +135,8 @@
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="text-xs font-medium text-surface-500">Ciudad</label>
-                            <input pInputText formControlName="ciudad" placeholder="Ciudad" class="w-full" />
+                            <input pInputText formControlName="ciudad" placeholder="CIUDAD" class="w-full"
+                                [appUppercase]="true" />
                         </div>
                     </div>
 
@@ -143,8 +146,9 @@
                             <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
                                 style="font-size:.875rem"></i>
                             <input pInputText formControlName="direccion"
-                                placeholder="Av. Amazonas N32-123 y Roca, Edif. Torre, Of. 502"
-                                class="w-full" style="padding-left: 2.25rem" />
+                                placeholder="AV. AMAZONAS N32-123 Y ROCA, EDIF. TORRE, OF. 502"
+                                class="w-full" style="padding-left: 2.25rem"
+                                [appUppercase]="true" />
                         </div>
                         <p class="text-xs text-surface-400 m-0">Calle, número, referencia (opcional)</p>
                     </div>

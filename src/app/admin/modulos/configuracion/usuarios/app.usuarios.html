@@ -10,7 +10,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-usuario-listado panel-listado />
-    <app-usuario-formulario panel-crear />
-    <app-usuario-formulario panel-editar />
+    <ng-template #listado><app-usuario-listado /></ng-template>
+    <ng-template #crear><app-usuario-formulario /></ng-template>
+    <ng-template #editar><app-usuario-formulario /></ng-template>
 </app-tabs-card>

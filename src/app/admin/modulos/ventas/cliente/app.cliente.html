@@ -7,9 +7,9 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-cliente-listado panel-listado />
-    <app-cliente-formulario panel-crear />
-    <app-cliente-formulario panel-editar />
+    <ng-template #listado><app-cliente-listado /></ng-template>
+    <ng-template #crear><app-cliente-formulario /></ng-template>
+    <ng-template #editar><app-cliente-formulario /></ng-template>
     @if (!showFormActions) {
     <div actions class="ml-auto flex items-center gap-1">
         <p-button icon="pi pi-upload" size="small" [text]="true" severity="secondary"

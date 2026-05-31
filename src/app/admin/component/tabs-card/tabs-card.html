@@ -32,16 +32,16 @@
         </p-tablist>
         <p-tabpanels>
             <p-tabpanel [value]="Tabs.LISTADO">
-                <ng-content select="[panel-listado]"></ng-content>
+                <ng-container *ngTemplateOutlet="listadoTemplate" />
             </p-tabpanel>
             <p-tabpanel [value]="Tabs.CREAR">
                 @if (tabActivo === Tabs.CREAR) {
-                <ng-content select="[panel-crear]"></ng-content>
+                <ng-container *ngTemplateOutlet="crearTemplate" />
                 }
             </p-tabpanel>
             <p-tabpanel [value]="Tabs.EDITAR">
                 @if (tabActivo === Tabs.EDITAR) {
-                <ng-content select="[panel-editar]"></ng-content>
+                <ng-container *ngTemplateOutlet="editarTemplate" />
                 }
             </p-tabpanel>
         </p-tabpanels>

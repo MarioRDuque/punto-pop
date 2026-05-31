@@ -7,7 +7,7 @@
     (onGuardar)="onGuardar()"
     (onCancelar)="onCancelar()"
 >
-    <app-producto-listado panel-listado />
-    <app-producto-formulario panel-crear />
-    <app-producto-formulario panel-editar />
+    <ng-template #listado><app-producto-listado /></ng-template>
+    <ng-template #crear><app-producto-formulario /></ng-template>
+    <ng-template #editar><app-producto-formulario /></ng-template>
 </app-tabs-card>
