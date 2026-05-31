@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { startWith } from 'rxjs';
+import { startWith, map } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { UnidadMedidaService } from '../unidad-medida.service';
@@ -44,7 +44,10 @@ export class UnidadMedidaFormulario implements OnInit {
   });
 
   private readonly _fv = toSignal(
-    this.unidadForm.valueChanges.pipe(startWith(this.unidadForm.value)),
+    this.unidadForm.valueChanges.pipe(
+      startWith(this.unidadForm.getRawValue()),
+      map(() => this.unidadForm.getRawValue())
+    ),
     { requireSync: true }
   );
 

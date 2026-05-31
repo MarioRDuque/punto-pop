@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { startWith } from 'rxjs';
+import { startWith, map } from 'rxjs';
 import { ProductoCampos } from '../producto-campos/producto-campos';
 import { ProductoService } from '../producto.service';
 import { FormsService } from '../../../../service/forms-service';
@@ -48,7 +48,10 @@ export class ProductoFormulario implements OnInit {
   });
 
   private readonly _fv = toSignal(
-    this.productoForm.valueChanges.pipe(startWith(this.productoForm.value)),
+    this.productoForm.valueChanges.pipe(
+      startWith(this.productoForm.getRawValue()),
+      map(() => this.productoForm.getRawValue())
+    ),
     { requireSync: true }
   );
 

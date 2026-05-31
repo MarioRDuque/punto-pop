@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { startWith } from 'rxjs';
+import { startWith, map } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { CategoriaService } from '../categoria.service';
@@ -44,7 +44,10 @@ export class CategoriaFormulario implements OnInit {
   });
 
   private readonly _fv = toSignal(
-    this.categoriaForm.valueChanges.pipe(startWith(this.categoriaForm.value)),
+    this.categoriaForm.valueChanges.pipe(
+      startWith(this.categoriaForm.getRawValue()),
+      map(() => this.categoriaForm.getRawValue())
+    ),
     { requireSync: true }
   );
 

@@ -2,7 +2,7 @@ import { Component, computed, DestroyRef, inject, OnInit, effect } from '@angula
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { startWith } from 'rxjs';
+import { startWith, map } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { MultiSelect } from 'primeng/multiselect';
@@ -67,7 +67,10 @@ export class UsuarioFormulario implements OnInit {
   });
 
   private readonly _fv = toSignal(
-    this.usuarioForm.valueChanges.pipe(startWith(this.usuarioForm.value)),
+    this.usuarioForm.valueChanges.pipe(
+      startWith(this.usuarioForm.getRawValue()),
+      map(() => this.usuarioForm.getRawValue())
+    ),
     { requireSync: true }
   );
 
