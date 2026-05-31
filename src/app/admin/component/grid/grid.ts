@@ -1,6 +1,6 @@
 import { Component, effect, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -51,7 +51,7 @@ export class Grid<T> {
   @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
   @Input() subtitulo!: string;
-  @Input() rowHeight: number | undefined = undefined;
+  @Input() rowHeight: number = 52;
   @Input() mostrarFiltro: boolean = true;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
@@ -72,7 +72,11 @@ export class Grid<T> {
   public defaultColDef: ColDef = {
     filter: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+  };
+
+  public autoSizeStrategy: SizeColumnsToFitGridStrategy = {
+    type: 'fitGridWidth',
   };
   public statusBar = {
     statusPanels: [
@@ -106,9 +110,24 @@ export class Grid<T> {
   }
 
   exportar() {
+    const columnKeys = (this.gridApi?.getColumns() ?? [])
+      .map((col: { getColId: () => string }) => col.getColId())
+      .filter((id: string) => id !== '0' && id !== 'acciones' && id !== 'id');
+
     this.gridApi?.exportDataAsExcel({
       fileName: this.subtitulo + '.xlsx',
-      exportAsExcelTable: true
+      exportAsExcelTable: true,
+      columnKeys,
+      processCellCallback: (params) => {
+        const col = params.column.getColDef();
+        if (col.valueFormatter && typeof col.valueFormatter === 'function') {
+          return col.valueFormatter({ value: params.value } as never);
+        }
+        if (typeof params.value === 'boolean') {
+          return params.value ? 'Activo' : 'Inactivo';
+        }
+        return params.value;
+      },
     });
   }
 
@@ -126,9 +145,11 @@ export class Grid<T> {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    this.gridApi.sizeColumnsToFit();
   }
 
   onFirstDataRendered() {
+    this.gridApi.sizeColumnsToFit();
     const firstCol = this.gridApi
       .getDisplayedCenterColumns()
       .find(col => col.isVisible());

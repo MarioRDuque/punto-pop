@@ -47,15 +47,48 @@
   margin-bottom: 0;
 }
 
-// Estilo para inputs inválidos de PrimeNG
+// Estilo para inputs inválidos de PrimeNG (wrapper con p-invalid via directiva Errors)
 .p-invalid input,
 .p-invalid .p-inputtext {
   border-color: #ef4444 !important;
 }
 
-// Para el campo que contiene el multiselect
 .p-invalid .p-multiselect,
-.p-invalid .p-dropdown {
+.p-invalid .p-dropdown,
+.p-invalid .p-select {
+  border-color: #ef4444 !important;
+}
+
+// PrimeNG 20 — validación reactiva: ng-invalid.ng-touched se aplica al HOST o al input
+// tras markAllAsTouched() en validarFormulario().
+
+// input nativo con directiva pInputText
+input.p-inputtext.ng-invalid.ng-touched,
+input.p-inputtext.ng-invalid.ng-dirty {
+  border-color: #ef4444 !important;
+}
+
+// p-password — el HOST recibe ng-invalid, el input interno necesita el estilo
+p-password.ng-invalid.ng-touched input,
+p-password.ng-invalid.ng-dirty input {
+  border-color: #ef4444 !important;
+}
+
+// p-select — .p-select es el div interno del HOST
+p-select.ng-invalid.ng-touched .p-select,
+p-select.ng-invalid.ng-dirty .p-select {
+  border-color: #ef4444 !important;
+}
+
+// p-multiselect — .p-multiselect es el div interno del HOST
+p-multiselect.ng-invalid.ng-touched .p-multiselect,
+p-multiselect.ng-invalid.ng-dirty .p-multiselect {
+  border-color: #ef4444 !important;
+}
+
+// p-inputnumber
+p-inputnumber.ng-invalid.ng-dirty .p-inputtext,
+p-inputnumber.ng-invalid.ng-touched .p-inputtext {
   border-color: #ef4444 !important;
 }
 
@@ -270,51 +303,6 @@
   }
 }
 
-// ===== LISTADO TOOLBAR — compartido entre todos los listados =====
-.lt-toolbar {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--surface-border); border-bottom: none;
-  border-radius: 0.5rem 0.5rem 0 0;
-  background: var(--surface-card); flex-wrap: wrap;
-}
-.lt-search {
-  display: flex; align-items: center; gap: 0.5rem;
-  background: var(--surface-ground); border: 1px solid var(--surface-border);
-  border-radius: 0.5rem; padding: 0 0.75rem; height: 2rem;
-  flex: 1; max-width: 22rem; transition: border-color 0.15s;
-  &:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 12%, transparent); }
-}
-.lt-search-icon { font-size: 0.8125rem; color: var(--text-color-secondary); flex-shrink: 0; }
-.lt-search-input {
-  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
-  font-size: 0.8125rem; color: var(--text-color); font-family: inherit;
-  &::placeholder { color: var(--text-color-secondary); }
-}
-.lt-tabs { display: flex; align-items: center; gap: 0.375rem; flex-wrap: wrap; flex: 1; }
-.lt-tab {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  padding: 0.25rem 0.65rem; border-radius: 9999px;
-  border: 1px solid var(--surface-border); background: transparent;
-  font-size: 0.8rem; font-family: inherit; color: var(--text-color-secondary);
-  cursor: pointer; white-space: nowrap; transition: all 0.15s;
-  &:hover { background: var(--surface-hover); color: var(--text-color); }
-  &.lt-tab-on {
-    background: var(--primary-color); border-color: var(--primary-color);
-    color: #fff; font-weight: 600;
-    .lt-count { background: rgba(255,255,255,0.22); color: #fff; }
-  }
-}
-.lt-count {
-  font-size: 0.6875rem; font-weight: 700;
-  background: var(--surface-ground); padding: 0.05rem 0.35rem;
-  border-radius: 9999px; line-height: 1.4;
-}
-.lt-kbd {
-  font-size: 0.6rem; padding: 0.1rem 0.3rem;
-  border: 1px solid var(--surface-border); border-radius: 0.25rem;
-  background: var(--surface-hover); color: var(--text-color-secondary); flex-shrink: 0;
-}
 
 // ===== AG-GRID: centrado vertical =====
 ag-grid-angular .ag-cell-wrapper,

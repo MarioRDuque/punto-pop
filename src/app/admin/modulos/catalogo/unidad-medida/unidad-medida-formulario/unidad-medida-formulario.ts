@@ -1,8 +1,8 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
-import { InputComponent } from '../../../../component/input/input.component';
+import { startWith } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
 import { UnidadMedidaService } from '../unidad-medida.service';
 import { FormsService } from '../../../../service/forms-service';
@@ -17,7 +17,7 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 @Component({
   selector: 'app-unidad-medida-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderCrud, InputComponent, ToggleSwitchComponent],
+  imports: [ReactiveFormsModule, InputTextModule, ToggleSwitchComponent],
   templateUrl: './unidad-medida-formulario.html',
 })
 export class UnidadMedidaFormulario implements OnInit {
@@ -36,11 +36,30 @@ export class UnidadMedidaFormulario implements OnInit {
   public accionEnum = AccionEnum;
 
   public unidadForm = this.fb.group({
-    id: [null as string | null],
     codigo: ['', [Validators.required]],
     nombre: ['', [Validators.required]],
     abreviatura: ['', [Validators.required]],
     estado: [true, [Validators.required]],
+  });
+
+  private readonly _fv = toSignal(
+    this.unidadForm.valueChanges.pipe(startWith(this.unidadForm.value)),
+    { requireSync: true }
+  );
+
+  public readonly previewCodigo      = computed(() => this._fv().codigo?.trim()      ?? '');
+  public readonly previewNombre      = computed(() => this._fv().nombre?.trim()      ?? '');
+  public readonly previewAbreviatura = computed(() => this._fv().abreviatura?.trim() ?? '');
+  public readonly previewEstado      = computed(() => this._fv().estado              ?? true);
+  public readonly previewIniciales   = computed(() => {
+    const n = this.previewNombre();
+    if (!n) return '?';
+    return n.split(' ').filter(Boolean).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('');
+  });
+  public readonly previewCompletadoPct = computed(() => {
+    const v = this._fv();
+    const campos = [v.codigo?.trim(), v.nombre?.trim(), v.abreviatura?.trim()];
+    return Math.round((campos.filter(c => c && c.length > 0).length / campos.length) * 100);
   });
 
   ngOnInit() {

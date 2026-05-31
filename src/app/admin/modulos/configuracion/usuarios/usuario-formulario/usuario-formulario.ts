@@ -1,11 +1,12 @@
-import { Component, DestroyRef, inject, OnInit, effect } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, OnInit, effect } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FileuploadComponent } from '../../../../component/fileupload/fileupload';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InputComponent } from '../../../../component/input/input.component';
-import { MultiselectComponent } from '../../../../component/multiselect/multiselect';
+import { startWith } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
+import { Password } from 'primeng/password';
+import { MultiSelect } from 'primeng/multiselect';
 import { ToggleSwitchComponent } from '../../../../component/toggle-switch/toggle-switch';
-import { PasswordComponent } from '../../../../component/password/password';
 import { ToastService } from '../../../../service/toast.service';
 import { UsuariosService } from '../usuarios.service';
 import { CargandoService } from '../../../../service/cargando.service';
@@ -14,7 +15,6 @@ import { FormsService } from '../../../../service/forms-service';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { TabsEnum } from '../../../../enums/tabs-enum';
 import { AccionEnum } from '../../../../enums/accion-enum';
-import { ICONSCONSTANT } from '../../../../constantes/icons-constants';
 import { UtilService } from '../../../../service/util.service';
 import { RolService } from '../../rol/rol.service';
 import { AuthService } from '../../../../service/auth.service';
@@ -26,10 +26,10 @@ const ROLES_ADMIN = ['ADMIN', 'SUPERADMIN'] as const;
   imports: [
     FileuploadComponent,
     ReactiveFormsModule,
-    InputComponent,
-    MultiselectComponent,
+    InputTextModule,
+    Password,
+    MultiSelect,
     ToggleSwitchComponent,
-    PasswordComponent,
   ],
   templateUrl: './usuario-formulario.html',
   styleUrl: './usuario-formulario.scss',
@@ -50,24 +50,65 @@ export class UsuarioFormulario implements OnInit {
   public subtitulo = '';
   public readonly accion = this.formsService.accion;
   public readonly accionEnum = AccionEnum;
-  public readonly ICONSCONSTANT = ICONSCONSTANT;
   public readonly roles = this.rolService.listaRoles;
 
   public readonly usuarioForm = this.fb.group({
     usuApellidos: ['', [Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-    usuNombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
-    usuEmail: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.email]],
-    usuClave: ['', [Validators.required]],
-    usuTelefono: [''],
+    usuNombre:    ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/)]],
+    usuEmail:     ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.email]],
+    usuClave:     ['', [Validators.required]],
+    usuTelefono:  [''],
     usuDireccion: [''],
-    roles: [[] as ConfRolResumen[], [Validators.required]],
-    usuEstado: [true, [Validators.required]],
-    usuFoto: [null as string | null],
+    roles:        [[] as ConfRolResumen[], [Validators.required]],
+    usuEstado:    [true, [Validators.required]],
+    usuFoto:      [null as string | null],
+  });
+
+  private readonly _fv = toSignal(
+    this.usuarioForm.valueChanges.pipe(startWith(this.usuarioForm.value)),
+    { requireSync: true }
+  );
+
+  // ── Preview signals ────────────────────────────────────────────────────────
+  public readonly previewNombreCompleto = computed(() => {
+    const nombre    = this._fv().usuNombre?.trim()    ?? '';
+    const apellidos = this._fv().usuApellidos?.trim() ?? '';
+    return [nombre, apellidos].filter(Boolean).join(' ');
+  });
+
+  public readonly previewIniciales = computed(() => {
+    const ini1 = (this._fv().usuNombre?.trim()    ?? '').charAt(0).toUpperCase();
+    const ini2 = (this._fv().usuApellidos?.trim() ?? '').charAt(0).toUpperCase();
+    return (ini1 + ini2) || ini1 || '?';
+  });
+
+  public readonly previewFoto     = computed(() => this._fv().usuFoto ?? null);
+  public readonly previewEmail    = computed(() => this._fv().usuEmail?.trim()    ?? '');
+  public readonly previewTelefono = computed(() => this._fv().usuTelefono?.trim() ?? '');
+  public readonly previewEstado   = computed(() => this._fv().usuEstado ?? true);
+
+  public readonly previewRoles = computed(() => {
+    const vals = (this._fv().roles ?? []) as unknown as string[];
+    return this.roles()
+      .filter(r => vals.includes(r.rolCodigo))
+      .map(r => r.rolDescripcion || r.rolCodigo);
+  });
+
+  public readonly previewCompletadoPct = computed(() => {
+    const v     = this._fv();
+    const roles = (v.roles ?? []) as unknown as string[];
+    const campos = [
+      v.usuNombre?.trim(),
+      v.usuApellidos?.trim(),
+      v.usuEmail?.trim(),
+      v.usuClave?.trim(),
+      v.usuTelefono?.trim(),
+      roles.length > 0 ? 'roles' : '',
+    ];
+    return Math.round((campos.filter(c => c && c.length > 0).length / campos.length) * 100);
   });
 
   constructor() {
-    // Re-parchar el formulario cuando objetoSeleccionado cambia
-    // (el perfil carga primero desde sesión y luego refresca desde el backend)
     effect(() => {
       const obj = this.formsService.objetoSeleccionado();
       if (obj && this.accion() !== AccionEnum.CREAR) {
@@ -109,41 +150,35 @@ export class UsuarioFormulario implements OnInit {
     this.usuarioForm.controls.usuEstado.setValue(true);
   }
 
-  guardar(): void {
-    this.realizarAccion();
-  }
+  guardar(): void { this.realizarAccion(); }
 
-  irAlListado(): void {
-    this.tabsState.irATab(TabsEnum.LISTADO);
-  }
+  irAlListado(): void { this.tabsState.irATab(TabsEnum.LISTADO); }
 
   realizarAccion(): void {
     if (!this.utilService.validarFormulario(this.usuarioForm)) return;
     this.cargando.activar();
 
     const formValue = this.usuarioForm.getRawValue();
-    const roles = this.normalizarRoles(formValue.roles ?? []);
+    const roles     = this.normalizarRoles(formValue.roles ?? []);
 
     const usuario = new ConfUsuario({
-      usuEmail: formValue.usuEmail ?? '',
-      usuNombre: formValue.usuNombre ?? '',
+      usuEmail:     formValue.usuEmail     ?? '',
+      usuNombre:    formValue.usuNombre    ?? '',
       usuApellidos: formValue.usuApellidos ?? '',
-      usuClave: formValue.usuClave ?? '',
-      usuTelefono: formValue.usuTelefono ?? '',
+      usuClave:     formValue.usuClave     ?? '',
+      usuTelefono:  formValue.usuTelefono  ?? '',
       usuDireccion: formValue.usuDireccion ?? '',
-      usuEstado: formValue.usuEstado ?? true,
-      usuFoto: formValue.usuFoto ?? null,
+      usuEstado:    formValue.usuEstado    ?? true,
+      usuFoto:      formValue.usuFoto      ?? null,
       roles,
     });
 
     if (this.accion() === AccionEnum.CREAR) {
-      this.usuariosService
-        .guardar(usuario)
+      this.usuariosService.guardar(usuario)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({ next: (data) => this.despuesDeGuardar(data) });
     } else {
-      this.usuariosService
-        .actualizar(usuario)
+      this.usuariosService.actualizar(usuario)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({ next: (data) => this.despuesDeActualizar(data) });
     }
@@ -156,7 +191,7 @@ export class UsuarioFormulario implements OnInit {
     const rolesCodigos = usuario.roles?.map((r) => r.rolCodigo) ?? [];
     this.usuarioForm.patchValue({
       ...usuario,
-      roles: rolesCodigos as unknown as ConfRolResumen[],
+      roles:   rolesCodigos as unknown as ConfRolResumen[],
       usuFoto: usuario.usuFoto ?? null,
     });
   }

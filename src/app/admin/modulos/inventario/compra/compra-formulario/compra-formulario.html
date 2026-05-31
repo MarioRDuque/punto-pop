@@ -5,7 +5,7 @@
         <div class="flex-1 min-w-0">
 
             <!-- CARD UNIFICADO: PROVEEDOR + FOLIO + POR REABASTECER + ITEMS -->
-            <div class="card p-0 overflow-hidden flex flex-col">
+            <div class="card p-0 overflow-hidden flex flex-col" style="height: calc(100vh - 140px)">
 
                 <!-- Fila superior: PROVEEDOR | divisor | FOLIO / FECHA / OBSERVACIÓN -->
                 <div class="flex items-stretch">
@@ -40,7 +40,7 @@
                             </div>
                         } @else {
                             <p-select formControlName="proveedorId" [options]="proveedores()"
-                                optionLabel="razonSocial" optionValue="id"
+                                optionLabel="razonSocial" optionValue="ruc"
                                 [filter]="true" filterBy="razonSocial,ruc"
                                 placeholder="Buscar proveedor"
                                 [style]="{'width':'100%'}" appendTo="body">
@@ -227,6 +227,7 @@
                 </div>
 
                 <!-- Filas -->
+                <div class="flex-1 overflow-y-auto min-h-0">
                 @for (item of items(); track item.productoId) {
                     <div class="grid px-4 py-3 border-b border-surface-100 items-center hover:bg-surface-50 transition-colors"
                         style="grid-template-columns: 88px 1fr 140px 110px 130px 36px">
@@ -273,26 +274,22 @@
                         </div>
 
                         <!-- P. Costo -->
-                        <span class="text-sm font-semibold text-right tabular-nums pr-2">
-                            ${{ item.costoUnitario | number:'1.2-2' }}
-                        </span>
+                        <div class="flex items-center justify-end pr-2">
+                            <span class="text-sm text-surface-400 mr-0.5">$</span>
+                            <input type="number" min="0" step="0.01"
+                                [value]="item.costoUnitario"
+                                (change)="actualizarCosto(item.productoId, +$any($event.target).value)"
+                                class="w-20 text-right text-sm font-semibold tabular-nums rounded border border-transparent hover:border-surface-200 focus:border-primary outline-none bg-transparent px-1 py-0.5 transition-colors" />
+                        </div>
 
                         <!-- Descuento -->
-                        <div class="flex justify-end pr-2">
-                            @if (item.descuentoPct > 0) {
-                                <button type="button"
-                                    class="px-2 py-1 rounded-lg border-2 text-xs font-bold"
-                                    style="border-color: var(--primary-color); color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 10%, transparent)"
-                                    (click)="aplicarDescuento(item.productoId)">
-                                    -{{ item.descuentoPct }}%
-                                </button>
-                            } @else {
-                                <button type="button"
-                                    class="flex items-center gap-1 text-xs text-surface-400 hover:text-primary transition-colors"
-                                    (click)="aplicarDescuento(item.productoId)">
-                                    <i class="pi pi-tag" style="font-size:.65rem"></i> Descto.
-                                </button>
-                            }
+                        <div class="flex items-center justify-end pr-2 gap-1">
+                            <input type="number" min="0" max="100" step="1"
+                                [value]="item.descuentoPct"
+                                (change)="actualizarDescuento(item.productoId, +$any($event.target).value)"
+                                class="w-14 text-right text-sm tabular-nums rounded border border-transparent hover:border-surface-200 focus:border-primary outline-none bg-transparent px-1 py-0.5 transition-colors"
+                                placeholder="0" />
+                            <span class="text-xs text-surface-400 shrink-0">%</span>
                         </div>
 
                         <!-- Eliminar -->
@@ -309,12 +306,13 @@
                         <span class="text-sm">Escanea o busca un producto para agregarlo</span>
                     </div>
                 }
+                </div>
 
             </div>
         </div>
 
         <!-- ══ DERECHA ════════════════════════════════════════════════════════ -->
-        <div class="flex flex-col gap-3 w-full xl:w-72 shrink-0">
+        <div class="flex flex-col gap-3 w-full xl:w-72 shrink-0 overflow-y-auto">
 
             <!-- CARD: CONDICIONES DE PAGO -->
             <div class="card flex flex-col gap-3">

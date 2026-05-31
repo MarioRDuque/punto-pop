@@ -5,6 +5,7 @@
 .p-inputtext:disabled,
 .p-dropdown.p-disabled,
 .p-multiselect.p-disabled,
+.p-select.p-disabled,
 .p-inputswitch.p-disabled,
 .p-password.p-disabled {
     opacity: 1 !important;
@@ -18,11 +19,28 @@
     border-color: var(--p-inputtext-border-color) !important;
 }
 
-/* Dropdown / Multiselect */
+/* Dropdown / Multiselect / Select */
 .p-dropdown.p-disabled,
-.p-multiselect.p-disabled {
+.p-multiselect.p-disabled,
+.p-select.p-disabled {
     background: var(--p-inputtext-background) !important;
     border-color: var(--p-inputtext-border-color) !important;
+}
+
+/* p-select (PrimeNG 20) — tokens propios */
+.p-select.p-disabled {
+    --p-select-disabled-background: var(--p-select-background);
+    --p-select-disabled-color: var(--p-select-color);
+    background: var(--p-select-background) !important;
+}
+
+.p-select.p-disabled .p-select-label {
+    color: var(--p-select-color) !important;
+}
+
+.p-select.p-disabled .p-select-dropdown,
+.p-select.p-disabled .p-select-dropdown .p-icon {
+    color: var(--p-select-dropdown-color) !important;
 }
 
 /* Toggle / Switch */

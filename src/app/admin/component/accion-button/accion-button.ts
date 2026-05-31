@@ -1,16 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { ButtonModule } from "primeng/button";
 import { TooltipModule } from 'primeng/tooltip';
-import { ICONSCONSTANT } from '../../constantes/icons-constants';
 
 @Component({
   selector: 'app-accion-button',
-  imports: [
-    ButtonModule,
-    TooltipModule
-  ],
+  imports: [TooltipModule],
   templateUrl: './accion-button.html',
   styleUrl: './accion-button.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,20 +14,25 @@ import { ICONSCONSTANT } from '../../constantes/icons-constants';
 export class AccionButton implements ICellRendererAngularComp {
 
   private params!: ICellRendererParams;
-  company = signal('');
-  ICONSCONSTANT = ICONSCONSTANT;
 
   agInit(params: ICellRendererParams): void {
     this.params = params;
-    this.refresh(params);
   }
 
-  refresh(params: ICellRendererParams) {
-    this.company.set(params.data?.company ?? '');
+  refresh(params: ICellRendererParams): boolean {
+    this.params = params;
     return true;
   }
 
-  mostrarOpciones() {
+  ver() {
+    this.params.context.parent.consultar(this.params.data);
+  }
+
+  editar() {
+    this.params.context.parent.editar(this.params.data);
+  }
+
+  masOpciones() {
     this.params.context.parent.mostrarOpciones(this.params);
   }
 

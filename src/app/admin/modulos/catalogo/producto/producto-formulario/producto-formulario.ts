@@ -1,7 +1,7 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HeaderCrud } from '../../../../component/header-crud/header-crud';
+import { startWith } from 'rxjs';
 import { ProductoCampos } from '../producto-campos/producto-campos';
 import { ProductoService } from '../producto.service';
 import { FormsService } from '../../../../service/forms-service';
@@ -16,7 +16,7 @@ import { TabsEnum } from '../../../../enums/tabs-enum';
 @Component({
   selector: 'app-producto-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderCrud, ProductoCampos],
+  imports: [ReactiveFormsModule, ProductoCampos],
   templateUrl: './producto-formulario.html',
 })
 export class ProductoFormulario implements OnInit {
@@ -30,12 +30,10 @@ export class ProductoFormulario implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   public tabsState = inject(TabsStateService);
 
-  public subtitulo = '';
-  public accion    = this.formsService.accion;
+  public accion     = this.formsService.accion;
   public accionEnum = AccionEnum;
 
   public productoForm = this.fb.group({
-    id:             [null as string | null],
     codigo:         ['', [Validators.required]],
     nombre:         ['', [Validators.required]],
     descripcion:    [''],
@@ -49,22 +47,34 @@ export class ProductoFormulario implements OnInit {
     estado:         [true, [Validators.required]],
   });
 
+  private readonly _fv = toSignal(
+    this.productoForm.valueChanges.pipe(startWith(this.productoForm.value)),
+    { requireSync: true }
+  );
+
+  public readonly previewCodigo = computed(() => this._fv().codigo?.trim() ?? '');
+  public readonly previewNombre = computed(() => this._fv().nombre?.trim() ?? '');
+  public readonly previewPrecio = computed(() => `$${(this._fv().precioVenta ?? 0).toFixed(2)}`);
+  public readonly previewStock  = computed(() => this._fv().stock ?? 0);
+  public readonly previewEstado = computed(() => this._fv().estado ?? true);
+  public readonly previewCompletadoPct = computed(() => {
+    const v = this._fv();
+    const campos = [
+      v.codigo?.trim(),
+      v.nombre?.trim(),
+      v.precioVenta ? '1' : '',
+      v.categoriaId,
+      v.tarifaIvaId,
+      v.unidadMedidaId,
+    ];
+    return Math.round((campos.filter(c => c && c.length > 0).length / campos.length) * 100);
+  });
+
   ngOnInit(): void {
     switch (this.accion()) {
-      case AccionEnum.CREAR:
-        this.subtitulo = 'Complete la información';
-        this.initForm();
-        break;
-      case AccionEnum.CONSULTAR:
-        this.subtitulo = 'Datos almacenados previamente';
-        this.cargarDatos();
-        this.productoForm.disable();
-        break;
-      case AccionEnum.EDITAR:
-        this.subtitulo = 'Actualización de datos';
-        this.cargarDatos();
-        this.productoForm.controls.codigo.disable();
-        break;
+      case AccionEnum.CREAR:     this.initForm(); break;
+      case AccionEnum.CONSULTAR: this.cargarDatos(); this.productoForm.disable(); break;
+      case AccionEnum.EDITAR:    this.cargarDatos(); this.productoForm.controls.codigo.disable(); break;
     }
   }
 

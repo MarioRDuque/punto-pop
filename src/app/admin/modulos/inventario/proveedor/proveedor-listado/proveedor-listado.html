@@ -1,5 +1,6 @@
 <app-listado-toolbar
-  placeholder="Buscar por RUC, razón social, nombre comercial o email..."
+  placeholder="Buscar por RUC, razón social, nombre comercial, email o teléfono..."
+  searchShortcut="/"
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
@@ -17,6 +18,7 @@
   [subtitulo]="subtitulo"
   campoEstado="estado"
   (buscarEnBdd)="buscar($event)"
+  (consultarObj)="consultarObj($event)"
   (cambiarEstados)="cambiarEstados($event)"
-  (eliminarObj)="eliminarObj($event)">
-</app-grid>
+  (eliminarObj)="eliminarObj($event)"
+/>

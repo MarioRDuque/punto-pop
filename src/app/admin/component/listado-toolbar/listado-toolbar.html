@@ -3,6 +3,7 @@
     <div class="lt-search">
       <i class="pi pi-search lt-search-icon"></i>
       <input
+        #searchInput
         type="text"
         class="lt-search-input"
         [placeholder]="placeholder"
@@ -15,15 +16,43 @@
     </div>
   }
   <ng-content select="[slot=start]"></ng-content>
-  <div class="lt-tabs">
-    @for (tab of tabs; track tab.key) {
-      <button
-        class="lt-tab"
-        [class.lt-tab-on]="activeTab === tab.key"
-        (click)="tabChange.emit(tab.key)"
-      >
-        {{ tab.label }} <span class="lt-count">{{ tab.count }}</span>
-      </button>
+  <div class="lt-tabs-wrap">
+    <div class="lt-tabs" #tabsContainer>
+      @for (tab of tabs; track tab.key) {
+        <button
+          type="button"
+          class="lt-tab"
+          [class.lt-tab-on]="activeTab === tab.key"
+          (click)="tabChange.emit(tab.key)"
+        >
+          {{ tab.label }} <span class="lt-count">{{ tab.count }}</span>
+        </button>
+      }
+    </div>
+    @if (showMore()) {
+      <div class="lt-tab-more-wrap" #moreWrap>
+        <button
+          type="button"
+          class="lt-tab-more"
+          (click)="moreOpen.set(!moreOpen())"
+          (blur)="moreOpen.set(false)"
+        >
+          <i class="pi pi-ellipsis-h"></i>
+        </button>
+        @if (moreOpen()) {
+          <div class="lt-tab-more-menu" (mousedown)="$event.preventDefault()">
+            @for (item of overflowItems(); track item.key) {
+              <button
+                type="button"
+                class="lt-tab-more-item"
+                (click)="item.command(); moreOpen.set(false)"
+              >
+                <span>{{ item.label }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
     }
   </div>
   <ng-content select="[slot=end]"></ng-content>

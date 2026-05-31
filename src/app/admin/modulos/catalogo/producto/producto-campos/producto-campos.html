@@ -1,123 +1,242 @@
-<div class="flex flex-col gap-4">
+<!-- ══ MODO COMPLETO ══════════════════════════════════════════════════════ -->
+@if (modo === 'completo') {
+    <div class="card flex flex-col gap-0 p-0 overflow-hidden" [formGroup]="form">
 
-    <!-- Fila 1: Código + Nombre -->
-    <div class="grid grid-cols-2 gap-4">
-        <div class="field">
-            <app-input label="Código" id="codigo"
-                [autofocus]="accion === accionEnum.CREAR" />
-        </div>
-        <div class="field">
-            <app-input label="Nombre" id="nombre"
-                [autofocus]="accion === accionEnum.EDITAR" />
-        </div>
-    </div>
+        <!-- 1. IDENTIFICACIÓN -->
+        <div class="flex flex-col gap-4 p-5">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">1</div>
+                <div>
+                    <div class="text-sm font-semibold">Identificación</div>
+                    <div class="text-xs text-surface-400">Código único y nombre comercial del producto</div>
+                </div>
+            </div>
 
-    <!-- Descripción: solo en modo completo -->
-    @if (modo === 'completo') {
-        <div class="field">
-            <app-input label="Descripción" id="descripcion" />
-        </div>
-    }
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="field"><app-input label="Código *" id="codigo" [autofocus]="accion === accionEnum.CREAR" /></div>
+                <div class="field"><app-input label="Nombre *" id="nombre" [autofocus]="accion === accionEnum.EDITAR" /></div>
+            </div>
 
-    <!-- Precio de venta + Tarifa IVA -->
-    <div class="grid grid-cols-2 gap-4">
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-inputnumber id="precioVenta" formControlName="precioVenta"
-                    mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
-                    [min]="0" [style]="{'width':'100%'}" />
-                <label for="precioVenta">Precio de venta</label>
-            </p-floatlabel>
+            <div class="field">
+                <app-input label="Descripción" id="descripcion" />
+            </div>
         </div>
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-select id="tarifaIvaId" formControlName="tarifaIvaId"
-                    [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
-                    [style]="{'width':'100%'}" />
-                <label for="tarifaIvaId">Tarifa IVA</label>
-            </p-floatlabel>
-        </div>
-    </div>
 
-    <!-- Fila: Costo promedio (solo completo) -->
-    @if (modo === 'completo') {
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-inputnumber id="costo" formControlName="costo"
+        <!-- 2. PRECIOS -->
+        <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">2</div>
+                <div>
+                    <div class="text-sm font-semibold">Precios</div>
+                    <div class="text-xs text-surface-400">Precio al público e impuestos aplicables</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        Precio de venta <span class="text-red-400">*</span>
+                    </label>
+                    <p-inputnumber formControlName="precioVenta"
+                        mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+                        [min]="0" [style]="{'width':'100%'}" />
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        Tarifa IVA <span class="text-red-400">*</span>
+                    </label>
+                    <p-select formControlName="tarifaIvaId"
+                        [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
+                        [style]="{'width':'100%'}" appendTo="body" />
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Costo promedio</label>
+                <p-inputnumber formControlName="costo"
                     mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                     [style]="{'width':'100%'}" [readonly]="true" />
-                <label for="costo">Costo promedio (calculado)</label>
-            </p-floatlabel>
-        </div>
-    }
-
-    <!-- Categoría + Unidad de medida -->
-    <div class="grid grid-cols-2 gap-4">
-        <div class="field">
-            <div class="flex gap-1 items-end">
-                <p-floatlabel variant="on" class="flex-1">
-                    <p-select id="categoriaId" formControlName="categoriaId"
-                        [options]="categorias()" optionLabel="nombre" optionValue="id"
-                        [filter]="true" filterBy="nombre"
-                        [style]="{'width':'100%'}" />
-                    <label for="categoriaId">Categoría</label>
-                </p-floatlabel>
-                <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
-                    pTooltip="Nueva categoría" tooltipPosition="top"
-                    (onClick)="abrirDialogCategoria()" />
-                <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
-                    pTooltip="Refrescar" tooltipPosition="top"
-                    (onClick)="refrescarCategorias()" />
+                <p class="text-xs text-surface-400 m-0">Calculado automáticamente a partir de las compras registradas</p>
             </div>
         </div>
-        <div class="field">
-            <div class="flex gap-1 items-end">
-                <p-floatlabel variant="on" class="flex-1">
-                    <p-select id="unidadMedidaId" formControlName="unidadMedidaId"
-                        [options]="unidades()" optionLabel="nombre" optionValue="id"
-                        [filter]="true" filterBy="nombre,abreviatura"
-                        [style]="{'width':'100%'}" />
-                    <label for="unidadMedidaId">Unidad de medida</label>
-                </p-floatlabel>
-                <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
-                    pTooltip="Nueva unidad" tooltipPosition="top"
-                    (onClick)="abrirDialogUnidad()" />
-                <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
-                    pTooltip="Refrescar" tooltipPosition="top"
-                    (onClick)="refrescarUnidades()" />
+
+        <!-- 3. CLASIFICACIÓN -->
+        <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">3</div>
+                <div>
+                    <div class="text-sm font-semibold">Clasificación</div>
+                    <div class="text-xs text-surface-400">Categoría y unidad de medida para el catálogo</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        Categoría <span class="text-red-400">*</span>
+                    </label>
+                    <div class="flex gap-1 items-center">
+                        <p-select formControlName="categoriaId"
+                            [options]="categorias()" optionLabel="nombre" optionValue="codigo"
+                            [filter]="true" filterBy="nombre"
+                            [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
+                        <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                            pTooltip="Nueva categoría" tooltipPosition="top"
+                            (onClick)="abrirDialogCategoria()" />
+                        <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
+                            pTooltip="Refrescar" tooltipPosition="top"
+                            (onClick)="refrescarCategorias()" />
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        Unidad de medida <span class="text-red-400">*</span>
+                    </label>
+                    <div class="flex gap-1 items-center">
+                        <p-select formControlName="unidadMedidaId"
+                            [options]="unidades()" optionLabel="nombre" optionValue="codigo"
+                            [filter]="true" filterBy="nombre,abreviatura"
+                            [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
+                        <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                            pTooltip="Nueva unidad" tooltipPosition="top"
+                            (onClick)="abrirDialogUnidad()" />
+                        <p-button icon="pi pi-refresh" [text]="true" severity="secondary" size="small"
+                            pTooltip="Refrescar" tooltipPosition="top"
+                            (onClick)="refrescarUnidades()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. INVENTARIO -->
+        <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">4</div>
+                <div>
+                    <div class="text-sm font-semibold">Inventario</div>
+                    <div class="text-xs text-surface-400">Cantidades para el control de stock</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        {{ accion !== accionEnum.CREAR ? 'Stock (calculado)' : 'Stock inicial' }}
+                        @if (accion === accionEnum.CREAR) { <span class="text-red-400">*</span> }
+                    </label>
+                    <p-inputnumber formControlName="stock"
+                        [min]="0" [style]="{'width':'100%'}"
+                        [readonly]="accion !== accionEnum.CREAR" />
+                    @if (accion !== accionEnum.CREAR) {
+                        <p class="text-xs text-surface-400 m-0">Se actualiza con los movimientos de inventario</p>
+                    }
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">
+                        Stock mínimo <span class="text-red-400">*</span>
+                    </label>
+                    <p-inputnumber formControlName="stockMinimo"
+                        [min]="0" [style]="{'width':'100%'}" />
+                    <p class="text-xs text-surface-400 m-0">Alerta cuando el stock baje de este valor</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. ESTADO -->
+        <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+            <div class="flex items-start gap-3">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style="background: var(--primary-color)">5</div>
+                <div>
+                    <div class="text-sm font-semibold">Estado</div>
+                    <div class="text-xs text-surface-400">Solo los activos aparecen en el catálogo de ventas</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200"
+                style="background: var(--surface-hover)">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                    [class.bg-green-100]="previewEstado()" [class.bg-red-100]="!previewEstado()">
+                    <i class="pi" style="font-size:.75rem"
+                        [class.pi-check]="previewEstado()" [class.text-green-600]="previewEstado()"
+                        [class.pi-times]="!previewEstado()" [class.text-red-500]="!previewEstado()"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-semibold">{{ previewEstado() ? 'Producto activo' : 'Producto inactivo' }}</div>
+                    <div class="text-xs text-surface-400">{{ previewEstado() ? 'Disponible para agregar en nuevas ventas' : 'No aparece en el catálogo de ventas' }}</div>
+                </div>
+                <app-toggle-switch label="Estado" id="estado" [showLabel]="false" />
             </div>
         </div>
     </div>
+}
 
-    <!-- Stock + Stock mínimo -->
-    <div class="grid grid-cols-2 gap-4">
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-inputnumber id="stock" formControlName="stock"
-                    [min]="0" [style]="{'width':'100%'}"
-                    [readonly]="modo === 'completo'" />
-                <label for="stock">
-                    {{ modo === 'completo' ? 'Stock (calculado)' : 'Stock inicial' }}
-                </label>
-            </p-floatlabel>
+<!-- ══ MODO RÁPIDO ════════════════════════════════════════════════════════ -->
+@if (modo === 'rapido') {
+    <div class="flex flex-col gap-4" [formGroup]="form">
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="field"><app-input label="Código *" id="codigo" [autofocus]="accion === accionEnum.CREAR" /></div>
+            <div class="field"><app-input label="Nombre *" id="nombre" /></div>
         </div>
-        <div class="field">
-            <p-floatlabel variant="on" class="w-full">
-                <p-inputnumber id="stockMinimo" formControlName="stockMinimo"
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Precio de venta <span class="text-red-400">*</span></label>
+                <p-inputnumber formControlName="precioVenta"
+                    mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                     [min]="0" [style]="{'width':'100%'}" />
-                <label for="stockMinimo">Stock mínimo</label>
-            </p-floatlabel>
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Tarifa IVA <span class="text-red-400">*</span></label>
+                <p-select formControlName="tarifaIvaId"
+                    [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
+                    [style]="{'width':'100%'}" appendTo="body" />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Categoría <span class="text-red-400">*</span></label>
+                <div class="flex gap-1 items-center">
+                    <p-select formControlName="categoriaId"
+                        [options]="categorias()" optionLabel="nombre" optionValue="codigo"
+                        [filter]="true" filterBy="nombre"
+                        [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
+                    <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                        pTooltip="Nueva categoría" tooltipPosition="top"
+                        (onClick)="abrirDialogCategoria()" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Unidad de medida <span class="text-red-400">*</span></label>
+                <div class="flex gap-1 items-center">
+                    <p-select formControlName="unidadMedidaId"
+                        [options]="unidades()" optionLabel="nombre" optionValue="codigo"
+                        [filter]="true" filterBy="nombre,abreviatura"
+                        [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
+                    <p-button icon="pi pi-plus" [text]="true" severity="secondary" size="small"
+                        pTooltip="Nueva unidad" tooltipPosition="top"
+                        (onClick)="abrirDialogUnidad()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Stock inicial <span class="text-red-400">*</span></label>
+                <p-inputnumber formControlName="stock" [min]="0" [style]="{'width':'100%'}" />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">Stock mínimo <span class="text-red-400">*</span></label>
+                <p-inputnumber formControlName="stockMinimo" [min]="0" [style]="{'width':'100%'}" />
+            </div>
         </div>
     </div>
-
-    <!-- Estado: solo en modo completo -->
-    @if (modo === 'completo') {
-        <div class="field flex justify-center">
-            <app-toggle-switch label="Estado" id="estado" />
-        </div>
-    }
-
-</div>
+}
 
 <!-- ── Dialog: Nueva categoría ───────────────────────────────────────── -->
 <p-dialog header="Nueva categoría" [(visible)]="dialogCategoriaVisible"
