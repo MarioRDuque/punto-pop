@@ -1,18 +1,17 @@
 <app-listado-toolbar
-  placeholder="Buscar por nombre, cédula, email o teléfono..."
-  searchShortcut="/"
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
+  (searchChange)="onSearchChange($event)"
+  (searchSubmit)="onSearchSubmit($event)"
   (tabChange)="setFilter($any($event))"
-  (searchChange)="onSearch($event)"
 />
 
 <app-grid
-  [rowData]="filteredClientes()"
+  [serverSide]="true"
+  [loadData]="loadClientes"
   [rowHeight]="52"
   [mostrarFiltro]="false"
-  (buscarEnBdd)="buscar($event)"
   (consultarObj)="consultarObj($event)"
   (cambiarEstados)="cambiarEstados($event)"
   (eliminarObj)="eliminarObj($event)"
@@ -21,4 +20,5 @@
   [imprimirSignal]="imprimirSignal"
   [campoEstado]="'estado'"
   [subtitulo]="subtitulo"
+  (gridApiReady)="onGridReady($event)"
 />

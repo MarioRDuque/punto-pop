@@ -6,7 +6,7 @@ import {
 export interface ToolbarTab {
   key: string;
   label: string;
-  count: number;
+  count?: number;
 }
 
 interface OverflowItem {
@@ -30,6 +30,7 @@ export class ListadoToolbar implements AfterViewInit, OnDestroy {
   @Input() searchShortcut = '/';
   @Output() tabChange = new EventEmitter<string>();
   @Output() searchChange = new EventEmitter<string>();
+  @Output() searchSubmit = new EventEmitter<string>();
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('tabsContainer', { read: ElementRef })

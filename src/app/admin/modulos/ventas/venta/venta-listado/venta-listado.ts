@@ -2,7 +2,7 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -14,9 +14,10 @@ import { VentaDetalle } from '../venta-detalle/venta-detalle';
 import { ToastService } from '../../../../service/toast.service';
 import { CargandoService } from '../../../../service/cargando.service';
 import { FormsService } from '../../../../service/forms-service';
-import { Venta, EstadoVenta } from '../../../../entities/Venta';
+import { Venta } from '../../../../entities/Venta';
 import { AccionEnum } from '../../../../enums/accion-enum';
-import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
+import { Observable } from 'rxjs';
+import { PageResponse } from '../../../../entities/PageResponse';
 
 type FilterTab = 'todos' | 'PENDIENTE' | 'COMPLETADA' | 'ANULADA';
 
@@ -29,14 +30,12 @@ type FilterTab = 'todos' | 'PENDIENTE' | 'COMPLETADA' | 'ANULADA';
 })
 export class VentaListado implements OnInit {
 
-  private ventaService = inject(VentaService);
+  public ventaService = inject(VentaService);
   private toast = inject(ToastService);
   private cargando = inject(CargandoService);
   private formsService = inject(FormsService) as FormsService<Venta>;
   private destroyRef = inject(DestroyRef);
   public dialogService = inject(DialogService);
-
-  public listaVentas = this.ventaService.listaVentas;
   public totalVentas = this.ventaService.totalVentas;
   public subtitulo = 'Listado de ventas';
   public colDefs: ColDef[] = [];
@@ -49,50 +48,64 @@ export class VentaListado implements OnInit {
   readonly hasta = signal<Date>(new Date());
   readonly activeFilter = signal<FilterTab>('todos');
 
-  readonly hayMasDatos = computed(() => this.totalVentas() > this.listaVentas().length);
-
-  readonly counts = computed(() => {
-    const list = this.listaVentas();
-    return {
-      todos: list.length,
-      PENDIENTE: list.filter(v => v.estado === 'PENDIENTE').length,
-      COMPLETADA: list.filter(v => v.estado === 'COMPLETADA').length,
-      ANULADA: list.filter(v => v.estado === 'ANULADA').length,
-    };
-  });
-
   readonly tabs = computed<ToolbarTab[]>(() => [
-    { key: 'todos',      label: 'Todos',       count: this.counts().todos },
-    { key: 'PENDIENTE',  label: 'Pendientes',  count: this.counts().PENDIENTE },
-    { key: 'COMPLETADA', label: 'Completadas', count: this.counts().COMPLETADA },
-    { key: 'ANULADA',    label: 'Anuladas',    count: this.counts().ANULADA },
+    { key: 'todos',      label: 'Todos'      },
+    { key: 'PENDIENTE',  label: 'Pendientes'  },
+    { key: 'COMPLETADA', label: 'Completadas' },
+    { key: 'ANULADA',    label: 'Anuladas'    },
   ]);
 
-  readonly filteredVentas = computed(() => {
-    const tab = this.activeFilter();
-    if (tab === 'todos') return this.listaVentas();
-    return this.listaVentas().filter(v => v.estado === tab);
-  });
+  readonly searchQuery = signal<string>('');
+
+  private gridApi: GridApi | null = null;
+
+  readonly loadVentas = (startRow: number, endRow: number): Observable<PageResponse<Venta>> => {
+    const pageSize = endRow - startRow;
+    const page = startRow / pageSize;
+    const hastaFin = new Date(this.hasta());
+    hastaFin.setHours(23, 59, 59, 999);
+    return this.ventaService.cargar(
+      this.activeFilter() === 'todos' ? undefined : this.activeFilter(),
+      this.desde(),
+      hastaFin,
+      page,
+      this.searchQuery()
+    );
+  };
 
   ngOnInit(): void {
-    this.cargarConFiltros();
     this.colDefs = this.ventaService.generarColumnasListado();
   }
 
-  setFilter(tab: FilterTab) { this.activeFilter.set(tab); }
-
-  cargarConFiltros(): void {
-    const hastaFin = new Date(this.hasta());
-    hastaFin.setHours(23, 59, 59, 999);
-    this.ventaService.cargar(
-      undefined,
-      this.desde(),
-      hastaFin
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  setFilter(tab: FilterTab) {
+    this.activeFilter.set(tab);
+    (this.gridApi as any)?.purgeServerSideCache([]);
   }
 
-  buscar(_event: EventCrudBusqueda): void {
-    this.cargarConFiltros();
+  recargar(): void {
+    (this.gridApi as any)?.purgeServerSideCache([]);
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+    this.gridApi?.setGridOption('quickFilterText', value);
+  }
+
+  onSearchSubmit(texto: string): void {
+    const value = texto?.trim() ?? '';
+    if (!value) {
+      this.searchQuery.set('');
+      this.gridApi?.setGridOption('quickFilterText', '');
+      (this.gridApi as any)?.purgeServerSideCache([]);
+      return;
+    }
+    if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
+      (this.gridApi as any)?.purgeServerSideCache([]);
+    }
+  }
+
+  onGridReady(api: GridApi): void {
+    this.gridApi = api;
   }
 
   exportarDesdeHeader() {
@@ -124,7 +137,7 @@ export class VentaListado implements OnInit {
       .subscribe({
         next: (resultado) => {
           this.toast.success('Venta ' + resultado.numero + ' completada correctamente');
-          this.ventaService.actualizarElGrid(resultado);
+          (this.gridApi as any)?.purgeServerSideCache([]);
           this.cargando.inactivar();
         }
       });
@@ -138,7 +151,7 @@ export class VentaListado implements OnInit {
       .subscribe({
         next: (resultado) => {
           this.toast.success('Venta ' + resultado.numero + ' anulada');
-          this.ventaService.actualizarElGrid(resultado);
+          (this.gridApi as any)?.purgeServerSideCache([]);
           this.cargando.inactivar();
         }
       });

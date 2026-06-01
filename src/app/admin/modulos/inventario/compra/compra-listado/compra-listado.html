@@ -1,20 +1,20 @@
 <app-listado-toolbar
-  placeholder="Buscar por N°, proveedor o fecha..."
-  searchShortcut="/"
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
+  (searchChange)="onSearchChange($event)"
+  (searchSubmit)="onSearchSubmit($event)"
   (tabChange)="setFilter($any($event))"
-  (searchChange)="onSearch($event)"
 />
 
 <app-grid
-  [rowData]="filteredCompras()"
+  [serverSide]="true"
+  [loadData]="loadCompras"
   [rowHeight]="52"
   [mostrarFiltro]="false"
-  (buscarEnBdd)="buscar($event)"
   [colDefs]="colDefs"
   [exportarSignal]="exportarSignal"
   [imprimirSignal]="imprimirSignal"
   [subtitulo]="subtitulo"
+  (gridApiReady)="onGridReady($event)"
 />

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { finalize, Observable, tap } from 'rxjs';
+import { finalize, Observable, tap, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ColDef } from 'ag-grid-enterprise';
 import { ApiService } from '../../../service/api.service';
@@ -7,6 +7,7 @@ import { CargandoService } from '../../../service/cargando.service';
 import { CacheService } from '../../../service/cache.service';
 import { UtilService } from '../../../service/util.service';
 import { Proveedor } from '../../../entities/Proveedor';
+import { PageResponse } from '../../../entities/PageResponse';
 
 const CACHE_KEY = 'proveedores';
 
@@ -20,16 +21,33 @@ export class ProveedorService {
 
   readonly listaProveedores = signal<Proveedor[]>([]);
 
-  cargar(q?: string): Observable<Proveedor[]> {
+  cargar(estado: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<Proveedor>> {
     this.cargando.activar();
-    let params = new HttpParams();
-    if (q?.trim()) params = params.set('q', q.trim());
-    return this.api.get<Proveedor[]>('/inventario/proveedor/filtrar', params).pipe(
-      tap((data) => {
-        this.listaProveedores.set(data);
-        this.cache.set(CACHE_KEY, data);
-      }),
+    let params = new HttpParams()
+      .set('size', String(size))
+      .set('page', String(page));
+    if (estado) params = params.set('estado', estado);
+    if (q) params = params.set('q', q);
+    return this.api.get<PageResponse<Proveedor>>('/inventario/proveedor/filtrar', params).pipe(
+      tap((data) => this.cache.set(CACHE_KEY, data.content)),
       finalize(() => this.cargando.inactivar())
+    );
+  }
+
+  cargarTodos(): Observable<Proveedor[]> {
+    return this.cargar(undefined, 0, 9999).pipe(
+      tap(page => this.listaProveedores.set(page.content)),
+      map(page => page.content)
+    );
+  }
+
+  agregarAlGrid(item: Proveedor): void {
+    this.listaProveedores.update(list => [...list, item]);
+  }
+
+  actualizarElGrid(item: Proveedor): void {
+    this.listaProveedores.update(list =>
+      list.map(p => p.ruc === item.ruc ? item : p)
     );
   }
 
@@ -49,23 +67,6 @@ export class ProveedorService {
     return this.api.delete<void>(`/inventario/proveedor/${proveedor.ruc}`).pipe(
       tap(() => this.cache.invalidar(CACHE_KEY))
     );
-  }
-
-  agregarAlGrid(item: Proveedor): void {
-    this.listaProveedores.update((list) => [...list, item]);
-    this.cache.invalidar(CACHE_KEY);
-  }
-
-  actualizarElGrid(item: Proveedor): void {
-    this.listaProveedores.update((list) =>
-      list.map((p) => (p.ruc === item.ruc ? item : p))
-    );
-    this.cache.invalidar(CACHE_KEY);
-  }
-
-  eliminarDelGrid(item: Proveedor): void {
-    this.listaProveedores.update((list) => list.filter((p) => p.ruc !== item.ruc));
-    this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {

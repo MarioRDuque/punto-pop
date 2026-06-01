@@ -11,7 +11,7 @@ import { Comprobante } from '../../../entities/Comprobante';
 import { PageResponse } from '../../../entities/PageResponse';
 
 const CACHE_KEY = 'ventas';
-const PAGE_SIZE = 200;
+const PAGE_SIZE = 20;
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
@@ -23,6 +23,8 @@ export class VentaService {
 
   readonly listaVentas = signal<Venta[]>([]);
   readonly totalVentas = signal<number>(0);
+  readonly currentPage = signal(0);
+  readonly pageSize = signal(PAGE_SIZE);
 
   guardar(venta: Venta): Observable<Venta> {
     return this.api.post<Venta>('/ventas/venta', venta).pipe(
@@ -52,18 +54,23 @@ export class VentaService {
     return this.api.get<Comprobante>(`/facturacion/comprobante/${ventaId}`);
   }
 
-  cargar(estado?: string, desde?: Date, hasta?: Date): Observable<PageResponse<Venta>> {
+  cargar(estado?: string, desde?: Date, hasta?: Date, page: number = 0, q?: string): Observable<PageResponse<Venta>> {
     this.cargando.activar();
-    let params = new HttpParams().set('size', String(PAGE_SIZE)).set('page', '0');
+    let params = new HttpParams()
+      .set('size', String(PAGE_SIZE))
+      .set('page', String(page));
     if (estado) params = params.set('estado', estado);
     if (desde) params = params.set('desde', this.toLocalIso(desde));
     if (hasta) params = params.set('hasta', this.toLocalIso(hasta));
+    if (q) params = params.set('q', q);
 
     return this.api.get<PageResponse<Venta>>('/ventas/venta/filtrar', params).pipe(
-      tap((page) => {
-        this.listaVentas.set(page.content);
-        this.totalVentas.set(page.totalElements);
-        this.cache.set(CACHE_KEY, page.content);
+      tap((pageResp) => {
+        this.listaVentas.set(pageResp.content);
+        this.totalVentas.set(pageResp.totalElements);
+        this.currentPage.set(pageResp.number);
+        this.pageSize.set(pageResp.size);
+        this.cache.set(CACHE_KEY, pageResp.content);
       }),
       finalize(() => this.cargando.inactivar())
     );

@@ -19,15 +19,20 @@ export class CompraService {
   private readonly cache = inject(CacheService);
   private readonly utilService = inject(UtilService);
 
-  readonly listaCompras = signal<Compra[]>([]);
+  readonly totalCompras = signal<number>(0);
 
-  cargar(): Observable<PageResponse<Compra>> {
+  cargar(estado: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<Compra>> {
     this.cargando.activar();
-    const params = new HttpParams().set('size', '500').set('sort', 'fecha,desc');
+    let params = new HttpParams()
+      .set('size', String(size))
+      .set('sort', 'fecha,desc')
+      .set('page', String(page));
+    if (estado) params = params.set('estado', estado);
+    if (q) params = params.set('q', q);
     return this.api.get<PageResponse<Compra>>('/inventario/compra/filtrar', params).pipe(
-      tap((page) => {
-        this.listaCompras.set(page.content);
-        this.cache.set(CACHE_KEY, page.content);
+      tap((pageResp) => {
+        this.totalCompras.set(pageResp.totalElements);
+        this.cache.set(CACHE_KEY, pageResp.content);
       }),
       finalize(() => this.cargando.inactivar())
     );
@@ -52,14 +57,6 @@ export class CompraService {
   }
 
   agregarAlGrid(item: Compra): void {
-    this.listaCompras.update((list) => [item, ...list]);
-    this.cache.invalidar(CACHE_KEY);
-  }
-
-  actualizarElGrid(item: Compra): void {
-    this.listaCompras.update((list) =>
-      list.map((c) => (c.id === item.id ? item : c))
-    );
     this.cache.invalidar(CACHE_KEY);
   }
 

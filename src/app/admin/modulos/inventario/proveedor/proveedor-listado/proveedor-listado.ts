@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, GridApi } from 'ag-grid-enterprise';
 import { Grid } from '../../../../component/grid/grid';
 import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { ProveedorService } from '../proveedor.service';
@@ -13,9 +13,10 @@ import { CargandoService } from '../../../../service/cargando.service';
 import { FormsService } from '../../../../service/forms-service';
 import { TabsStateService } from '../../../../service/tabs.service';
 import { Proveedor } from '../../../../entities/Proveedor';
-import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
+import { Observable } from 'rxjs';
+import { PageResponse } from '../../../../entities/PageResponse';
 
 type FilterType = 'todos' | 'activos' | 'inactivos' | 'incompletos';
 
@@ -43,59 +44,57 @@ export class ProveedorListado implements OnInit {
   public readonly exportarSignal = signal(false);
   public readonly imprimirSignal = signal(false);
 
-  readonly searchQuery  = signal('');
   readonly activeFilter = signal<FilterType>('todos');
 
-  private readonly listaProveedores = this.proveedorService.listaProveedores;
-
-  readonly counts = computed(() => {
-    const list = this.listaProveedores();
-    return {
-      todos:       list.length,
-      activos:     list.filter(p =>  p.estado).length,
-      inactivos:   list.filter(p => !p.estado).length,
-      incompletos: list.filter(p => !p.email || !p.telefono).length,
-    };
-  });
-
   readonly tabs = computed<ToolbarTab[]>(() => [
-    { key: 'todos',       label: 'Todos',       count: this.counts().todos },
-    { key: 'activos',     label: 'Activos',      count: this.counts().activos },
-    { key: 'inactivos',   label: 'Inactivos',    count: this.counts().inactivos },
-    { key: 'incompletos', label: 'Incompletos',  count: this.counts().incompletos },
+    { key: 'todos',       label: 'Todos'       },
+    { key: 'activos',     label: 'Activos'      },
+    { key: 'inactivos',   label: 'Inactivos'    },
+    { key: 'incompletos', label: 'Incompletos'  },
   ]);
 
-  readonly filteredProveedores = computed(() => {
-    const q   = this.searchQuery().toLowerCase().trim();
-    const tab = this.activeFilter();
-    return this.listaProveedores().filter(p => {
-      const matchTab =
-        tab === 'todos'       ? true
-        : tab === 'activos'   ? p.estado
-        : tab === 'inactivos' ? !p.estado
-        : !p.email || !p.telefono;
-      if (!matchTab) return false;
-      if (!q) return true;
-      return (
-        p.ruc?.toLowerCase().includes(q) ||
-        p.razonSocial?.toLowerCase().includes(q) ||
-        p.nombreComercial?.toLowerCase().includes(q) ||
-        p.email?.toLowerCase().includes(q) ||
-        p.telefono?.toLowerCase().includes(q)
-      );
-    });
-  });
+  readonly searchQuery = signal<string>('');
+
+  private gridApi: GridApi | null = null;
+
+  readonly loadProveedores = (startRow: number, endRow: number): Observable<PageResponse<Proveedor>> => {
+    const pageSize = endRow - startRow;
+    const page = startRow / pageSize;
+    return this.proveedorService.cargar(
+      this.activeFilter() === 'todos' ? undefined : this.activeFilter(),
+      page, pageSize, this.searchQuery()
+    );
+  };
 
   ngOnInit(): void {
-    this.proveedorService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.proveedorService.generarColumnasListado();
   }
 
-  setFilter(tab: FilterType) { this.activeFilter.set(tab); }
-  onSearch(q: string)        { this.searchQuery.set(q); }
+  setFilter(tab: FilterType) {
+    this.activeFilter.set(tab);
+    (this.gridApi as any)?.purgeServerSideCache([]);
+  }
 
-  buscar(event: EventCrudBusqueda): void {
-    this.proveedorService.cargar(event.texto).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+    this.gridApi?.setGridOption('quickFilterText', value);
+  }
+
+  onSearchSubmit(texto: string): void {
+    const value = texto?.trim() ?? '';
+    if (!value) {
+      this.searchQuery.set('');
+      this.gridApi?.setGridOption('quickFilterText', '');
+      (this.gridApi as any)?.purgeServerSideCache([]);
+      return;
+    }
+    if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
+      (this.gridApi as any)?.purgeServerSideCache([]);
+    }
+  }
+
+  onGridReady(api: GridApi): void {
+    this.gridApi = api;
   }
 
   exportarDesdeHeader(): void { this.exportarSignal.set(true); }
@@ -131,7 +130,7 @@ export class ProveedorListado implements OnInit {
       .subscribe({
         next: (data) => {
           this.toast.success(`Proveedor ${data.razonSocial} → ${data.estado ? 'ACTIVO' : 'INACTIVO'}`);
-          this.proveedorService.actualizarElGrid(data);
+          (this.gridApi as any)?.purgeServerSideCache([]);
           this.cargando.inactivar();
         },
       });
@@ -146,7 +145,7 @@ export class ProveedorListado implements OnInit {
       .subscribe({
         next: () => {
           this.toast.success('Proveedor eliminado');
-          this.proveedorService.eliminarDelGrid(data);
+          (this.gridApi as any)?.purgeServerSideCache([]);
           this.cargando.inactivar();
         },
       });

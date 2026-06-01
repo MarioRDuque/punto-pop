@@ -83,7 +83,7 @@ export class VentaFormulario implements OnInit {
   public accionEnum = AccionEnum;
   public subtitulo = 'Nueva Venta';
   public clientes           = this.clienteService.listaClientes;
-  public clientesActivos = computed(() => this.clientes().filter(c => c.estado));
+  public clientesActivos = computed(() => this.clientes().filter((c: VentaCliente) => c.estado));
   public clientesScrollHeight = computed(() => {
     const total = this.clientesActivos().length * 43;
     return `${Math.min(total + 8, 200)}px`;
@@ -185,7 +185,7 @@ export class VentaFormulario implements OnInit {
 
   private sincronizarClienteSeleccionado(): void {
     const id = this.ventaForm.controls.clienteId.value;
-    this.clienteSeleccionado.set(id ? (this.clientes().find(c => c.identificacion === id) ?? null) : null);
+    this.clienteSeleccionado.set(id ? (this.clientes().find((c: VentaCliente) => c.identificacion === id) ?? null) : null);
   }
 
   public productoRapidoForm = this.fb.group({
@@ -416,7 +416,7 @@ export class VentaFormulario implements OnInit {
       .subscribe(() => this.sincronizarClienteSeleccionado());
 
     if (this.clientes().length === 0) {
-      this.clienteService.cargar()
+      this.clienteService.cargarTodos()
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => this.sincronizarClienteSeleccionado());
     } else {
@@ -424,7 +424,7 @@ export class VentaFormulario implements OnInit {
     }
 
     if (this.productos().length === 0) {
-      this.productoService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.productoService.cargarTodos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
   }
 
@@ -445,7 +445,7 @@ export class VentaFormulario implements OnInit {
     this.termino.set(event.query.trim());
     this.productosFiltrados.set(
       this.productos()
-        .filter((p) => p.codigo.toLowerCase().includes(q) || p.nombre.toLowerCase().includes(q))
+        .filter((p: CatProducto) => p.codigo.toLowerCase().includes(q) || p.nombre.toLowerCase().includes(q))
         .slice(0, 15)
     );
   }
@@ -607,7 +607,7 @@ export class VentaFormulario implements OnInit {
   }
 
   refrescarProductos(): void {
-    this.productoService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.productoService.cargarTodos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => this.toast.info('Productos actualizados'),
     });
   }

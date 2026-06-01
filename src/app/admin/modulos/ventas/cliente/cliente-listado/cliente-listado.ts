@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import { Grid } from '../../../../component/grid/grid';
 import { ListadoToolbar, ToolbarTab } from '../../../../component/listado-toolbar/listado-toolbar';
 import { ClienteService } from '../cliente.service';
@@ -15,7 +15,8 @@ import { TabsStateService } from '../../../../service/tabs.service';
 import { VentaCliente } from '../../../../entities/VentaCliente';
 import { AccionEnum } from '../../../../enums/accion-enum';
 import { TabsEnum } from '../../../../enums/tabs-enum';
-import { EventCrudBusqueda } from '../../../../enums/event-crud-busqueda';
+import { Observable } from 'rxjs';
+import { PageResponse } from '../../../../entities/PageResponse';
 
 type FilterTab = 'todos' | 'activos' | 'inactivos' | 'cedula' | 'ruc' | 'incompletos';
 
@@ -27,7 +28,7 @@ type FilterTab = 'todos' | 'activos' | 'inactivos' | 'cedula' | 'ruc' | 'incompl
   providers: [DialogService],
 })
 export class ClienteListado implements OnInit {
-  private clienteService = inject(ClienteService);
+  public clienteService = inject(ClienteService);
   private toast = inject(ToastService);
   private cargando = inject(CargandoService);
   private formsService = inject(FormsService) as FormsService<VentaCliente>;
@@ -35,7 +36,7 @@ export class ClienteListado implements OnInit {
   private destroyRef = inject(DestroyRef);
   public dialogService = inject(DialogService);
 
-  private listaClientes = this.clienteService.listaClientes;
+  public totalClientes = this.clienteService.totalClientes;
   public subtitulo = 'Listado de clientes';
   public colDefs: ColDef[] = [];
   public ref: DynamicDialogRef<ClienteFormulario> | null = null;
@@ -43,62 +44,59 @@ export class ClienteListado implements OnInit {
   public exportarSignal = signal(false);
   public imprimirSignal = signal(false);
 
-  readonly searchQuery = signal('');
   readonly activeFilter = signal<FilterTab>('todos');
 
-  readonly counts = computed(() => {
-    const list = this.listaClientes();
-    return {
-      todos: list.length,
-      activos: list.filter((c) => c.estado).length,
-      inactivos: list.filter((c) => !c.estado).length,
-      cedula: list.filter((c) => c.tipoIdentificacion === 'CEDULA').length,
-      ruc: list.filter((c) => c.tipoIdentificacion === 'RUC').length,
-      incompletos: list.filter((c) => !c.email || !c.telefono).length,
-    };
-  });
-
   readonly tabs = computed<ToolbarTab[]>(() => [
-    { key: 'todos',       label: 'Todos',            count: this.counts().todos },
-    { key: 'activos',     label: 'Activos',           count: this.counts().activos },
-    { key: 'inactivos',   label: 'Inactivos',         count: this.counts().inactivos },
-    { key: 'cedula',      label: 'Cédula',            count: this.counts().cedula },
-    { key: 'ruc',         label: 'RUC',               count: this.counts().ruc },
-    { key: 'incompletos', label: 'Datos incompletos', count: this.counts().incompletos },
+    { key: 'todos',       label: 'Todos'            },
+    { key: 'activos',     label: 'Activos'           },
+    { key: 'inactivos',   label: 'Inactivos'         },
+    { key: 'cedula',      label: 'Cédula'            },
+    { key: 'ruc',         label: 'RUC'               },
+    { key: 'incompletos', label: 'Datos incompletos' },
   ]);
 
-  readonly filteredClientes = computed(() => {
-    const q = this.searchQuery().toLowerCase().trim();
-    const tab = this.activeFilter();
-    return this.listaClientes().filter((c) => {
-      const matchTab =
-        tab === 'todos'       ? true
-        : tab === 'activos'    ? c.estado
-        : tab === 'inactivos'  ? !c.estado
-        : tab === 'cedula'     ? c.tipoIdentificacion === 'CEDULA'
-        : tab === 'ruc'        ? c.tipoIdentificacion === 'RUC'
-        : !c.email || !c.telefono;
-      if (!matchTab) return false;
-      if (!q) return true;
-      return (
-        c.nombre?.toLowerCase().includes(q) ||
-        c.identificacion?.toLowerCase().includes(q) ||
-        c.email?.toLowerCase().includes(q) ||
-        c.telefono?.toLowerCase().includes(q)
-      );
-    });
-  });
+  readonly searchQuery = signal<string>('');
+
+  private gridApi: GridApi | null = null;
+
+  readonly loadClientes = (startRow: number, endRow: number): Observable<PageResponse<VentaCliente>> => {
+    const pageSize = endRow - startRow;
+    const page = startRow / pageSize;
+    return this.clienteService.cargar(
+      this.activeFilter() === 'todos' ? undefined : this.activeFilter(),
+      page, pageSize, this.searchQuery()
+    );
+  };
 
   ngOnInit(): void {
-    this.clienteService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.colDefs = this.clienteService.generarColumnasListado();
   }
 
-  setFilter(tab: FilterTab) { this.activeFilter.set(tab); }
-  onSearch(q: string)       { this.searchQuery.set(q); }
+  setFilter(tab: FilterTab) {
+    this.activeFilter.set(tab);
+    (this.gridApi as any)?.purgeServerSideCache([]);
+  }
 
-  buscar(_event: EventCrudBusqueda) {
-    this.clienteService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+    this.gridApi?.setGridOption('quickFilterText', value);
+  }
+
+  onSearchSubmit(texto: string): void {
+    const value = texto?.trim() ?? '';
+    if (!value) {
+      this.searchQuery.set('');
+      this.gridApi?.setGridOption('quickFilterText', '');
+      (this.gridApi as any)?.purgeServerSideCache([]);
+      return;
+    }
+    if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
+      (this.gridApi as any)?.purgeServerSideCache([]);
+    }
+  }
+
+  onGridReady(api: GridApi): void {
+    this.gridApi = api;
   }
 
   exportarDesdeHeader() { this.exportarSignal.set(true); }
@@ -136,7 +134,7 @@ export class ClienteListado implements OnInit {
             this.toast.success(
               'Cliente ' + resultado.nombre + (resultado.estado ? ' activado' : ' inactivado')
             );
-            this.clienteService.actualizarElGrid(resultado);
+            (this.gridApi as any)?.purgeServerSideCache([]);
             this.cargando.inactivar();
           },
         });
@@ -152,7 +150,7 @@ export class ClienteListado implements OnInit {
         .subscribe({
           next: () => {
             this.toast.success('El cliente ha sido eliminado.');
-            this.clienteService.eliminarDelGrid(data);
+            (this.gridApi as any)?.purgeServerSideCache([]);
             this.cargando.inactivar();
           },
         });

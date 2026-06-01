@@ -1,15 +1,15 @@
 <app-listado-toolbar
-  placeholder="Buscar por RUC, razón social, nombre comercial, email o teléfono..."
-  searchShortcut="/"
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
+  (searchChange)="onSearchChange($event)"
+  (searchSubmit)="onSearchSubmit($event)"
   (tabChange)="setFilter($any($event))"
-  (searchChange)="onSearch($event)"
 />
 
 <app-grid
-  [rowData]="filteredProveedores()"
+  [serverSide]="true"
+  [loadData]="loadProveedores"
   [rowHeight]="52"
   [mostrarFiltro]="false"
   [colDefs]="colDefs"
@@ -17,8 +17,8 @@
   [imprimirSignal]="imprimirSignal"
   [subtitulo]="subtitulo"
   campoEstado="estado"
-  (buscarEnBdd)="buscar($event)"
   (consultarObj)="consultarObj($event)"
   (cambiarEstados)="cambiarEstados($event)"
   (eliminarObj)="eliminarObj($event)"
+  (gridApiReady)="onGridReady($event)"
 />

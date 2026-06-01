@@ -1,17 +1,17 @@
 <app-listado-toolbar
-  placeholder="Buscar por nombre, código o categoría..."
   [tabs]="tabs()"
   [activeTab]="activeFilter()"
   [searchValue]="searchQuery()"
+  (searchChange)="onSearchChange($event)"
+  (searchSubmit)="onSearchSubmit($event)"
   (tabChange)="setFilter($any($event))"
-  (searchChange)="onSearch($event)"
 />
 
 <app-grid
-  [rowData]="filteredProductos()"
+  [serverSide]="true"
+  [loadData]="loadProductos"
   [rowHeight]="52"
   [mostrarFiltro]="false"
-  (buscarEnBdd)="buscar($event)"
   (consultarObj)="consultarObj($event)"
   (cambiarEstados)="cambiarEstados($event)"
   (eliminarObj)="eliminarObj($event)"
@@ -19,5 +19,6 @@
   [exportarSignal]="exportarSignal"
   [imprimirSignal]="imprimirSignal"
   [campoEstado]="'estado'"
-  [subtitulo]="subtitulo">
-</app-grid>
+  [subtitulo]="subtitulo"
+  (gridApiReady)="onGridReady($event)"
+/>

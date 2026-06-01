@@ -13,10 +13,14 @@
     </p-floatlabel>
 </div>
 
-<ag-grid-angular style="width: 100%; height: calc(100vh - 190px);" [localeText]="localeText"
-    [context]="gridContext" [defaultColDef]="defaultColDef" [theme]="theme" [statusBar]="statusBar" [rowData]="rowData"
-    [columnDefs]="colDefs" [enableCellTextSelection]="true" [getContextMenuItems]="getContextMenuItems"
+<ag-grid-angular style="width: 100%; height: calc(100vh - 256px);" [localeText]="localeText"
+    [context]="gridContext" [defaultColDef]="defaultColDef" [theme]="theme"
+    [rowData]="serverSide ? null : rowData" [columnDefs]="colDefs" [enableCellTextSelection]="true"
+    [getContextMenuItems]="getContextMenuItems"
     [rowHeight]="rowHeight" [autoSizeStrategy]="autoSizeStrategy"
+    [rowModelType]="serverSide ? 'serverSide' : 'clientSide'"
+    [pagination]="true" [paginationPageSize]="pageSize"
+    [paginationPageSizeSelector]="[10, 20, 50, 100, 200]"
     (gridReady)="onGridReady($event)" (firstDataRendered)="onFirstDataRendered()"
     (gridSizeChanged)="onGridSizeChanged($event)" (cellDoubleClicked)="consultar($event.node.data)" />
 

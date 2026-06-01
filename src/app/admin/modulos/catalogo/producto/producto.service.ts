@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap, finalize } from 'rxjs';
+import { Observable, tap, finalize, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ColDef } from 'ag-grid-enterprise';
 import { ApiService } from '../../../service/api.service';
@@ -19,6 +19,7 @@ export class ProductoService {
   private readonly cache = inject(CacheService);
   private readonly utilService = inject(UtilService);
 
+  readonly totalProductos = signal<number>(0);
   readonly listaProductos = signal<CatProducto[]>([]);
 
   guardar(producto: CatProducto): Observable<CatProducto> {
@@ -39,37 +40,38 @@ export class ProductoService {
     );
   }
 
-  cargar(): Observable<PageResponse<CatProducto>> {
+  cargar(filtro: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<CatProducto>> {
     this.cargando.activar();
-    const params = new HttpParams()
-      .set('size', '1000')
+    let params = new HttpParams()
+      .set('size', String(size))
+      .set('page', String(page))
       .set('soloActivos', 'false');
+    if (filtro) params = params.set('filtro', filtro);
+    if (q) params = params.set('q', q);
     return this.api.get<PageResponse<CatProducto>>('/catalogo/producto/buscar', params).pipe(
-      tap((page) => {
-        this.listaProductos.set(page.content);
-        this.cache.set(CACHE_KEY, page.content);
+      tap((pageResp) => {
+        this.totalProductos.set(pageResp.totalElements);
+        this.cache.set(CACHE_KEY, pageResp.content);
       }),
       finalize(() => this.cargando.inactivar())
     );
   }
 
+  cargarTodos(): Observable<CatProducto[]> {
+    return this.cargar(undefined, 0, 9999).pipe(
+      tap(page => this.listaProductos.set(page.content)),
+      map(page => page.content)
+    );
+  }
+
   agregarAlGrid(item: CatProducto): void {
-    this.listaProductos.update((list) => [...list, item]);
-    this.cache.invalidar(CACHE_KEY);
+    this.listaProductos.update(list => [...list, item]);
   }
 
   actualizarElGrid(item: CatProducto): void {
-    this.listaProductos.update((list) =>
-      list.map((p) => (p.codigo === item.codigo ? item : p))
+    this.listaProductos.update(list =>
+      list.map(p => p.codigo === item.codigo ? item : p)
     );
-    this.cache.invalidar(CACHE_KEY);
-  }
-
-  eliminarDelGrid(item: CatProducto): void {
-    this.listaProductos.update((list) =>
-      list.filter((p) => p.codigo !== item.codigo)
-    );
-    this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {

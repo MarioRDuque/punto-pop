@@ -1,6 +1,6 @@
 import { Component, effect, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
+import { ColDef, DefaultMenuItem, GetContextMenuItemsParams, GridApi, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, IContextMenuParams, IServerSideDatasource, MenuItemDef, SizeColumnsToFitGridStrategy, Theme } from 'ag-grid-community';
 import { FloatLabel } from "primeng/floatlabel";
 import { IconField } from "primeng/iconfield";
 import { InputIcon } from "primeng/inputicon";
@@ -11,9 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TabsStateService } from '../../service/tabs.service';
 import { TabsEnum } from '../../enums/tabs-enum';
 import { FormsService } from '../../service/forms-service';
-import { StatusBarFiltros } from '../status-bar-filtros/status-bar-filtros';
 import { TooltipModule } from 'primeng/tooltip';
-import { TipoFiltro } from '../../enums/tipo-filtro';
 import { EventCrudBusqueda } from '../../enums/event-crud-busqueda';
 import { AccionEnum } from '../../enums/accion-enum';
 import { ICONSCONSTANT } from '../../constantes/icons-constants';
@@ -21,6 +19,8 @@ import printJS from 'print-js';
 import { UtilService } from '../../service/util.service';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Observable } from 'rxjs';
+import { PageResponse } from '../../entities/PageResponse';
 
 @Component({
   selector: 'app-grid',
@@ -53,11 +53,15 @@ export class Grid<T> {
   @Input() subtitulo!: string;
   @Input() rowHeight: number = 52;
   @Input() mostrarFiltro: boolean = true;
+  @Input() pageSize: number = 20;
+  @Input() serverSide: boolean = false;
+  @Input() loadData: ((startRow: number, endRow: number) => Observable<PageResponse<T>>) | undefined;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();
   @Output() cambiarEstados = new EventEmitter<{ data: T; estado: boolean }>();
   @Output() consultarObj = new EventEmitter<T>();
   @Output() eliminarObj = new EventEmitter<T>();
+  @Output() gridApiReady = new EventEmitter<GridApi>();
 
   public objetoSeleccionado: T | null = null;
   ICONSCONSTANT = ICONSCONSTANT;
@@ -78,12 +82,6 @@ export class Grid<T> {
   public autoSizeStrategy: SizeColumnsToFitGridStrategy = {
     type: 'fitGridWidth',
   };
-  public statusBar = {
-    statusPanels: [
-      { statusPanel: StatusBarFiltros }
-    ]
-  };
-
   constructor() {
     effect(() => {
       if (this.exportarSignal()) {
@@ -145,6 +143,24 @@ export class Grid<T> {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    this.gridApiReady.emit(params.api);
+    if (this.serverSide && this.loadData) {
+      const dataSource: IServerSideDatasource = {
+        getRows: (getRowsParams) => {
+          this.loadData!(getRowsParams.request.startRow ?? 0, getRowsParams.request.endRow ?? 100)
+            .subscribe({
+              next: (page) => {
+                getRowsParams.success({
+                  rowData: page.content,
+                  rowCount: page.totalElements,
+                });
+              },
+              error: () => getRowsParams.fail(),
+            });
+        },
+      };
+      params.api.setGridOption('serverSideDatasource', dataSource);
+    }
     this.gridApi.sizeColumnsToFit();
   }
 
@@ -161,12 +177,6 @@ export class Grid<T> {
   onFilterTextBoxChanged(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.gridApi.setGridOption('quickFilterText', value);
-  }
-
-  onFiltroStatusBarChange(value: TipoFiltro) {
-    this.buscarEnBdd.emit({
-      filtro: value
-    });
   }
 
   buscar(event: Event) {

@@ -9,6 +9,7 @@
         [placeholder]="placeholder"
         [value]="searchValue"
         (input)="searchChange.emit($any($event.target).value)"
+        (keyup.enter)="searchSubmit.emit($any($event.target).value)"
       />
       @if (searchShortcut) {
         <kbd class="lt-kbd">{{ searchShortcut }}</kbd>

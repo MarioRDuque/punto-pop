@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap, finalize } from 'rxjs';
+import { Observable, tap, finalize, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ColDef } from 'ag-grid-enterprise';
 import { ApiService } from '../../../service/api.service';
@@ -19,6 +19,7 @@ export class ClienteService {
   private readonly cache = inject(CacheService);
   private readonly utilService = inject(UtilService);
 
+  readonly totalClientes = signal<number>(0);
   readonly listaClientes = signal<VentaCliente[]>([]);
 
   guardar(cliente: VentaCliente): Observable<VentaCliente> {
@@ -39,35 +40,37 @@ export class ClienteService {
     );
   }
 
-  cargar(): Observable<PageResponse<VentaCliente>> {
+  cargar(filtro: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<VentaCliente>> {
     this.cargando.activar();
-    const params = new HttpParams().set('size', '5000');
-    return this.api.get<PageResponse<VentaCliente>>('/ventas/cliente', params).pipe(
-      tap((page) => {
-        this.listaClientes.set(page.content);
-        this.cache.set(CACHE_KEY, page.content);
+    let params = new HttpParams()
+      .set('size', String(size))
+      .set('page', String(page));
+    if (filtro) params = params.set('filtro', filtro);
+    if (q) params = params.set('q', q);
+    return this.api.get<PageResponse<VentaCliente>>('/ventas/cliente/buscar', params).pipe(
+      tap((pageResp) => {
+        this.totalClientes.set(pageResp.totalElements);
+        this.cache.set(CACHE_KEY, pageResp.content);
       }),
       finalize(() => this.cargando.inactivar())
     );
   }
 
+  cargarTodos(): Observable<VentaCliente[]> {
+    return this.cargar(undefined, 0, 9999).pipe(
+      tap(page => this.listaClientes.set(page.content)),
+      map(page => page.content)
+    );
+  }
+
   agregarAlGrid(item: VentaCliente): void {
-    this.listaClientes.update((list) => [...list, item]);
-    this.cache.invalidar(CACHE_KEY);
+    this.listaClientes.update(list => [...list, item]);
   }
 
   actualizarElGrid(item: VentaCliente): void {
-    this.listaClientes.update((list) =>
-      list.map((c) => (c.identificacion === item.identificacion ? item : c))
+    this.listaClientes.update(list =>
+      list.map(c => c.identificacion === item.identificacion ? item : c)
     );
-    this.cache.invalidar(CACHE_KEY);
-  }
-
-  eliminarDelGrid(item: VentaCliente): void {
-    this.listaClientes.update((list) =>
-      list.filter((c) => c.identificacion !== item.identificacion)
-    );
-    this.cache.invalidar(CACHE_KEY);
   }
 
   generarColumnasListado(): ColDef[] {

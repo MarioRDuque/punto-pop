@@ -144,10 +144,10 @@ export class CompraFormulario implements OnInit {
 
   ngOnInit(): void {
     if (this.proveedores().length === 0) {
-      this.proveedorService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.proveedorService.cargarTodos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
     if (this.productos().length === 0) {
-      this.productoService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.productoService.cargarTodos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
   }
 
