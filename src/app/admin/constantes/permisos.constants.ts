@@ -16,7 +16,25 @@ export const MODULOS_PERMISOS: ModuloPermiso[] = [
     acciones: [
       { codigo: 'VENTAS_VER', label: 'Ver' },
       { codigo: 'VENTAS_CREAR', label: 'Crear' },
+      { codigo: 'VENTAS_EDITAR', label: 'Editar' },
+      { codigo: 'VENTAS_ELIMINAR', label: 'Eliminar' },
       { codigo: 'VENTAS_ANULAR', label: 'Anular' },
+    ],
+  },
+  {
+    modulo: 'FACTURACION',
+    label: 'Facturación',
+    acciones: [
+      { codigo: 'FACTURACION_VER', label: 'Ver' },
+      { codigo: 'FACTURACION_GESTIONAR', label: 'Facturar / Reintentar' },
+    ],
+  },
+  {
+    modulo: 'PAGOS',
+    label: 'Pagos',
+    acciones: [
+      { codigo: 'PAGOS_VER', label: 'Ver' },
+      { codigo: 'PAGOS_GESTIONAR', label: 'Iniciar / Confirmar' },
     ],
   },
   {
