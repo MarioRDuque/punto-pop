@@ -7,9 +7,9 @@
     [iconListado]="ICONSCONSTANT.USERS"
     [iconCrear]="ICONSCONSTANT.AGREGAR_USER"
     [iconEditar]="ICONSCONSTANT.EDITAR_USUARIO"
-    (onTabChange)="onTabChange($event)"
-    (onGuardar)="onGuardar()"
-    (onCancelar)="onCancelar()"
+    (tabChange)="onTabChange($event)"
+    (guardar)="onGuardar()"
+    (cancelar)="onCancelar()"
 >
     <ng-template #listado><app-rol-listado /></ng-template>
     <ng-template #crear><app-rol-formulario /></ng-template>

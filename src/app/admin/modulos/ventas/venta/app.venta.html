@@ -7,9 +7,9 @@
     iconEditar="pi pi-eye"
     [esVisualizacion]="true"
     [showBorrador]="false"
-    (onTabChange)="onTabChange($event)"
-    (onGuardar)="onGuardar()"
-    (onCancelar)="onCancelar()"
+    (tabChange)="onTabChange($event)"
+    (guardar)="onGuardar()"
+    (cancelar)="onCancelar()"
 >
     <ng-template #listado><app-venta-listado /></ng-template>
     <ng-template #crear><app-venta-formulario /></ng-template>

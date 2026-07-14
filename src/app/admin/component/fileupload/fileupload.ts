@@ -15,7 +15,7 @@ import { ICONSCONSTANT } from '../../constantes/icons-constants';
 export class FileuploadComponent implements OnChanges {
 
   @Input() fotoActual: string | null | undefined = null;
-  @Input() readonly: boolean = false;
+  @Input() readonly = false;
   @Output() fotoSeleccionada = new EventEmitter<string | null>();
 
   //IMAGEN

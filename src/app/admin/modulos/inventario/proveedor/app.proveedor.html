@@ -5,9 +5,9 @@
     [loading]="cargando.loading()"
     labelListado="Proveedores"
     labelCrear="Nuevo proveedor"
-    (onTabChange)="onTabChange($event)"
-    (onGuardar)="onGuardar()"
-    (onCancelar)="onCancelar()"
+    (tabChange)="onTabChange($event)"
+    (guardar)="onGuardar()"
+    (cancelar)="onCancelar()"
 >
     <ng-template #listado><app-proveedor-listado /></ng-template>
     <ng-template #crear><app-proveedor-formulario /></ng-template>

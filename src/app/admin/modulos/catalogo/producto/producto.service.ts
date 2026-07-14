@@ -40,7 +40,7 @@ export class ProductoService {
     );
   }
 
-  cargar(filtro: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<CatProducto>> {
+  cargar(filtro: string | undefined, page = 0, size = 20, q?: string): Observable<PageResponse<CatProducto>> {
     this.cargando.activar();
     let params = new HttpParams()
       .set('size', String(size))

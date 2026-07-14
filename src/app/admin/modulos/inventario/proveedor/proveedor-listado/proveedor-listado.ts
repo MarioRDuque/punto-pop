@@ -72,7 +72,7 @@ export class ProveedorListado implements OnInit {
 
   setFilter(tab: FilterType) {
     this.activeFilter.set(tab);
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   onSearchChange(value: string): void {
@@ -85,11 +85,11 @@ export class ProveedorListado implements OnInit {
     if (!value) {
       this.searchQuery.set('');
       this.gridApi?.setGridOption('quickFilterText', '');
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
       return;
     }
     if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
     }
   }
 
@@ -130,7 +130,7 @@ export class ProveedorListado implements OnInit {
       .subscribe({
         next: (data) => {
           this.toast.success(`Proveedor ${data.razonSocial} → ${data.estado ? 'ACTIVO' : 'INACTIVO'}`);
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         },
       });
@@ -145,7 +145,7 @@ export class ProveedorListado implements OnInit {
       .subscribe({
         next: () => {
           this.toast.success('Proveedor eliminado');
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         },
       });

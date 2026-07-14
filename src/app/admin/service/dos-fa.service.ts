@@ -11,11 +11,11 @@ export class DosFAService {
     return this.api.post<{ qrUrl: string; secret: string }>('/auth/2fa/generar', {});
   }
 
-  activar2FA(codigo: string): Observable<any> {
-    return this.api.post<any>('/auth/2fa/activar', { codigo });
+  activar2FA(codigo: string): Observable<void> {
+    return this.api.post<void>('/auth/2fa/activar', { codigo });
   }
 
-  desactivar2FA(codigo: string): Observable<any> {
-    return this.api.post<any>('/auth/2fa/desactivar', { codigo });
+  desactivar2FA(codigo: string): Observable<void> {
+    return this.api.post<void>('/auth/2fa/desactivar', { codigo });
   }
 }

@@ -6,8 +6,6 @@ import { CargandoService } from '../../../service/cargando.service';
 import { CatTarifaIva } from '../../../entities/CatTarifaIva';
 import { PageResponse } from '../../../entities/PageResponse';
 
-const CACHE_KEY = 'tarifas-iva';
-
 @Injectable({ providedIn: 'root' })
 export class TarifaIvaService {
 

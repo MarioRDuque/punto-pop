@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -6,7 +6,7 @@ import { TagModule } from 'primeng/tag';
 import { PerfilService } from '../perfil.service';
 import { ToastService } from '../../../../service/toast.service';
 
-interface Sesion {
+export interface Sesion {
   id: string;
   dispositivo: string;
   ip: string;
@@ -116,7 +116,7 @@ interface Sesion {
     }
   `]
 })
-export class HistorialSesiones implements OnInit {
+export class HistorialSesiones {
   private perfilService = inject(PerfilService);
   private toast = inject(ToastService);
 
@@ -124,10 +124,7 @@ export class HistorialSesiones implements OnInit {
   cargando = signal<boolean>(false);
   cerrandoSesion = signal<string>('');
 
-  ngOnInit() {
-    // TODO: Descomentar cuando el backend implemente el endpoint /perfil/sesiones
-    // this.cargarSesiones();
-  }
+  // TODO: llamar a cargarSesiones() en ngOnInit cuando el backend implemente /perfil/sesiones (ver PUN-32)
 
   cargarSesiones() {
     this.cargando.set(true);

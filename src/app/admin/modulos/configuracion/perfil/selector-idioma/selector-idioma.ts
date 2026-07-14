@@ -23,12 +23,13 @@ import { ToastService } from '../../../../service/toast.service';
         </div>
         
         <div class="flex flex-col gap-2">
-          <label class="font-medium">Idioma</label>
-          <p-selectButton 
-            [options]="opcionesIdioma" 
+          <label for="idioma-selector" class="font-medium">Idioma</label>
+          <p-selectButton
+            inputId="idioma-selector"
+            [options]="opcionesIdioma"
             [(ngModel)]="idiomaSeleccionado"
             (onChange)="cambiarIdioma()"
-            optionLabel="label" 
+            optionLabel="label"
             optionValue="value"
           />
         </div>

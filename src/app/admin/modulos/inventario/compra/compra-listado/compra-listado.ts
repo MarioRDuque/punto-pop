@@ -64,7 +64,7 @@ export class CompraListado implements OnInit {
 
   setFilter(tab: FilterTab) {
     this.activeFilter.set(tab);
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   onSearchChange(value: string): void {
@@ -77,11 +77,11 @@ export class CompraListado implements OnInit {
     if (!value) {
       this.searchQuery.set('');
       this.gridApi?.setGridOption('quickFilterText', '');
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
       return;
     }
     if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
     }
   }
 
@@ -100,7 +100,7 @@ export class CompraListado implements OnInit {
       .subscribe({
         next: (data) => {
           this.toast.success(`Compra ${data.numero} recibida — stock actualizado`);
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         },
       });
@@ -114,7 +114,7 @@ export class CompraListado implements OnInit {
       .subscribe({
         next: (data) => {
           this.toast.success(`Compra ${data.numero} anulada`);
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         },
       });

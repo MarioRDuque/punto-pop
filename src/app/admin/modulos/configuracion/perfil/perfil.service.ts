@@ -1,6 +1,19 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
+import { Sesion } from './historial-sesiones/historial-sesiones';
+
+export interface NotificacionesUsuario {
+  stockCritico: boolean;
+  facturaVencida: boolean;
+  aprobacionPendiente: boolean;
+  tareaAsignada: boolean;
+  mensajeSistema: boolean;
+}
+
+export interface PreferenciasNotificacion {
+  notificaciones: NotificacionesUsuario;
+}
 
 /**
  * Servicio para gestión de perfil de usuario
@@ -21,7 +34,7 @@ export class PerfilService {
     if (password.length < 8) return false;
     if (!/[A-Z]/.test(password)) return false;
     if (!/[0-9]/.test(password)) return false;
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return false;
     return true;
   }
 
@@ -41,7 +54,7 @@ export class PerfilService {
    * Guarda preferencias del usuario
    * Requisito 17.4
    */
-  guardarPreferencias(preferencias: any): Observable<void> {
+  guardarPreferencias(preferencias: PreferenciasNotificacion): Observable<void> {
     return this.api.post('/perfil/preferencias', preferencias);
   }
 
@@ -49,7 +62,7 @@ export class PerfilService {
    * Obtiene preferencias del usuario
    * Requisito 17.4
    */
-  obtenerPreferencias(): Observable<any> {
+  obtenerPreferencias(): Observable<PreferenciasNotificacion> {
     return this.api.get('/perfil/preferencias');
   }
 
@@ -57,7 +70,7 @@ export class PerfilService {
    * Actualiza datos personales del usuario
    * Requisito 17.1
    */
-  actualizarDatosPersonales(datos: any): Observable<void> {
+  actualizarDatosPersonales(datos: unknown): Observable<void> {
     return this.api.put('/perfil/datos-personales', datos);
   }
 
@@ -65,7 +78,7 @@ export class PerfilService {
    * Obtiene historial de sesiones
    * Requisito 17.5
    */
-  obtenerHistorialSesiones(): Observable<any[]> {
+  obtenerHistorialSesiones(): Observable<Sesion[]> {
     return this.api.get('/perfil/sesiones');
   }
 

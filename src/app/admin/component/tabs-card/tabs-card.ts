@@ -14,9 +14,9 @@ import { TabsEnum } from '../../enums/tabs-enum';
 export class TabsCard {
   readonly Tabs = TabsEnum;
 
-  @ContentChild('listado') listadoTemplate?: TemplateRef<any>;
-  @ContentChild('crear') crearTemplate?: TemplateRef<any>;
-  @ContentChild('editar') editarTemplate?: TemplateRef<any>;
+  @ContentChild('listado') listadoTemplate?: TemplateRef<unknown>;
+  @ContentChild('crear') crearTemplate?: TemplateRef<unknown>;
+  @ContentChild('editar') editarTemplate?: TemplateRef<unknown>;
 
   @Input({ required: true }) tabActivo!: string;
   @Input({ required: true }) tabDeshabilitado!: boolean;
@@ -32,10 +32,10 @@ export class TabsCard {
   @Input() esVisualizacion = false;
   @Input() showBorrador = true;
 
-  @Output() onTabChange = new EventEmitter<string | number | undefined>();
-  @Output() onGuardar = new EventEmitter<void>();
-  @Output() onCancelar = new EventEmitter<void>();
-  @Output() onBorrador = new EventEmitter<void>();
+  @Output() tabChange = new EventEmitter<string | number | undefined>();
+  @Output() guardar = new EventEmitter<void>();
+  @Output() cancelar = new EventEmitter<void>();
+  @Output() borrador = new EventEmitter<void>();
 
   get submitLabel(): string {
     if (this.esVisualizacion) return 'Guardar';

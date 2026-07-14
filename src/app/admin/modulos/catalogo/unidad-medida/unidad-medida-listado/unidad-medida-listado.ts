@@ -81,7 +81,7 @@ export class UnidadMedidaListado implements OnInit {
   setFilter(tab: FilterType) { this.activeFilter.set(tab); }
   onSearch(q: string) { this.searchQuery.set(q); }
 
-  buscar(event: EventCrudBusqueda) {
+  buscar(_event: EventCrudBusqueda) {
     this.unidadMedidaService.cargar().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 

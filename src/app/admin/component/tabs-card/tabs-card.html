@@ -1,5 +1,5 @@
 <div class="tabs-card">
-    <p-tabs lazy [value]="tabActivo" (valueChange)="onTabChange.emit($event)">
+    <p-tabs lazy [value]="tabActivo" (valueChange)="tabChange.emit($event)">
         <p-tablist>
             <p-tab [value]="Tabs.LISTADO">
                 <i [class]="iconListado"></i>
@@ -18,13 +18,13 @@
             <div class="ml-auto flex items-center gap-1">
                 @if (showBorrador) {
                 <p-button label="Borrador" icon="pi pi-replay" size="small" [text]="true" severity="secondary"
-                    (onClick)="onBorrador.emit()" />
+                    (onClick)="borrador.emit()" />
                 }
                 <p-button [label]="submitLabel" [icon]="submitIcon" size="small" [outlined]="true"
-                    [loading]="loading" (onClick)="onGuardar.emit()" />
+                    [loading]="loading" (onClick)="guardar.emit()" />
                 <p-button icon="pi pi-times" size="small" [text]="true" severity="secondary"
                     pTooltip="Cerrar" tooltipPosition="top"
-                    (onClick)="onCancelar.emit()" />
+                    (onClick)="cancelar.emit()" />
             </div>
             } @else {
             <ng-content select="[actions]" />

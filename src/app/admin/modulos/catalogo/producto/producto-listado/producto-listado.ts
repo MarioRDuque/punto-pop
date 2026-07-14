@@ -73,7 +73,7 @@ export class ProductoListado implements OnInit {
 
   setFilter(tab: FilterType) {
     this.activeFilter.set(tab);
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   onSearchChange(value: string): void {
@@ -86,11 +86,11 @@ export class ProductoListado implements OnInit {
     if (!value) {
       this.searchQuery.set('');
       this.gridApi?.setGridOption('quickFilterText', '');
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
       return;
     }
     if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
     }
   }
 
@@ -130,7 +130,7 @@ export class ProductoListado implements OnInit {
         .subscribe({
           next: (resultado) => {
             this.toast.success('El producto ' + resultado.nombre + ' ha sido ' + (resultado.estado ? 'ACTIVADO' : 'INACTIVADO'));
-            (this.gridApi as any)?.purgeServerSideCache([]);
+            this.gridApi?.refreshServerSide({ route: [], purge: true });
             this.cargando.inactivar();
           }
         });
@@ -145,7 +145,7 @@ export class ProductoListado implements OnInit {
         .subscribe({
           next: () => {
             this.toast.success('El producto ha sido eliminado.');
-            (this.gridApi as any)?.purgeServerSideCache([]);
+            this.gridApi?.refreshServerSide({ route: [], purge: true });
             this.cargando.inactivar();
           }
         });
