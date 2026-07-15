@@ -40,7 +40,7 @@ export class ClienteService {
     );
   }
 
-  cargar(filtro: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<VentaCliente>> {
+  cargar(filtro: string | undefined, page = 0, size = 20, q?: string): Observable<PageResponse<VentaCliente>> {
     this.cargando.activar();
     let params = new HttpParams()
       .set('size', String(size))

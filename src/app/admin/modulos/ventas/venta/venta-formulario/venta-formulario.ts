@@ -263,11 +263,11 @@ export class VentaFormulario implements OnInit {
           'font-size:12.5px;font-weight:500;color:var(--ag-foreground-color);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;';
 
         const stock = product?.stock ?? 0;
-        const stockMinimo = (product as any)?.stockMinimo ?? 0;
+        const stockMinimo = product?.stockMinimo ?? 0;
         const isLowStock = stock > 0 && stockMinimo > 0 && stock <= stockMinimo * 2;
         const dotColor = stock === 0 ? '#ef4444' : isLowStock ? '#f59e0b' : '#22c55e';
         const stockLabel = stock === 0 ? 'Sin stock' : isLowStock ? `Quedan ${stock}` : `Stock: ${stock}`;
-        const unitLabel = (product as any)?.unidadMedidaDescripcion ?? '';
+        const unitLabel = product?.unidadMedidaNombre ?? '';
 
         const subEl = document.createElement('div');
         subEl.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:10.5px;color:var(--ag-secondary-foreground-color);margin-top:1px;';

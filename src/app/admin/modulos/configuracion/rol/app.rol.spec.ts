@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { AppRol } from './app.rol';
 
@@ -8,7 +11,8 @@ describe('AppRol', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppRol]
+      imports: [AppRol],
+      providers: [provideZonelessChangeDetection(), provideHttpClient(), MessageService]
     })
     .compileComponents();
 

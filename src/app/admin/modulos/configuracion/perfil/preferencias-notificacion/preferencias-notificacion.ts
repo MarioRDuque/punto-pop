@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -143,7 +143,7 @@ import { ToastService } from '../../../../service/toast.service';
     }
   `]
 })
-export class PreferenciasNotificacion implements OnInit {
+export class PreferenciasNotificacion {
   private perfilService = inject(PerfilService);
   private toast = inject(ToastService);
 
@@ -157,10 +157,7 @@ export class PreferenciasNotificacion implements OnInit {
 
   guardando = signal<boolean>(false);
 
-  ngOnInit() {
-    // TODO: Descomentar cuando el backend implemente el endpoint /perfil/preferencias
-    // this.cargarPreferencias();
-  }
+  // TODO: llamar a cargarPreferencias() en ngOnInit cuando el backend implemente /perfil/preferencias (ver PUN-32)
 
   cargarPreferencias() {
     this.perfilService.obtenerPreferencias().subscribe({

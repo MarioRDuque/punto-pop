@@ -79,11 +79,11 @@ export class VentaListado implements OnInit {
 
   setFilter(tab: FilterTab) {
     this.activeFilter.set(tab);
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   recargar(): void {
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   onSearchChange(value: string): void {
@@ -96,11 +96,11 @@ export class VentaListado implements OnInit {
     if (!value) {
       this.searchQuery.set('');
       this.gridApi?.setGridOption('quickFilterText', '');
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
       return;
     }
     if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
     }
   }
 
@@ -137,7 +137,7 @@ export class VentaListado implements OnInit {
       .subscribe({
         next: (resultado) => {
           this.toast.success('Venta ' + resultado.numero + ' completada correctamente');
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         }
       });
@@ -151,7 +151,7 @@ export class VentaListado implements OnInit {
       .subscribe({
         next: (resultado) => {
           this.toast.success('Venta ' + resultado.numero + ' anulada');
-          (this.gridApi as any)?.purgeServerSideCache([]);
+          this.gridApi?.refreshServerSide({ route: [], purge: true });
           this.cargando.inactivar();
         }
       });

@@ -21,7 +21,7 @@ export class ProveedorService {
 
   readonly listaProveedores = signal<Proveedor[]>([]);
 
-  cargar(estado: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<Proveedor>> {
+  cargar(estado: string | undefined, page = 0, size = 20, q?: string): Observable<PageResponse<Proveedor>> {
     this.cargando.activar();
     let params = new HttpParams()
       .set('size', String(size))

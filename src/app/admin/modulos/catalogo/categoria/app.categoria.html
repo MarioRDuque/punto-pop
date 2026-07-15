@@ -3,9 +3,9 @@
     [tabDeshabilitado]="tabsState.tabDeshabilitado()"
     [showActions]="showFormActions"
     [loading]="cargando.loading()"
-    (onTabChange)="onTabChange($event)"
-    (onGuardar)="onGuardar()"
-    (onCancelar)="onCancelar()"
+    (tabChange)="onTabChange($event)"
+    (guardar)="onGuardar()"
+    (cancelar)="onCancelar()"
 >
     <ng-template #listado><app-categoria-listado /></ng-template>
     <ng-template #crear><app-categoria-formulario /></ng-template>

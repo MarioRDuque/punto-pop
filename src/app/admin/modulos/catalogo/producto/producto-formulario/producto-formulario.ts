@@ -134,6 +134,6 @@ export class ProductoFormulario implements OnInit {
 
   private cargarDatos(): void {
     const obj = this.formsService.objetoSeleccionado() as CatProducto | null;
-    if (obj) this.productoForm.patchValue(obj as any);
+    if (obj) this.productoForm.patchValue(obj as Partial<typeof this.productoForm.value>);
   }
 }

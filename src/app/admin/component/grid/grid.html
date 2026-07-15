@@ -1,4 +1,5 @@
-<div class="mb-2 mt-2" *ngIf="mostrarFiltro">
+@if (mostrarFiltro) {
+<div class="mb-2 mt-2">
     <!-- INPUT FLOTANTE PARA FILTRAR -->
     <p-floatlabel variant="on" class="w-full">
         <p-iconfield class="w-full">
@@ -12,6 +13,7 @@
         </p-iconfield>
     </p-floatlabel>
 </div>
+}
 
 <ag-grid-angular style="width: 100%; height: calc(100vh - 205px);" [localeText]="localeText"
     [context]="gridContext" [defaultColDef]="defaultColDef" [theme]="theme"

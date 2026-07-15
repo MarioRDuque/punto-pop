@@ -21,7 +21,7 @@ export class CompraService {
 
   readonly totalCompras = signal<number>(0);
 
-  cargar(estado: string | undefined, page: number = 0, size: number = 20, q?: string): Observable<PageResponse<Compra>> {
+  cargar(estado: string | undefined, page = 0, size = 20, q?: string): Observable<PageResponse<Compra>> {
     this.cargando.activar();
     let params = new HttpParams()
       .set('size', String(size))
@@ -56,7 +56,7 @@ export class CompraService {
     );
   }
 
-  agregarAlGrid(item: Compra): void {
+  agregarAlGrid(_item: Compra): void {
     this.cache.invalidar(CACHE_KEY);
   }
 

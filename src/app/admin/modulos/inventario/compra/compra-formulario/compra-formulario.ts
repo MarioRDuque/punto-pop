@@ -133,7 +133,7 @@ export class CompraFormulario implements OnInit {
     observacion: [''],
   });
 
-  readonly condiciones: Array<{ value: CondicionPago; label: string; subtitle: string; icon: string }> = [
+  readonly condiciones: { value: CondicionPago; label: string; subtitle: string; icon: string }[] = [
     { value: 'CONTADO', label: 'Contado', subtitle: 'Pago inmediato', icon: 'pi pi-check' },
     { value: 'TRANSFERENCIA', label: 'Transferencia', subtitle: 'SPEI', icon: 'pi pi-send' },
     { value: 'CREDITO_30', label: 'Crédito 30d', subtitle: 'Línea proveedor', icon: 'pi pi-clock' },

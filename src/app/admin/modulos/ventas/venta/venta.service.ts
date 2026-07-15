@@ -54,7 +54,7 @@ export class VentaService {
     return this.api.get<Comprobante>(`/facturacion/comprobante/${ventaId}`);
   }
 
-  cargar(estado?: string, desde?: Date, hasta?: Date, page: number = 0, q?: string): Observable<PageResponse<Venta>> {
+  cargar(estado?: string, desde?: Date, hasta?: Date, page = 0, q?: string): Observable<PageResponse<Venta>> {
     this.cargando.activar();
     let params = new HttpParams()
       .set('size', String(PAGE_SIZE))

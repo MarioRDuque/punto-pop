@@ -34,7 +34,7 @@ export class AppComprobante implements OnInit {
     this.colDefs = this.comprobanteService.generarColumnasListado();
   }
 
-  buscar(event: EventCrudBusqueda) {
+  buscar(_event: EventCrudBusqueda) {
     // Filtro según necesidad futura
   }
 

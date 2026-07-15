@@ -18,7 +18,7 @@ export function validarContraseña(password: string): boolean {
   if (password.length < 8) return false;
   if (!/[A-Z]/.test(password)) return false;
   if (!/[0-9]/.test(password)) return false;
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return false;
   return true;
 }
 
@@ -48,7 +48,7 @@ describe('Perfil - Property-Based Tests', () => {
             const tieneLongitud = password.length >= 8;
             const tieneMayuscula = /[A-Z]/.test(password);
             const tieneNumero = /[0-9]/.test(password);
-            const tieneEspecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            const tieneEspecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
             
             if (tieneLongitud && tieneMayuscula && tieneNumero && tieneEspecial) {
               expect(resultado).toBe(true);
@@ -132,13 +132,13 @@ describe('Perfil - Property-Based Tests', () => {
         fc.property(
           // Generador: contraseña sin caracteres especiales
           fc.record({
-            base: fc.string({ minLength: 6, maxLength: 40 }).filter(s => !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)),
+            base: fc.string({ minLength: 6, maxLength: 40 }).filter(s => !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)),
             mayuscula: fc.constantFrom('A', 'B', 'C', 'D', 'E'),
             numero: fc.integer({ min: 0, max: 9 }).map(n => n.toString())
           }).map(({ base, mayuscula, numero }) => base + mayuscula + numero),
           (password) => {
             // Solo probar si efectivamente no tiene carácter especial
-            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) && password.length >= 8) {
+            if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password) && password.length >= 8) {
               const resultado = validarContraseña(password);
               expect(resultado).toBe(false);
             }
@@ -162,7 +162,7 @@ describe('Perfil - Property-Based Tests', () => {
             const tieneLongitud = password.length >= 8;
             const tieneMayuscula = /[A-Z]/.test(password);
             const tieneNumero = /[0-9]/.test(password);
-            const tieneEspecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            const tieneEspecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
             
             const cumpleTodasLasCondiciones = tieneLongitud && tieneMayuscula && tieneNumero && tieneEspecial;
             
@@ -201,12 +201,12 @@ describe('Perfil - Property-Based Tests', () => {
     }
 
     // Simulación de guardado/recuperación (en la implementación real sería HTTP)
-    function guardarPreferencias(prefs: PreferenciasUsuario): any {
+    function guardarPreferencias<T extends PreferenciasUsuario>(prefs: T): T {
       // Simular serialización/deserialización (como lo haría JSON.stringify/parse en HTTP)
       return JSON.parse(JSON.stringify(prefs));
     }
 
-    function recuperarPreferencias(prefs: PreferenciasUsuario): any {
+    function recuperarPreferencias<T extends PreferenciasUsuario>(prefs: T): T {
       // Simular recuperación del backend
       return JSON.parse(JSON.stringify(prefs));
     }

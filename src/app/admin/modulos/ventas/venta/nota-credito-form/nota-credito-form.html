@@ -76,10 +76,11 @@
 
   <!-- Motivo -->
   <div class="mb-4">
-    <label class="block text-sm font-medium text-surface-700 mb-1">
+    <label for="nota-credito-motivo" class="block text-sm font-medium text-surface-700 mb-1">
       Motivo <span class="text-red-500">*</span>
     </label>
     <textarea pTextarea
+      id="nota-credito-motivo"
       [(ngModel)]="motivo"
       [ngModelOptions]="{standalone: true}"
       rows="2"

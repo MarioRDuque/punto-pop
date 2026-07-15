@@ -51,10 +51,10 @@ export class Grid<T> {
   @Input({ required: true }) imprimirSignal!: WritableSignal<boolean>;
   @Input() campoEstado!: string;
   @Input() subtitulo!: string;
-  @Input() rowHeight: number = 52;
-  @Input() mostrarFiltro: boolean = true;
-  @Input() pageSize: number = 20;
-  @Input() serverSide: boolean = false;
+  @Input() rowHeight = 52;
+  @Input() mostrarFiltro = true;
+  @Input() pageSize = 20;
+  @Input() serverSide = false;
   @Input() loadData: ((startRow: number, endRow: number) => Observable<PageResponse<T>>) | undefined;
 
   @Output() buscarEnBdd = new EventEmitter<EventCrudBusqueda>();

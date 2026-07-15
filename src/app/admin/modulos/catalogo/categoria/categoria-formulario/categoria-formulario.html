@@ -19,20 +19,20 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-medium text-surface-500">
+                            <label for="categoria-codigo" class="text-xs font-medium text-surface-500">
                                 Código <span class="text-red-400">*</span>
                             </label>
-                            <input pInputText formControlName="codigo"
+                            <input pInputText id="categoria-codigo" formControlName="codigo"
                                 placeholder="EJ. CAT-001"
                                 class="w-full"
                                 [appUppercase]="true" />
                             <p class="text-xs text-surface-400 m-0">Identificador único · no se puede cambiar al editar</p>
                         </div>
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-medium text-surface-500">
+                            <label for="categoria-nombre" class="text-xs font-medium text-surface-500">
                                 Nombre <span class="text-red-400">*</span>
                             </label>
-                            <input pInputText formControlName="nombre"
+                            <input pInputText id="categoria-nombre" formControlName="nombre"
                                 placeholder="EJ. BEBIDAS"
                                 class="w-full"
                                 [appUppercase]="true" />
@@ -40,10 +40,10 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label class="text-xs font-medium text-surface-500">
+                        <label for="categoria-descripcion" class="text-xs font-medium text-surface-500">
                             Descripción <span class="font-normal text-surface-300">· opcional</span>
                         </label>
-                        <input pInputText formControlName="descripcion"
+                        <input pInputText id="categoria-descripcion" formControlName="descripcion"
                             placeholder="DESCRIPCIÓN BREVE DE LA CATEGORÍA"
                             class="w-full"
                             [appUppercase]="true" />

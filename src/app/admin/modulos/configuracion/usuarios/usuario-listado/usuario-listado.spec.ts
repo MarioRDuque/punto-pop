@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { UsuarioListado } from './usuario-listado';
 
@@ -8,7 +11,8 @@ describe('UsuarioListado', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UsuarioListado]
+      imports: [UsuarioListado],
+      providers: [provideZonelessChangeDetection(), provideHttpClient(), MessageService]
     })
     .compileComponents();
 

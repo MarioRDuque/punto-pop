@@ -36,26 +36,26 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-precioVenta" class="text-xs font-medium text-surface-500">
                         Precio de venta <span class="text-red-400">*</span>
                     </label>
-                    <p-inputnumber formControlName="precioVenta"
+                    <p-inputnumber inputId="producto-precioVenta" formControlName="precioVenta"
                         mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                         [min]="0" [style]="{'width':'100%'}" />
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-tarifaIvaId" class="text-xs font-medium text-surface-500">
                         Tarifa IVA <span class="text-red-400">*</span>
                     </label>
-                    <p-select formControlName="tarifaIvaId"
+                    <p-select inputId="producto-tarifaIvaId" formControlName="tarifaIvaId"
                         [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
                         [style]="{'width':'100%'}" appendTo="body" />
                 </div>
             </div>
 
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Costo promedio</label>
-                <p-inputnumber formControlName="costo"
+                <label for="producto-costo" class="text-xs font-medium text-surface-500">Costo promedio</label>
+                <p-inputnumber inputId="producto-costo" formControlName="costo"
                     mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                     [style]="{'width':'100%'}" [readonly]="true" />
                 <p class="text-xs text-surface-400 m-0">Calculado automáticamente a partir de las compras registradas</p>
@@ -75,11 +75,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-categoriaId" class="text-xs font-medium text-surface-500">
                         Categoría <span class="text-red-400">*</span>
                     </label>
                     <div class="flex gap-1 items-center">
-                        <p-select formControlName="categoriaId"
+                        <p-select inputId="producto-categoriaId" formControlName="categoriaId"
                             [options]="categorias()" optionLabel="nombre" optionValue="codigo"
                             [filter]="true" filterBy="nombre"
                             [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
@@ -92,11 +92,11 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-unidadMedidaId" class="text-xs font-medium text-surface-500">
                         Unidad de medida <span class="text-red-400">*</span>
                     </label>
                     <div class="flex gap-1 items-center">
-                        <p-select formControlName="unidadMedidaId"
+                        <p-select inputId="producto-unidadMedidaId" formControlName="unidadMedidaId"
                             [options]="unidades()" optionLabel="nombre" optionValue="codigo"
                             [filter]="true" filterBy="nombre,abreviatura"
                             [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
@@ -124,11 +124,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-stock" class="text-xs font-medium text-surface-500">
                         {{ accion !== accionEnum.CREAR ? 'Stock (calculado)' : 'Stock inicial' }}
                         @if (accion === accionEnum.CREAR) { <span class="text-red-400">*</span> }
                     </label>
-                    <p-inputnumber formControlName="stock"
+                    <p-inputnumber inputId="producto-stock" formControlName="stock"
                         [min]="0" [style]="{'width':'100%'}"
                         [readonly]="accion !== accionEnum.CREAR" />
                     @if (accion !== accionEnum.CREAR) {
@@ -136,10 +136,10 @@
                     }
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">
+                    <label for="producto-stockMinimo" class="text-xs font-medium text-surface-500">
                         Stock mínimo <span class="text-red-400">*</span>
                     </label>
-                    <p-inputnumber formControlName="stockMinimo"
+                    <p-inputnumber inputId="producto-stockMinimo" formControlName="stockMinimo"
                         [min]="0" [style]="{'width':'100%'}" />
                     <p class="text-xs text-surface-400 m-0">Alerta cuando el stock baje de este valor</p>
                 </div>
@@ -185,14 +185,14 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Precio de venta <span class="text-red-400">*</span></label>
-                <p-inputnumber formControlName="precioVenta"
+                <label for="producto-rapido-precioVenta" class="text-xs font-medium text-surface-500">Precio de venta <span class="text-red-400">*</span></label>
+                <p-inputnumber inputId="producto-rapido-precioVenta" formControlName="precioVenta"
                     mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                     [min]="0" [style]="{'width':'100%'}" />
             </div>
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Tarifa IVA <span class="text-red-400">*</span></label>
-                <p-select formControlName="tarifaIvaId"
+                <label for="producto-rapido-tarifaIvaId" class="text-xs font-medium text-surface-500">Tarifa IVA <span class="text-red-400">*</span></label>
+                <p-select inputId="producto-rapido-tarifaIvaId" formControlName="tarifaIvaId"
                     [options]="tarifasIva()" optionLabel="descripcion" optionValue="id"
                     [style]="{'width':'100%'}" appendTo="body" />
             </div>
@@ -200,9 +200,9 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Categoría <span class="text-red-400">*</span></label>
+                <label for="producto-rapido-categoriaId" class="text-xs font-medium text-surface-500">Categoría <span class="text-red-400">*</span></label>
                 <div class="flex gap-1 items-center">
-                    <p-select formControlName="categoriaId"
+                    <p-select inputId="producto-rapido-categoriaId" formControlName="categoriaId"
                         [options]="categorias()" optionLabel="nombre" optionValue="codigo"
                         [filter]="true" filterBy="nombre"
                         [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
@@ -212,9 +212,9 @@
                 </div>
             </div>
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Unidad de medida <span class="text-red-400">*</span></label>
+                <label for="producto-rapido-unidadMedidaId" class="text-xs font-medium text-surface-500">Unidad de medida <span class="text-red-400">*</span></label>
                 <div class="flex gap-1 items-center">
-                    <p-select formControlName="unidadMedidaId"
+                    <p-select inputId="producto-rapido-unidadMedidaId" formControlName="unidadMedidaId"
                         [options]="unidades()" optionLabel="nombre" optionValue="codigo"
                         [filter]="true" filterBy="nombre,abreviatura"
                         [style]="{'width':'100%'}" appendTo="body" class="flex-1" />
@@ -227,12 +227,12 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Stock inicial <span class="text-red-400">*</span></label>
-                <p-inputnumber formControlName="stock" [min]="0" [style]="{'width':'100%'}" />
+                <label for="producto-rapido-stock" class="text-xs font-medium text-surface-500">Stock inicial <span class="text-red-400">*</span></label>
+                <p-inputnumber inputId="producto-rapido-stock" formControlName="stock" [min]="0" [style]="{'width':'100%'}" />
             </div>
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">Stock mínimo <span class="text-red-400">*</span></label>
-                <p-inputnumber formControlName="stockMinimo" [min]="0" [style]="{'width':'100%'}" />
+                <label for="producto-rapido-stockMinimo" class="text-xs font-medium text-surface-500">Stock mínimo <span class="text-red-400">*</span></label>
+                <p-inputnumber inputId="producto-rapido-stockMinimo" formControlName="stockMinimo" [min]="0" [style]="{'width':'100%'}" />
             </div>
         </div>
     </div>

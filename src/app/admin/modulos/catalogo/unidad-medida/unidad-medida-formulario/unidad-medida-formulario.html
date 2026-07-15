@@ -19,29 +19,29 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-medium text-surface-500">
+                            <label for="unidad-codigo" class="text-xs font-medium text-surface-500">
                                 Código <span class="text-red-400">*</span>
                             </label>
-                            <input pInputText formControlName="codigo"
+                            <input pInputText id="unidad-codigo" formControlName="codigo"
                                 placeholder="EJ. KG"
                                 class="w-full"
                                 [appUppercase]="true" />
                             <p class="text-xs text-surface-400 m-0">Identificador único · no se puede cambiar al editar</p>
                         </div>
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-medium text-surface-500">
+                            <label for="unidad-nombre" class="text-xs font-medium text-surface-500">
                                 Nombre <span class="text-red-400">*</span>
                             </label>
-                            <input pInputText formControlName="nombre"
+                            <input pInputText id="unidad-nombre" formControlName="nombre"
                                 placeholder="EJ. KILOGRAMO"
                                 class="w-full"
                                 [appUppercase]="true" />
                         </div>
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-medium text-surface-500">
+                            <label for="unidad-abreviatura" class="text-xs font-medium text-surface-500">
                                 Abreviatura <span class="text-red-400">*</span>
                             </label>
-                            <input pInputText formControlName="abreviatura"
+                            <input pInputText id="unidad-abreviatura" formControlName="abreviatura"
                                 placeholder="EJ. KG"
                                 class="w-full"
                                 [appUppercase]="true" />

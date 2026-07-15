@@ -74,7 +74,7 @@ export class ClienteListado implements OnInit {
 
   setFilter(tab: FilterTab) {
     this.activeFilter.set(tab);
-    (this.gridApi as any)?.purgeServerSideCache([]);
+    this.gridApi?.refreshServerSide({ route: [], purge: true });
   }
 
   onSearchChange(value: string): void {
@@ -87,11 +87,11 @@ export class ClienteListado implements OnInit {
     if (!value) {
       this.searchQuery.set('');
       this.gridApi?.setGridOption('quickFilterText', '');
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
       return;
     }
     if ((this.gridApi?.getDisplayedRowCount() ?? 0) === 0) {
-      (this.gridApi as any)?.purgeServerSideCache([]);
+      this.gridApi?.refreshServerSide({ route: [], purge: true });
     }
   }
 
@@ -134,7 +134,7 @@ export class ClienteListado implements OnInit {
             this.toast.success(
               'Cliente ' + resultado.nombre + (resultado.estado ? ' activado' : ' inactivado')
             );
-            (this.gridApi as any)?.purgeServerSideCache([]);
+            this.gridApi?.refreshServerSide({ route: [], purge: true });
             this.cargando.inactivar();
           },
         });
@@ -150,7 +150,7 @@ export class ClienteListado implements OnInit {
         .subscribe({
           next: () => {
             this.toast.success('El cliente ha sido eliminado.');
-            (this.gridApi as any)?.purgeServerSideCache([]);
+            this.gridApi?.refreshServerSide({ route: [], purge: true });
             this.cargando.inactivar();
           },
         });
