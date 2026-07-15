@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { HeaderCrud } from './header-crud';
 
@@ -8,7 +10,8 @@ describe('HeaderCrud', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderCrud]
+      imports: [HeaderCrud],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()]
     })
     .compileComponents();
 
