@@ -8,6 +8,7 @@ import { ColDef } from 'ag-grid-enterprise';
 import { TipoFiltro } from '../../../enums/tipo-filtro';
 import { HttpParams } from '@angular/common/http';
 import { UtilService } from '../../../service/util.service';
+import { renderAvatarBadge } from '../../../service/ag-grid-badge.util';
 
 const CACHE_KEY = 'roles';
 
@@ -98,10 +99,9 @@ export class RolService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: ConfRol }) => {
           const r     = params.data;
-          const color = this.getAvatarColor(r.rolCodigo);
           const code  = (r.rolCodigo ?? '').substring(0, 3).toUpperCase();
           return `<div style="display:flex;align-items:center;gap:8px">
-            <div style="width:26px;height:26px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;flex-shrink:0;letter-spacing:.5px">${code}</div>
+            ${renderAvatarBadge(r.rolCodigo, code)}
             <div style="display:flex;flex-direction:column;gap:1px">
               <span style="font-size:12px;font-weight:600;line-height:1.3">${r.rolDescripcion ?? ''}</span>
               <span style="font-size:10px;opacity:0.5;line-height:1.3;font-family:monospace">${r.rolCodigo ?? ''}</span>
@@ -129,19 +129,4 @@ export class RolService {
     ];
   }
 
-  private readonly avatarColors = [
-    '#5271df', '#3ea882', '#e0834e', '#9b6dd4', '#3a9fc4',
-    '#d4646e', '#4aab8e', '#c47f3a', '#6b7fd4', '#5aa87b',
-    '#c45c8c', '#4d98c4',
-  ];
-
-  private getAvatarColor(key: string): string {
-    const str = key ?? '';
-    let h = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = (Math.imul(h, 0x01000193)) >>> 0;
-    }
-    return this.avatarColors[h % this.avatarColors.length];
-  }
 }

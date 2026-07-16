@@ -6,6 +6,7 @@ import { ApiService } from '../../../service/api.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { CacheService } from '../../../service/cache.service';
 import { UtilService } from '../../../service/util.service';
+import { getInitials, renderAvatarBadge } from '../../../service/ag-grid-badge.util';
 import { CatCategoria } from '../../../entities/CatCategoria';
 import { PageResponse } from '../../../entities/PageResponse';
 
@@ -91,10 +92,9 @@ export class CategoriaService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: CatCategoria }) => {
           const c       = params.data;
-          const initials = this.getInitials(c.nombre);
-          const color   = this.getAvatarColor(c.nombre);
+          const initials = getInitials(c.nombre);
           return `<div style="display:flex;align-items:center;gap:8px">
-            <div style="width:26px;height:26px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0">${initials}</div>
+            ${renderAvatarBadge(c.nombre, initials)}
             <div style="display:flex;flex-direction:column;gap:1px">
               <span style="font-size:12px;font-weight:600;line-height:1.3">${c.nombre ?? ''}</span>
               <span style="font-size:10px;opacity:0.5;line-height:1.3;font-family:monospace">${c.codigo ?? ''}</span>
@@ -124,25 +124,4 @@ export class CategoriaService {
     ];
   }
 
-  private getInitials(nombre: string): string {
-    const parts = (nombre ?? '').trim().split(/\s+/);
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return (nombre ?? '??').substring(0, 2).toUpperCase();
-  }
-
-  private readonly avatarColors = [
-    '#5271df', '#3ea882', '#e0834e', '#9b6dd4', '#3a9fc4',
-    '#d4646e', '#4aab8e', '#c47f3a', '#6b7fd4', '#5aa87b',
-    '#c45c8c', '#4d98c4',
-  ];
-
-  private getAvatarColor(key: string): string {
-    const str = key ?? '';
-    let h = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = (Math.imul(h, 0x01000193)) >>> 0;
-    }
-    return this.avatarColors[h % this.avatarColors.length];
-  }
 }

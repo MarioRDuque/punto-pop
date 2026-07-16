@@ -6,6 +6,7 @@ import { ApiService } from '../../../service/api.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { CacheService } from '../../../service/cache.service';
 import { UtilService } from '../../../service/util.service';
+import { renderAvatarBadge } from '../../../service/ag-grid-badge.util';
 import { CatUnidadMedida } from '../../../entities/CatUnidadMedida';
 import { PageResponse } from '../../../entities/PageResponse';
 
@@ -92,9 +93,8 @@ export class UnidadMedidaService {
         cellRenderer: (params: { data: CatUnidadMedida }) => {
           const u     = params.data;
           const abbr  = (u.abreviatura ?? '').substring(0, 3).toUpperCase() || '—';
-          const color = this.getAvatarColor(u.nombre);
           return `<div style="display:flex;align-items:center;gap:8px">
-            <div style="width:26px;height:26px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0;letter-spacing:.3px">${abbr}</div>
+            ${renderAvatarBadge(u.nombre, abbr)}
             <div style="display:flex;flex-direction:column;gap:1px">
               <span style="font-size:12px;font-weight:600;line-height:1.3">${u.nombre ?? ''}</span>
               <span style="font-size:10px;opacity:0.5;line-height:1.3;font-family:monospace">${u.codigo ?? ''}</span>
@@ -110,19 +110,4 @@ export class UnidadMedidaService {
     ];
   }
 
-  private readonly avatarColors = [
-    '#5271df', '#3ea882', '#e0834e', '#9b6dd4', '#3a9fc4',
-    '#d4646e', '#4aab8e', '#c47f3a', '#6b7fd4', '#5aa87b',
-    '#c45c8c', '#4d98c4',
-  ];
-
-  private getAvatarColor(key: string): string {
-    const str = key ?? '';
-    let h = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = (Math.imul(h, 0x01000193)) >>> 0;
-    }
-    return this.avatarColors[h % this.avatarColors.length];
-  }
 }

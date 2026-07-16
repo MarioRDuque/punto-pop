@@ -6,12 +6,19 @@ import { ApiService } from '../../../service/api.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { CacheService } from '../../../service/cache.service';
 import { UtilService } from '../../../service/util.service';
+import { EstadoBadgeConfig, renderStatusBadge } from '../../../service/ag-grid-badge.util';
 import { Venta } from '../../../entities/Venta';
 import { Comprobante } from '../../../entities/Comprobante';
 import { PageResponse } from '../../../entities/PageResponse';
 
 const CACHE_KEY = 'ventas';
 const PAGE_SIZE = 20;
+
+const ESTADO_VENTA_BADGE_CFG: Record<string, EstadoBadgeConfig> = {
+  PENDIENTE:  { tone: 'warn',    label: 'Pendiente' },
+  COMPLETADA: { tone: 'success', label: 'Completada' },
+  ANULADA:    { tone: 'danger',  label: 'Anulada' },
+};
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
@@ -153,13 +160,7 @@ export class VentaService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: Venta }) => {
           const e = params.data?.estado ?? '';
-          const map: Record<string, { bg: string; color: string; label: string }> = {
-            PENDIENTE:  { bg: '#fef9c3', color: '#854d0e', label: 'Pendiente' },
-            COMPLETADA: { bg: '#dcfce7', color: '#166534', label: 'Completada' },
-            ANULADA:    { bg: '#fee2e2', color: '#991b1b', label: 'Anulada' },
-          };
-          const s = map[e] ?? { bg: 'var(--surface-border)', color: 'var(--text-color-secondary)', label: e };
-          return `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;background:${s.bg};color:${s.color}">${s.label}</span>`;
+          return renderStatusBadge(e, ESTADO_VENTA_BADGE_CFG);
         },
       },
       {

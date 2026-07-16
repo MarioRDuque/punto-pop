@@ -6,10 +6,17 @@ import { ApiService } from '../../../service/api.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { CacheService } from '../../../service/cache.service';
 import { UtilService } from '../../../service/util.service';
+import { EstadoBadgeConfig, getInitials, renderAvatarBadge, renderStatusBadge } from '../../../service/ag-grid-badge.util';
 import { Compra } from '../../../entities/Compra';
 import { PageResponse } from '../../../entities/PageResponse';
 
 const CACHE_KEY = 'compras';
+
+const ESTADO_COMPRA_BADGE_CFG: Record<string, EstadoBadgeConfig> = {
+  BORRADOR: { tone: 'warn',    label: 'Borrador' },
+  RECIBIDA: { tone: 'success', label: 'Recibida' },
+  ANULADA:  { tone: 'danger',  label: 'Anulada'  },
+};
 
 @Injectable({ providedIn: 'root' })
 export class CompraService {
@@ -95,9 +102,9 @@ export class CompraService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: Compra }) => {
           const nombre = params.data?.proveedorNombre ?? '—';
-          const initials = nombre.split(' ').slice(0, 2).map((w: string) => w[0] ?? '').join('').toUpperCase();
+          const initials = getInitials(nombre);
           return `<div style="display:flex;align-items:center;gap:8px">
-            <div style="width:26px;height:26px;border-radius:6px;background:#6366f1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0">${initials}</div>
+            ${renderAvatarBadge(nombre, initials)}
             <span style="font-size:12px;font-weight:600">${nombre}</span>
           </div>`;
         },
@@ -116,16 +123,7 @@ export class CompraService {
         width: 120,
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { value: string }) => {
-          const cfg: Record<string, { bg: string; dot: string; text: string; label: string }> = {
-            BORRADOR:  { bg: '#fef9c3', dot: '#ca8a04', text: '#854d0e', label: 'Borrador' },
-            RECIBIDA:  { bg: '#dcfce7', dot: '#16a34a', text: '#15803d', label: 'Recibida' },
-            ANULADA:   { bg: '#fee2e2', dot: '#dc2626', text: '#991b1b', label: 'Anulada'  },
-          };
-          const c = cfg[params.value] ?? { bg: '#f3f4f6', dot: '#9ca3af', text: '#6b7280', label: params.value };
-          return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:9999px;background:${c.bg};font-size:11px;font-weight:500;color:${c.text};line-height:1">
-            <span style="width:6px;height:6px;border-radius:50%;background:${c.dot};flex-shrink:0"></span>
-            ${c.label}
-          </span>`;
+          return renderStatusBadge(params.value, ESTADO_COMPRA_BADGE_CFG, { dot: true });
         },
       },
       {
