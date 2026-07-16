@@ -64,16 +64,6 @@ export const MODULOS_PERMISOS: ModuloPermiso[] = [
       { codigo: 'REPORTES_VER', label: 'Ver' },
     ],
   },
-  {
-    modulo: 'CONFIGURACION',
-    label: 'Configuración',
-    acciones: [
-      { codigo: 'CONFIGURACION_VER', label: 'Ver' },
-      { codigo: 'CONFIGURACION_CREAR', label: 'Crear' },
-      { codigo: 'CONFIGURACION_EDITAR', label: 'Editar' },
-      { codigo: 'CONFIGURACION_ELIMINAR', label: 'Eliminar' },
-    ],
-  },
 ];
 
 export const TODOS_LOS_PERMISOS: string[] = MODULOS_PERMISOS.flatMap(m =>
