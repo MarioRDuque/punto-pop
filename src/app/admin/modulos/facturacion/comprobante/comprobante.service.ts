@@ -4,6 +4,7 @@ import { ColDef } from 'ag-grid-enterprise';
 import { ApiService } from '../../../service/api.service';
 import { CargandoService } from '../../../service/cargando.service';
 import { UtilService } from '../../../service/util.service';
+import { EstadoBadgeConfig, renderStatusBadge } from '../../../service/ag-grid-badge.util';
 import { Comprobante } from '../../../entities/Comprobante';
 
 @Injectable({ providedIn: 'root' })
@@ -84,15 +85,14 @@ export class ComprobanteService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: Comprobante }) => {
           const e = params.data?.estado ?? '';
-          const map: Record<string, { bg: string; color: string }> = {
-            AUTORIZADO: { bg: '#dcfce7', color: '#166534' },
-            ENVIADO:    { bg: '#dbeafe', color: '#1e40af' },
-            PENDIENTE:  { bg: '#fef9c3', color: '#854d0e' },
-            DEVUELTO:   { bg: '#ffedd5', color: '#9a3412' },
-            ERROR:      { bg: '#fee2e2', color: '#991b1b' },
+          const cfg: Record<string, EstadoBadgeConfig> = {
+            AUTORIZADO: { tone: 'success',   label: e },
+            ENVIADO:    { tone: 'info',      label: e },
+            PENDIENTE:  { tone: 'warn',      label: e },
+            DEVUELTO:   { tone: 'secondary', label: e },
+            ERROR:      { tone: 'danger',    label: e },
           };
-          const s = map[e] ?? { bg: 'var(--surface-border)', color: 'var(--text-color-secondary)' };
-          return `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;background:${s.bg};color:${s.color}">${e}</span>`;
+          return renderStatusBadge(e, cfg);
         },
       },
       {
