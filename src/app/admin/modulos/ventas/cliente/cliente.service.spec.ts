@@ -86,9 +86,11 @@ describe('ClienteService', () => {
       size: 20,
     };
 
-    service.cargar('activos', 0, 20, 'Juan').subscribe();
+    service.cargar('activos', 2, 50, 'Juan').subscribe();
 
     const req = httpMock.expectOne((r) => r.url === `${baseUrl}/ventas/cliente/buscar`);
+    expect(req.request.params.get('page')).toBe('2');
+    expect(req.request.params.get('size')).toBe('50');
     expect(req.request.params.get('filtro')).toBe('activos');
     expect(req.request.params.get('q')).toBe('Juan');
     req.flush(page);

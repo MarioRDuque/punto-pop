@@ -77,16 +77,19 @@ describe('ComprobanteService', () => {
 
   it('cargar hace GET a /facturacion/comprobante y llena listaComprobantes', () => {
     service.cargar().subscribe();
+    expect(cargando.loading()).toBe(true);
 
     const req = httpMock.expectOne(`${baseUrl}/facturacion/comprobante`);
     expect(req.request.method).toBe('GET');
     req.flush([comprobanteMock]);
 
     expect(service.listaComprobantes()).toEqual([comprobanteMock]);
+    expect(cargando.loading()).toBe(false);
   });
 
   it('cargar desactiva el loading incluso si la petición falla', () => {
     service.cargar().subscribe({ error: () => undefined });
+    expect(cargando.loading()).toBe(true);
 
     const req = httpMock.expectOne(`${baseUrl}/facturacion/comprobante`);
     req.flush('error', { status: 500, statusText: 'Server Error' });

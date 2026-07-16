@@ -150,13 +150,15 @@ describe('VentaService', () => {
     expect(cache.invalidar).toHaveBeenCalledWith('ventas');
   });
 
-  it('actualizarElGrid reemplaza el item existente por id', () => {
+  it('actualizarElGrid reemplaza el item existente por id e invalida la cache', () => {
     service.agregarAlGrid(ventaMock);
+    spyOn(cache, 'invalidar');
     const actualizada: Venta = { ...ventaMock, total: 99 };
 
     service.actualizarElGrid(actualizada);
 
     expect(service.listaVentas()).toEqual([actualizada]);
+    expect(cache.invalidar).toHaveBeenCalledWith('ventas');
   });
 
   it('obtenerComprobante hace GET a /facturacion/comprobante/{ventaId}', () => {
