@@ -12,6 +12,12 @@ import { PageResponse } from '../../../entities/PageResponse';
 
 const CACHE_KEY = 'compras';
 
+const ESTADO_COMPRA_BADGE_CFG: Record<string, EstadoBadgeConfig> = {
+  BORRADOR: { tone: 'warn',    label: 'Borrador' },
+  RECIBIDA: { tone: 'success', label: 'Recibida' },
+  ANULADA:  { tone: 'danger',  label: 'Anulada'  },
+};
+
 @Injectable({ providedIn: 'root' })
 export class CompraService {
 
@@ -117,12 +123,7 @@ export class CompraService {
         width: 120,
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { value: string }) => {
-          const cfg: Record<string, EstadoBadgeConfig> = {
-            BORRADOR: { tone: 'warn',    label: 'Borrador' },
-            RECIBIDA: { tone: 'success', label: 'Recibida' },
-            ANULADA:  { tone: 'danger',  label: 'Anulada'  },
-          };
-          return renderStatusBadge(params.value, cfg, { dot: true });
+          return renderStatusBadge(params.value, ESTADO_COMPRA_BADGE_CFG, { dot: true });
         },
       },
       {

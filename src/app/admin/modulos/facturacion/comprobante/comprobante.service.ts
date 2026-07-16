@@ -7,6 +7,14 @@ import { UtilService } from '../../../service/util.service';
 import { EstadoBadgeConfig, renderStatusBadge } from '../../../service/ag-grid-badge.util';
 import { Comprobante } from '../../../entities/Comprobante';
 
+const ESTADO_SRI_BADGE_CFG: Record<string, EstadoBadgeConfig> = {
+  AUTORIZADO: { tone: 'success',   label: 'AUTORIZADO' },
+  ENVIADO:    { tone: 'info',      label: 'ENVIADO' },
+  PENDIENTE:  { tone: 'warn',      label: 'PENDIENTE' },
+  DEVUELTO:   { tone: 'secondary', label: 'DEVUELTO' },
+  ERROR:      { tone: 'danger',    label: 'ERROR' },
+};
+
 @Injectable({ providedIn: 'root' })
 export class ComprobanteService {
 
@@ -85,14 +93,7 @@ export class ComprobanteService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: Comprobante }) => {
           const e = params.data?.estado ?? '';
-          const cfg: Record<string, EstadoBadgeConfig> = {
-            AUTORIZADO: { tone: 'success',   label: e },
-            ENVIADO:    { tone: 'info',      label: e },
-            PENDIENTE:  { tone: 'warn',      label: e },
-            DEVUELTO:   { tone: 'secondary', label: e },
-            ERROR:      { tone: 'danger',    label: e },
-          };
-          return renderStatusBadge(e, cfg);
+          return renderStatusBadge(e, ESTADO_SRI_BADGE_CFG);
         },
       },
       {

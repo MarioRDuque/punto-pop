@@ -14,6 +14,12 @@ import { PageResponse } from '../../../entities/PageResponse';
 const CACHE_KEY = 'ventas';
 const PAGE_SIZE = 20;
 
+const ESTADO_VENTA_BADGE_CFG: Record<string, EstadoBadgeConfig> = {
+  PENDIENTE:  { tone: 'warn',    label: 'Pendiente' },
+  COMPLETADA: { tone: 'success', label: 'Completada' },
+  ANULADA:    { tone: 'danger',  label: 'Anulada' },
+};
+
 @Injectable({ providedIn: 'root' })
 export class VentaService {
 
@@ -154,12 +160,7 @@ export class VentaService {
         cellStyle: { display: 'flex', alignItems: 'center' },
         cellRenderer: (params: { data: Venta }) => {
           const e = params.data?.estado ?? '';
-          const cfg: Record<string, EstadoBadgeConfig> = {
-            PENDIENTE:  { tone: 'warn',    label: 'Pendiente' },
-            COMPLETADA: { tone: 'success', label: 'Completada' },
-            ANULADA:    { tone: 'danger',  label: 'Anulada' },
-          };
-          return renderStatusBadge(e, cfg);
+          return renderStatusBadge(e, ESTADO_VENTA_BADGE_CFG);
         },
       },
       {
