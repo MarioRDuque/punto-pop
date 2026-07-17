@@ -65,7 +65,6 @@ export class AppTopbar implements OnInit, OnDestroy {
         'configuracion/rol': 'Roles',
         'facturacion/comprobantes': 'Comprobantes',
         reportes: 'Reportes',
-        uikit: 'UI Kit',
     };
 
     // Etiquetas por ruta + tab activo

@@ -19,7 +19,6 @@ export const routes: Routes = [
             { path: 'inventario', loadChildren: () => import('./admin/modulos/inventario/inventario.routes') },
             { path: 'facturacion', loadChildren: () => import('./admin/modulos/facturacion/facturacion.routes') },
             { path: 'reportes', loadChildren: () => import('./admin/modulos/reportes/reportes.routes') },
-            { path: 'uikit', loadChildren: () => import('./admin/modulos/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./admin/modulos/pages.routes') }
         ]
