@@ -46,3 +46,5 @@ Thumbs.db
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/e2e/visual-audit/screenshots/
+/e2e/visual-audit/report.json
