@@ -16,7 +16,7 @@ import { ToastService } from '../../../../service/toast.service';
   imports: [CommonModule, FormsModule, ButtonModule, CheckboxModule],
   template: `
     <div class="preferencias-notificacion">
-      <p class="text-sm text-gray-600 mb-4">
+      <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
         Selecciona qué tipos de notificaciones deseas recibir:
       </p>
 
@@ -30,7 +30,7 @@ import { ToastService } from '../../../../service/toast.service';
           <label for="stockCritico" class="ml-2">
             <div class="preferencia-label">
               <span class="font-semibold">📦 Stock Crítico</span>
-              <span class="text-sm text-gray-500">Alertas cuando el inventario está bajo</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">Alertas cuando el inventario está bajo</span>
             </div>
           </label>
         </div>
@@ -44,7 +44,7 @@ import { ToastService } from '../../../../service/toast.service';
           <label for="facturaVencida" class="ml-2">
             <div class="preferencia-label">
               <span class="font-semibold">💰 Facturas Vencidas</span>
-              <span class="text-sm text-gray-500">Notificaciones de facturas por cobrar vencidas</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">Notificaciones de facturas por cobrar vencidas</span>
             </div>
           </label>
         </div>
@@ -58,7 +58,7 @@ import { ToastService } from '../../../../service/toast.service';
           <label for="aprobacionPendiente" class="ml-2">
             <div class="preferencia-label">
               <span class="font-semibold">✅ Aprobaciones Pendientes</span>
-              <span class="text-sm text-gray-500">Solicitudes que requieren tu aprobación</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">Solicitudes que requieren tu aprobación</span>
             </div>
           </label>
         </div>
@@ -72,7 +72,7 @@ import { ToastService } from '../../../../service/toast.service';
           <label for="tareaAsignada" class="ml-2">
             <div class="preferencia-label">
               <span class="font-semibold">📋 Tareas Asignadas</span>
-              <span class="text-sm text-gray-500">Cuando te asignan una nueva tarea</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">Cuando te asignan una nueva tarea</span>
             </div>
           </label>
         </div>
@@ -86,7 +86,7 @@ import { ToastService } from '../../../../service/toast.service';
           <label for="mensajeSistema" class="ml-2">
             <div class="preferencia-label">
               <span class="font-semibold">🔔 Mensajes del Sistema</span>
-              <span class="text-sm text-gray-500">Anuncios y actualizaciones importantes</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">Anuncios y actualizaciones importantes</span>
             </div>
           </label>
         </div>
@@ -121,14 +121,14 @@ import { ToastService } from '../../../../service/toast.service';
       display: flex;
       align-items: flex-start;
       padding: 1rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--surface-border);
       border-radius: 0.5rem;
-      background: #f9fafb;
+      background: var(--surface-50);
       transition: background-color 0.2s;
     }
 
     .preferencia-item:hover {
-      background: #f3f4f6;
+      background: var(--surface-hover);
     }
 
     .preferencia-label {

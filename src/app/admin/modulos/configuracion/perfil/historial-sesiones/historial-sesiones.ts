@@ -25,16 +25,16 @@ export interface Sesion {
   imports: [CommonModule, ButtonModule, TableModule, TagModule],
   template: `
     <div class="historial-sesiones">
-      <p class="text-sm text-gray-600 mb-4">
+      <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
         Gestiona las sesiones activas en tus dispositivos. Puedes cerrar sesiones remotas por seguridad.
       </p>
 
       @if (cargando()) {
         <div class="flex justify-center items-center py-8">
-          <i class="pi pi-spin pi-spinner text-4xl text-gray-400"></i>
+          <i class="pi pi-spin pi-spinner text-4xl text-surface-400 dark:text-surface-500"></i>
         </div>
       } @else if (sesiones().length === 0) {
-        <div class="text-center py-8 text-gray-500">
+        <div class="text-center py-8 text-surface-500 dark:text-surface-400">
           <i class="pi pi-info-circle text-4xl mb-2"></i>
           <p>No hay sesiones activas</p>
         </div>
@@ -105,7 +105,7 @@ export interface Sesion {
 
     :host ::ng-deep {
       .p-datatable .p-datatable-thead > tr > th {
-        background-color: #f9fafb;
+        background-color: var(--surface-50);
         font-weight: 600;
         font-size: 0.875rem;
       }
@@ -167,7 +167,7 @@ export class HistorialSesiones {
     if (lower.includes('tablet') || lower.includes('ipad')) {
       return 'pi pi-tablet text-purple-500';
     }
-    return 'pi pi-desktop text-gray-500';
+    return 'pi pi-desktop text-surface-500 dark:text-surface-400';
   }
 
   formatearFecha(fecha: Date): string {

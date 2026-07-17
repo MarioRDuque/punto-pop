@@ -21,10 +21,10 @@ import { AuthService } from '../../../../service/auth.service';
         <!-- Estado: 2FA Desactivado -->
         <div class="estado-2fa">
           <div class="flex items-center gap-2 mb-3">
-            <i class="pi pi-shield text-gray-400 text-2xl"></i>
+            <i class="pi pi-shield text-surface-400 dark:text-surface-500 text-2xl"></i>
             <span class="font-semibold">2FA Desactivado</span>
           </div>
-          <p class="text-sm text-gray-600 mb-4">
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
             La autenticación de dos factores añade una capa adicional de seguridad a tu cuenta.
           </p>
           
@@ -50,16 +50,16 @@ import { AuthService } from '../../../../service/auth.service';
               
               <div class="qr-instructions">
                 <h4 class="font-semibold mb-2">Instrucciones:</h4>
-                <ol class="text-sm text-gray-600 space-y-1">
+                <ol class="text-sm text-surface-600 dark:text-surface-400 space-y-1">
                   <li>1. Descarga una app de autenticación (Google Authenticator, Authy, etc.)</li>
                   <li>2. Escanea el código QR con la app</li>
                   <li>3. Ingresa el código de 6 dígitos que aparece en la app</li>
                 </ol>
-                
+
                 @if (secret()) {
                   <div class="secret-manual mt-3">
-                    <p class="text-xs text-gray-500">Código manual (si no puedes escanear):</p>
-                    <code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ secret() }}</code>
+                    <p class="text-xs text-surface-500 dark:text-surface-400">Código manual (si no puedes escanear):</p>
+                    <code class="text-xs bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded">{{ secret() }}</code>
                   </div>
                 }
               </div>
@@ -99,7 +99,7 @@ import { AuthService } from '../../../../service/auth.service';
             <i class="pi pi-shield text-green-500 text-2xl"></i>
             <span class="font-semibold text-green-700">2FA Activado</span>
           </div>
-          <p class="text-sm text-gray-600 mb-4">
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
             Tu cuenta está protegida con autenticación de dos factores.
           </p>
 
@@ -113,7 +113,7 @@ import { AuthService } from '../../../../service/auth.service';
           } @else {
             <!-- Formulario de desactivación -->
             <div class="desactivacion-form">
-              <p class="text-sm text-gray-600 mb-3">
+              <p class="text-sm text-surface-600 dark:text-surface-400 mb-3">
                 Ingresa un código de verificación para desactivar 2FA:
               </p>
               
@@ -162,9 +162,9 @@ import { AuthService } from '../../../../service/auth.service';
     .qr-container {
       margin-top: 1rem;
       padding: 1rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--surface-border);
       border-radius: 0.5rem;
-      background: #f9fafb;
+      background: var(--surface-50);
     }
 
     .qr-code-wrapper {
@@ -176,9 +176,9 @@ import { AuthService } from '../../../../service/auth.service';
     .qr-image {
       width: 200px;
       height: 200px;
-      border: 2px solid #e5e7eb;
+      border: 2px solid var(--surface-border);
       border-radius: 0.5rem;
-      background: white;
+      background: var(--surface-card);
     }
 
     .qr-loading {
@@ -187,9 +187,9 @@ import { AuthService } from '../../../../service/auth.service';
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #e5e7eb;
+      border: 2px solid var(--surface-border);
       border-radius: 0.5rem;
-      background: white;
+      background: var(--surface-card);
     }
 
     .qr-instructions ol {
@@ -199,9 +199,9 @@ import { AuthService } from '../../../../service/auth.service';
 
     .secret-manual {
       padding: 0.75rem;
-      background: white;
+      background: var(--surface-card);
       border-radius: 0.375rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--surface-border);
     }
 
     .field {
