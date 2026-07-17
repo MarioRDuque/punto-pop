@@ -14,27 +14,27 @@
                             style="background: var(--primary-color)">1</div>
                         <div>
                             <div class="text-sm font-semibold">Identidad</div>
-                            <div class="text-xs text-surface-400">Datos personales e inicio de sesión</div>
+                            <div class="text-xs text-surface-400 dark:text-surface-500">Datos personales e inicio de sesión</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label for="usuario-email" class="text-xs font-medium text-surface-500">
+                        <label for="usuario-email" class="text-xs font-medium text-surface-500 dark:text-surface-400">
                             Usuario (email) <span class="text-red-400">*</span>
                         </label>
                         <div class="relative">
-                            <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
+                            <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-surface-300 dark:text-surface-600"
                                 style="font-size:.875rem"></i>
                             <input pInputText id="usuario-email" formControlName="usuEmail"
                                 placeholder="usuario@correo.com"
                                 class="w-full" style="padding-left: 2.25rem" />
                         </div>
-                        <p class="text-xs text-surface-400 m-0">Será el nombre de acceso · no se puede cambiar una vez creado</p>
+                        <p class="text-xs text-surface-400 dark:text-surface-500 m-0">Será el nombre de acceso · no se puede cambiar una vez creado</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1">
-                            <label for="usuario-nombre" class="text-xs font-medium text-surface-500">
+                            <label for="usuario-nombre" class="text-xs font-medium text-surface-500 dark:text-surface-400">
                                 Nombre <span class="text-red-400">*</span>
                             </label>
                             <input pInputText id="usuario-nombre" formControlName="usuNombre"
@@ -42,7 +42,7 @@
                                 [appUppercase]="true" />
                         </div>
                         <div class="flex flex-col gap-1">
-                            <label for="usuario-apellidos" class="text-xs font-medium text-surface-500">Apellidos</label>
+                            <label for="usuario-apellidos" class="text-xs font-medium text-surface-500 dark:text-surface-400">Apellidos</label>
                             <input pInputText id="usuario-apellidos" formControlName="usuApellidos"
                                 placeholder="APELLIDOS" class="w-full"
                                 [appUppercase]="true" />
@@ -51,18 +51,18 @@
                 </div>
 
                 <!-- 2. ACCESO -->
-                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200 dark:border-surface-700">
                     <div class="flex items-start gap-3">
                         <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                             style="background: var(--primary-color)">2</div>
                         <div>
                             <div class="text-sm font-semibold">Acceso</div>
-                            <div class="text-xs text-surface-400">Contraseña y permisos del sistema</div>
+                            <div class="text-xs text-surface-400 dark:text-surface-500">Contraseña y permisos del sistema</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label for="usuario-clave" class="text-xs font-medium text-surface-500">
+                        <label for="usuario-clave" class="text-xs font-medium text-surface-500 dark:text-surface-400">
                             Contraseña <span class="text-red-400">*</span>
                         </label>
                         <p-password inputId="usuario-clave" formControlName="usuClave"
@@ -70,7 +70,7 @@
                             styleClass="w-full" inputStyleClass="w-full"
                             placeholder="••••••••••"
                             autocomplete="new-password" />
-                        <p class="text-xs text-surface-400 m-0">
+                        <p class="text-xs text-surface-400 dark:text-surface-500 m-0">
                             @if (accion() === accionEnum.CREAR) {
                                 Recomendado: 8+ caracteres con letras y números
                             } @else {
@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label for="usuario-roles" class="text-xs font-medium text-surface-500">
+                        <label for="usuario-roles" class="text-xs font-medium text-surface-500 dark:text-surface-400">
                             Roles <span class="text-red-400">*</span>
                         </label>
                         <p-multiselect inputId="usuario-roles" formControlName="roles"
@@ -91,28 +91,28 @@
                             placeholder="Seleccionar roles"
                             [style]="{'width':'100%'}"
                             appendTo="body" />
-                        <p class="text-xs text-surface-400 m-0">Determina los permisos del usuario en el sistema</p>
+                        <p class="text-xs text-surface-400 dark:text-surface-500 m-0">Determina los permisos del usuario en el sistema</p>
                     </div>
                 </div>
 
                 <!-- 3. CONTACTO -->
-                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200 dark:border-surface-700">
                     <div class="flex items-start gap-3">
                         <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                             style="background: var(--primary-color)">3</div>
                         <div>
                             <div class="text-sm font-semibold">
-                                Contacto <span class="font-normal text-surface-300 text-xs">· opcional</span>
+                                Contacto <span class="font-normal text-surface-300 dark:text-surface-600 text-xs">· opcional</span>
                             </div>
-                            <div class="text-xs text-surface-400">Datos de comunicación del usuario</div>
+                            <div class="text-xs text-surface-400 dark:text-surface-500">Datos de comunicación del usuario</div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1">
-                            <label for="usuario-telefono" class="text-xs font-medium text-surface-500">Teléfono</label>
+                            <label for="usuario-telefono" class="text-xs font-medium text-surface-500 dark:text-surface-400">Teléfono</label>
                             <div class="flex">
-                                <span class="flex items-center gap-1.5 px-3 border border-surface-200 border-r-0 rounded-l-lg text-sm text-surface-500 shrink-0"
+                                <span class="flex items-center gap-1.5 px-3 border border-surface-200 dark:border-surface-700 border-r-0 rounded-l-lg text-sm text-surface-500 dark:text-surface-400 shrink-0"
                                     style="background: var(--surface-hover)">
                                     <i class="pi pi-phone" style="font-size:.75rem"></i>+593
                                 </span>
@@ -120,12 +120,12 @@
                                     placeholder="99 999 9999" class="w-full"
                                     style="border-top-left-radius:0; border-bottom-left-radius:0" />
                             </div>
-                            <p class="text-xs text-surface-400 m-0">Móvil o fijo · sin código de país</p>
+                            <p class="text-xs text-surface-400 dark:text-surface-500 m-0">Móvil o fijo · sin código de país</p>
                         </div>
                         <div class="flex flex-col gap-1">
-                            <label for="usuario-direccion" class="text-xs font-medium text-surface-500">Dirección</label>
+                            <label for="usuario-direccion" class="text-xs font-medium text-surface-500 dark:text-surface-400">Dirección</label>
                             <div class="relative">
-                                <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300"
+                                <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-surface-300 dark:text-surface-600"
                                     style="font-size:.875rem"></i>
                                 <input pInputText id="usuario-direccion" formControlName="usuDireccion"
                                     placeholder="DIRECCIÓN (OPCIONAL)"
@@ -137,33 +137,33 @@
                 </div>
 
                 <!-- 4. ESTADO -->
-                <div class="flex flex-col gap-4 p-5 border-t border-surface-200">
+                <div class="flex flex-col gap-4 p-5 border-t border-surface-200 dark:border-surface-700">
                     <div class="flex items-start gap-3">
                         <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                             style="background: var(--primary-color)">4</div>
                         <div>
                             <div class="text-sm font-semibold">Estado</div>
-                            <div class="text-xs text-surface-400">Solo los activos pueden iniciar sesión</div>
+                            <div class="text-xs text-surface-400 dark:text-surface-500">Solo los activos pueden iniciar sesión</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200"
+                    <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200 dark:border-surface-700"
                         style="background: var(--surface-hover)">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                            [class.bg-green-100]="previewEstado()" [class.bg-red-100]="!previewEstado()">
+                            [class]="previewEstado() ? 'bg-green-100 dark:bg-green-500/20' : 'bg-red-100 dark:bg-red-500/20'">
                             <i class="pi" style="font-size:.75rem"
                                 [class.pi-check]="previewEstado()" [class.text-green-600]="previewEstado()"
                                 [class.pi-times]="!previewEstado()" [class.text-red-500]="!previewEstado()"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-sm font-semibold">{{ previewEstado() ? 'Usuario activo' : 'Usuario inactivo' }}</div>
-                            <div class="text-xs text-surface-400">{{ previewEstado() ? 'Puede iniciar sesión en el sistema' : 'No puede iniciar sesión en el sistema' }}</div>
+                            <div class="text-xs text-surface-400 dark:text-surface-500">{{ previewEstado() ? 'Puede iniciar sesión en el sistema' : 'No puede iniciar sesión en el sistema' }}</div>
                         </div>
                         <app-toggle-switch label="Estado" id="usuEstado" [showLabel]="false" />
                     </div>
                 </div>
             </div>
 
-            <p class="text-xs text-surface-400 px-1 m-0">* Campos requeridos</p>
+            <p class="text-xs text-surface-400 dark:text-surface-500 px-1 m-0">* Campos requeridos</p>
         </div>
 
         <!-- ══ DERECHA ══════════════════════════════════════════════════════════ -->
@@ -174,7 +174,7 @@
                 <div class="card flex flex-col gap-4 xl:sticky xl:top-4">
 
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold tracking-widest text-surface-400 uppercase">Vista previa</span>
+                        <span class="text-xs font-bold tracking-widest text-surface-400 dark:text-surface-500 uppercase">Vista previa</span>
                         <span class="flex items-center gap-1.5 text-xs font-semibold text-green-600 px-2 py-0.5 rounded-full"
                             style="background: color-mix(in srgb, #22c55e 12%, transparent)">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
@@ -197,54 +197,54 @@
                             @if (previewNombreCompleto()) {
                                 <div class="font-semibold text-sm">{{ previewNombreCompleto() }}</div>
                             } @else {
-                                <div class="text-sm text-surface-300 italic">Sin nombre</div>
+                                <div class="text-sm text-surface-300 dark:text-surface-600 italic">Sin nombre</div>
                             }
                             <div class="mt-1.5">
-                                <span class="text-xs bg-surface-100 text-surface-500 px-2.5 py-0.5 rounded-full">
+                                <span class="text-xs bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 px-2.5 py-0.5 rounded-full">
                                     {{ previewEstado() ? 'activo' : 'inactivo' }}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="border-t border-surface-100 pt-3 flex flex-col gap-3">
+                    <div class="border-t border-surface-100 dark:border-surface-800 pt-3 flex flex-col gap-3">
                         <div class="flex items-start gap-2.5">
-                            <i class="pi pi-envelope text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <i class="pi pi-envelope text-surface-300 dark:text-surface-600 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
                             <div class="flex flex-col gap-0.5 min-w-0">
-                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Email</span>
-                                <span class="text-xs text-surface-500 break-all">{{ previewEmail() || '— pendiente —' }}</span>
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 dark:text-surface-600 uppercase">Email</span>
+                                <span class="text-xs text-surface-500 dark:text-surface-400 break-all">{{ previewEmail() || '— pendiente —' }}</span>
                             </div>
                         </div>
                         <div class="flex items-start gap-2.5">
-                            <i class="pi pi-phone text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <i class="pi pi-phone text-surface-300 dark:text-surface-600 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
                             <div class="flex flex-col gap-0.5">
-                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Teléfono</span>
-                                <span class="text-xs text-surface-500">{{ previewTelefono() || '— pendiente —' }}</span>
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 dark:text-surface-600 uppercase">Teléfono</span>
+                                <span class="text-xs text-surface-500 dark:text-surface-400">{{ previewTelefono() || '— pendiente —' }}</span>
                             </div>
                         </div>
                         <div class="flex items-start gap-2.5">
-                            <i class="pi pi-shield text-surface-300 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
+                            <i class="pi pi-shield text-surface-300 dark:text-surface-600 shrink-0" style="font-size:.75rem; margin-top:1px"></i>
                             <div class="flex flex-col gap-0.5 min-w-0">
-                                <span class="text-[10px] font-bold tracking-widest text-surface-300 uppercase">Roles</span>
+                                <span class="text-[10px] font-bold tracking-widest text-surface-300 dark:text-surface-600 uppercase">Roles</span>
                                 @if (previewRoles().length) {
                                     <div class="flex flex-wrap gap-1 mt-0.5">
                                         @for (rol of previewRoles(); track rol) {
-                                            <span class="text-[10px] bg-surface-100 text-surface-500 px-1.5 py-0.5 rounded-full">{{ rol }}</span>
+                                            <span class="text-[10px] bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 px-1.5 py-0.5 rounded-full">{{ rol }}</span>
                                         }
                                     </div>
                                 } @else {
-                                    <span class="text-xs text-surface-500">— pendiente —</span>
+                                    <span class="text-xs text-surface-500 dark:text-surface-400">— pendiente —</span>
                                 }
                             </div>
                         </div>
                     </div>
 
-                    <div class="border-t border-surface-100 pt-3">
+                    <div class="border-t border-surface-100 dark:border-surface-800 pt-3">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-medium text-surface-500">Datos completados</span>
+                            <span class="text-xs font-medium text-surface-500 dark:text-surface-400">Datos completados</span>
                             <span class="text-xs font-bold" style="color: var(--primary-color)">{{ previewCompletadoPct() }}%</span>
                         </div>
-                        <div class="w-full h-2 rounded-full bg-surface-100 overflow-hidden">
+                        <div class="w-full h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                             <div class="h-full rounded-full transition-all duration-300"
                                 style="background: var(--primary-color)"
                                 [style.width.%]="previewCompletadoPct()">
@@ -257,10 +257,10 @@
             <!-- Foto de perfil -->
             <div class="card flex flex-col gap-4">
                 <div class="flex items-center gap-2">
-                    <i class="pi pi-camera text-surface-400" style="font-size:.875rem"></i>
+                    <i class="pi pi-camera text-surface-400 dark:text-surface-500" style="font-size:.875rem"></i>
                     <div>
                         <div class="text-sm font-semibold">Foto de perfil</div>
-                        <div class="text-xs text-surface-400">Imagen de identificación del usuario</div>
+                        <div class="text-xs text-surface-400 dark:text-surface-500">Imagen de identificación del usuario</div>
                     </div>
                 </div>
                 <app-fileupload

@@ -565,6 +565,10 @@ ag-grid-angular .ag-cell-value {
 .chip-total { background: var(--surface-border); color: var(--text-color-secondary); }
 .chip-ok    { background: #dcfce7; color: #16a34a; }
 .chip-err   { background: #fee2e2; color: #dc2626; }
+.app-dark {
+  .chip-ok  { background: color-mix(in srgb, #16a34a 22%, transparent); color: #4ade80; }
+  .chip-err { background: color-mix(in srgb, #dc2626 22%, transparent); color: #f87171; }
+}
 
 .import-table-wrap {
   max-height: 320px; overflow-y: auto;
@@ -581,6 +585,7 @@ ag-grid-angular .ag-cell-value {
   td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--surface-border); color: var(--text-color); }
   tr:last-child td { border-bottom: none; }
   tr.row-error td { background: #fff5f5; color: var(--text-color); }
+  .app-dark & tr.row-error td { background: color-mix(in srgb, #dc2626 12%, transparent); }
 }
 .td-num   { color: var(--text-color-secondary); font-size: 0.6875rem; }
 .td-muted { color: var(--text-color-secondary); }

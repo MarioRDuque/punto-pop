@@ -1,3 +1,32 @@
+/* ===== TOKENS DE COLOR — ROLES (light/dark) ===== */
+:host {
+    --_role-admin-bg: #EFF6FF;
+    --_role-admin-fg: #2563EB;
+    --_role-admin-border: #BFDBFE;
+
+    --_role-user-bg: #E6F7F2;
+    --_role-user-fg: #0BAB7C;
+    --_role-user-border: #A7F3D0;
+
+    --_role-editor-bg: #FFF7ED;
+    --_role-editor-fg: #EA580C;
+    --_role-editor-border: #FED7AA;
+}
+
+:host-context(.app-dark) {
+    --_role-admin-bg: color-mix(in srgb, #2563EB 20%, transparent);
+    --_role-admin-fg: #93C5FD;
+    --_role-admin-border: color-mix(in srgb, #2563EB 40%, transparent);
+
+    --_role-user-bg: color-mix(in srgb, #0BAB7C 20%, transparent);
+    --_role-user-fg: #6EE7B7;
+    --_role-user-border: color-mix(in srgb, #0BAB7C 40%, transparent);
+
+    --_role-editor-bg: color-mix(in srgb, #EA580C 20%, transparent);
+    --_role-editor-fg: #FDBA74;
+    --_role-editor-border: color-mix(in srgb, #EA580C 40%, transparent);
+}
+
 /* ===== ANIMACIONES ===== */
 @keyframes fadeUp {
     from {
@@ -313,21 +342,21 @@
 }
 
 .role-admin {
-    background: #EFF6FF;
-    color: #2563EB;
-    border-color: #BFDBFE;
+    background: var(--_role-admin-bg);
+    color: var(--_role-admin-fg);
+    border-color: var(--_role-admin-border);
 }
 
 .role-user {
-    background: #E6F7F2;
-    color: #0BAB7C;
-    border-color: #A7F3D0;
+    background: var(--_role-user-bg);
+    color: var(--_role-user-fg);
+    border-color: var(--_role-user-border);
 }
 
 .role-editor {
-    background: #FFF7ED;
-    color: #EA580C;
-    border-color: #FED7AA;
+    background: var(--_role-editor-bg);
+    color: var(--_role-editor-fg);
+    border-color: var(--_role-editor-border);
 }
 
 /* ===== ACTIVITY ===== */
