@@ -4,10 +4,10 @@
     <p-tag [value]="nc.estado ?? ''" [severity]="getSeveridad(nc.estado)" styleClass="text-base px-4 py-2" />
     <p class="text-lg font-bold m-0">{{ nc.numeroComprobante }}</p>
     @if (nc.estado === 'AUTORIZADO') {
-      <p class="text-sm text-surface-500 m-0">Autorización: {{ nc.numeroAutorizacion }}</p>
+      <p class="text-sm text-surface-500 dark:text-surface-400 m-0">Autorización: {{ nc.numeroAutorizacion }}</p>
     }
     @if (nc.mensajesSri) {
-      <p class="text-sm text-red-600 m-0 text-center max-w-md">{{ nc.mensajesSri }}</p>
+      <p class="text-sm text-red-600 dark:text-red-400 m-0 text-center max-w-md">{{ nc.mensajesSri }}</p>
     }
     <p-button label="Cerrar" icon="pi pi-times" severity="secondary"
       [outlined]="true" (onClick)="cerrar()" />
@@ -20,30 +20,30 @@
   <!-- Ítems seleccionables -->
   <div class="card p-0 overflow-hidden mb-4">
     <table class="w-full text-sm">
-      <thead class="bg-surface-100">
+      <thead class="bg-surface-100 dark:bg-surface-800">
         <tr>
           <th class="px-3 py-2 w-8"></th>
-          <th class="text-left px-3 py-2 text-surface-600">Producto</th>
-          <th class="text-right px-3 py-2 text-surface-600">P. Unit.</th>
-          <th class="text-right px-3 py-2 text-surface-600 w-28">Cant. a acreditar</th>
-          <th class="text-right px-3 py-2 text-surface-600">Subtotal</th>
+          <th class="text-left px-3 py-2 text-surface-600 dark:text-surface-400">Producto</th>
+          <th class="text-right px-3 py-2 text-surface-600 dark:text-surface-400">P. Unit.</th>
+          <th class="text-right px-3 py-2 text-surface-600 dark:text-surface-400 w-28">Cant. a acreditar</th>
+          <th class="text-right px-3 py-2 text-surface-600 dark:text-surface-400">Subtotal</th>
         </tr>
       </thead>
       <tbody>
         @for (linea of lineas(); track linea.item.productoId) {
-          <tr class="border-t border-surface-200" [class.opacity-40]="!linea.seleccionada">
+          <tr class="border-t border-surface-200 dark:border-surface-700" [class.opacity-40]="!linea.seleccionada">
             <td class="px-3 py-2">
               <p-checkbox [(ngModel)]="linea.seleccionada" [binary]="true" />
             </td>
             <td class="px-3 py-2">
               <span class="font-medium">{{ linea.item.productoNombre }}</span>
-              <span class="text-xs text-surface-400 ml-2">{{ linea.item.productoCodigo }}</span>
-              <span class="text-xs text-surface-400 ml-1">(máx {{ linea.item.cantidad | number:'1.0-3' }})</span>
+              <span class="text-xs text-surface-400 dark:text-surface-500 ml-2">{{ linea.item.productoCodigo }}</span>
+              <span class="text-xs text-surface-400 dark:text-surface-500 ml-1">(máx {{ linea.item.cantidad | number:'1.0-3' }})</span>
             </td>
             <td class="px-3 py-2 text-right tabular-nums">${{ linea.item.precioUnitario | number:'1.2-2' }}</td>
             <td class="px-3 py-2 text-right">
               <input type="number"
-                class="w-24 text-right border border-surface-300 rounded px-2 py-1 text-sm"
+                class="w-24 text-right border border-surface-300 dark:border-surface-500 rounded px-2 py-1 text-sm"
                 [(ngModel)]="linea.cantidad"
                 [disabled]="!linea.seleccionada"
                 [min]="0" [max]="linea.item.cantidad" [step]="1"
@@ -60,24 +60,24 @@
   <div class="flex justify-end mb-4">
     <div class="w-full md:w-60 flex flex-col gap-1">
       <div class="flex justify-between text-sm">
-        <span class="text-surface-500">Subtotal sin IVA</span>
+        <span class="text-surface-500 dark:text-surface-400">Subtotal sin IVA</span>
         <span class="tabular-nums">${{ totalSinIva() | number:'1.2-2' }}</span>
       </div>
       <div class="flex justify-between text-sm">
-        <span class="text-surface-500">IVA 15%</span>
+        <span class="text-surface-500 dark:text-surface-400">IVA 15%</span>
         <span class="tabular-nums">${{ iva() | number:'1.2-2' }}</span>
       </div>
-      <div class="flex justify-between items-baseline pt-2 border-t border-surface-200">
+      <div class="flex justify-between items-baseline pt-2 border-t border-surface-200 dark:border-surface-700">
         <span class="font-bold">Total a acreditar</span>
-        <span class="text-xl font-bold text-green-600 tabular-nums">${{ total() | number:'1.2-2' }}</span>
+        <span class="text-xl font-bold text-green-600 dark:text-green-400 tabular-nums">${{ total() | number:'1.2-2' }}</span>
       </div>
     </div>
   </div>
 
   <!-- Motivo -->
   <div class="mb-4">
-    <label for="nota-credito-motivo" class="block text-sm font-medium text-surface-700 mb-1">
-      Motivo <span class="text-red-500">*</span>
+    <label for="nota-credito-motivo" class="block text-sm font-medium text-surface-700 dark:text-surface-100 mb-1">
+      Motivo <span class="text-red-500 dark:text-red-400">*</span>
     </label>
     <textarea pTextarea
       id="nota-credito-motivo"
@@ -88,7 +88,7 @@
       class="w-full"
       [maxlength]="300"
     ></textarea>
-    <span class="text-xs text-surface-400">{{ motivo().length }}/300</span>
+    <span class="text-xs text-surface-400 dark:text-surface-500">{{ motivo().length }}/300</span>
   </div>
 
   <!-- Restaurar stock -->

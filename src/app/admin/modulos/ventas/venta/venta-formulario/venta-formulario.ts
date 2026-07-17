@@ -123,7 +123,7 @@ export class VentaFormulario implements OnInit {
 
   public overlayNoRowsTemplate = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
-                color:#9ca3af;padding:3rem 0;gap:.5rem">
+                color:var(--ag-secondary-foreground-color);padding:3rem 0;gap:.5rem">
       <i class="pi pi-shopping-cart" style="font-size:2.5rem;opacity:.25"></i>
       <p style="font-weight:500;margin:0">El carrito está vacío</p>
       <p style="font-size:.8125rem;margin:0;opacity:.75">

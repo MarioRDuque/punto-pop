@@ -12,17 +12,17 @@
                     <app-input label="Descripción" id="rolDescripcion" [autofocus]="accion() === accionEnum.EDITAR" />
                 </div>
             </div>
-            <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200 mt-4"
+            <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-surface-200 dark:border-surface-700 mt-4"
                 style="background: var(--surface-hover)">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                    [class.bg-green-100]="previewEstado()" [class.bg-red-100]="!previewEstado()">
+                    [class]="previewEstado() ? 'bg-green-100 dark:bg-green-500/20' : 'bg-red-100 dark:bg-red-500/20'">
                     <i class="pi" style="font-size:.75rem"
                         [class.pi-check]="previewEstado()" [class.text-green-600]="previewEstado()"
                         [class.pi-times]="!previewEstado()" [class.text-red-500]="!previewEstado()"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="text-sm font-semibold">{{ previewEstado() ? 'Rol activo' : 'Rol inactivo' }}</div>
-                    <div class="text-xs text-surface-400">{{ previewEstado() ? 'Los usuarios con este rol pueden operar' : 'Los usuarios con este rol no tienen acceso' }}</div>
+                    <div class="text-xs text-surface-400 dark:text-surface-500">{{ previewEstado() ? 'Los usuarios con este rol pueden operar' : 'Los usuarios con este rol no tienen acceso' }}</div>
                 </div>
                 <app-toggle-switch label="Estado" id="rolEstado" [showLabel]="false" />
             </div>
@@ -35,7 +35,7 @@
                 <table class="w-full text-sm border-collapse">
                     <tbody>
                         @for (mod of modulos; track mod.modulo) {
-                        <tr class="border-b border-surface-200">
+                        <tr class="border-b border-surface-200 dark:border-surface-700">
                             <!-- Columna módulo con checkbox de selección total -->
                             <td class="py-3 pr-4 font-medium w-40 min-w-40">
                                 <div class="flex items-center gap-2">
@@ -62,7 +62,7 @@
                                         [disabled]="rolForm.disabled"
                                         (onChange)="togglePermiso(accion.codigo)"
                                         [inputId]="accion.codigo" />
-                                    <label [for]="accion.codigo" class="cursor-pointer select-none text-surface-600">
+                                    <label [for]="accion.codigo" class="cursor-pointer select-none text-surface-600 dark:text-surface-400">
                                         {{ accion.label }}
                                     </label>
                                 </div>
