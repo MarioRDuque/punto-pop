@@ -4,11 +4,15 @@ import { AuthService } from '../service/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
-  next: HttpHandlerFn
+  next: HttpHandlerFn,
 ) => {
   const token = inject(AuthService).tokenActual();
+  const esRutaPublicaDeAuth =
+    req.url.includes('/auth/login') ||
+    req.url.includes('/auth/forgot-password') ||
+    req.url.includes('/auth/reset-password');
 
-  if (!token || req.url.includes('/auth/login')) {
+  if (!token || esRutaPublicaDeAuth) {
     return next(req);
   }
 
