@@ -29,7 +29,11 @@ export class LayoutService {
     private static readonly DARK_THEME_KEY = 'darkTheme';
 
     private static getStoredDarkTheme(): boolean {
-        return localStorage.getItem(LayoutService.DARK_THEME_KEY) === 'true';
+        try {
+            return localStorage.getItem(LayoutService.DARK_THEME_KEY) === 'true';
+        } catch {
+            return false;
+        }
     }
 
     _config: layoutConfig = {
@@ -176,7 +180,11 @@ export class LayoutService {
 
     onConfigUpdate() {
         this._config = { ...this.layoutConfig() };
-        localStorage.setItem(LayoutService.DARK_THEME_KEY, String(this._config.darkTheme));
+        try {
+            localStorage.setItem(LayoutService.DARK_THEME_KEY, String(this._config.darkTheme));
+        } catch {
+            // localStorage puede fallar (modo privado, cuota excedida); no debe bloquear el update de config
+        }
         this.configUpdate.next(this.layoutConfig());
     }
 
