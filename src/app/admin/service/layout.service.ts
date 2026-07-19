@@ -26,11 +26,17 @@ interface MenuChangeEvent {
     providedIn: 'root'
 })
 export class LayoutService {
+    private static readonly DARK_THEME_KEY = 'darkTheme';
+
+    private static getStoredDarkTheme(): boolean {
+        return localStorage.getItem(LayoutService.DARK_THEME_KEY) === 'true';
+    }
+
     _config: layoutConfig = {
         preset: 'Aura',
         primary: 'violet',
         surface: null,
-        darkTheme: false,
+        darkTheme: LayoutService.getStoredDarkTheme(),
         menuMode: 'static'
     };
 
@@ -91,6 +97,9 @@ export class LayoutService {
 
             if (!this.initialized || !config) {
                 this.initialized = true;
+                if (config) {
+                    this.toggleDarkMode(config);
+                }
                 return;
             }
 
@@ -167,6 +176,7 @@ export class LayoutService {
 
     onConfigUpdate() {
         this._config = { ...this.layoutConfig() };
+        localStorage.setItem(LayoutService.DARK_THEME_KEY, String(this._config.darkTheme));
         this.configUpdate.next(this.layoutConfig());
     }
 
