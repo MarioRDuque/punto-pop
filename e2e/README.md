@@ -48,6 +48,10 @@ Variables de entorno (todas opcionales, tienen default para el setup local típi
   pago Payphone real (requiere `PAYPHONE_TOKEN` de sandbox, se salta si no está seteado).
 - **`nota-credito-debito.spec.ts`** — emisión de nota de crédito. Se salta si el
   comprobante no llegó a `AUTORIZADO` (ver limitación abajo).
+- **`recuperacion-clave.spec.ts`** — link de login → `/auth/forgot-password` → mensaje
+  genérico de confirmación; `/auth/reset-password` sin token, con token inválido, y con
+  contraseñas que no coinciden. Corre siempre. El sub-test que completa un reset real
+  (token real → login con la nueva clave) se salta (ver limitación abajo).
 
 ## Limitaciones conocidas (por qué dos specs se saltan en CI/local sin credenciales)
 
@@ -62,20 +66,26 @@ servicios externos a nivel del backend (el mock tendría que interceptar la llam
   el test se salta con un motivo explícito en vez de simular una aserción vacía.
 - **Payphone `iniciar`**: sin `PAYPHONE_TOKEN` el backend no puede autenticarse contra la
   API real de Payphone.
+- **Reset de contraseña con token real** (`recuperacion-clave.spec.ts`): el token que
+  genera `/auth/forgot-password` solo se puede obtener leyendo el email real que manda el
+  backend o consultando la base de datos directamente — Playwright no tiene acceso a
+  ninguno de los dos, y por diseño no existe (ni debería existir) un endpoint que exponga
+  el token. Se probó manualmente end-to-end contra el backend real durante el desarrollo
+  de PUN-45.
 
-Ambos tests están completos y listos para correr en un entorno con sandbox real (SRI de
-certificación / Payphone sandbox) — solo requieren las variables de entorno correspondientes.
+Estos tests están completos y listos para correr en un entorno con las credenciales/acceso
+correspondiente — solo requieren las variables de entorno o la infraestructura del caso.
 
 **Follow-up sugerido**: levantar un mock del WSDL del SRI y de la API de Payphone (p. ej.
-WireMock) parametrizable vía `app.sri.*`/`app.payphone.base-url`, para poder correr estos
+WireMock) parametrizable vía `app.sri.*`/`app.payphone.base-url`, para poder correr esos
 dos flujos completos en CI sin depender de sandboxes externos.
 
-## Bug encontrado durante esta suite (no corregido acá, fuera de alcance)
+## Bug encontrado durante esta suite — ya corregido (PUN-38)
 
-`VentaServiceImpl.filtrar` (`puntopopserver`) arma el filtro `q` con
-`root.join("cliente")`, que es un **inner join** por default en JPA Criteria. Cualquier
-venta sin cliente asignado (consumidor final, el caso más común) queda excluida del
-resultado de `GET /ventas/venta/filtrar?q=...` aunque su número matchee, porque el join
-descarta la fila antes de evaluar el `OR`. Se evitó en los tests filtrando por `estado` en
-vez de `q`. Vale la pena un fix (`root.join("cliente", JoinType.LEFT)`) y un issue de
-Linear aparte.
+`VentaServiceImpl.filtrar` (`puntopopserver`) armaba el filtro `q` con
+`root.join("cliente")`, un **inner join** por default en JPA Criteria, que excluía del
+resultado de `GET /ventas/venta/filtrar?q=...` cualquier venta sin cliente asignado
+(consumidor final, el caso más común) aunque su número matchee. Se evitó en los tests
+filtrando por `estado` en vez de `q`. El fix (`root.join("cliente", JoinType.LEFT)`) ya
+está mergeado en `master` de `puntopopserver` (PUN-38) — los tests siguen filtrando por
+`estado` porque ya estaban escritos así y funciona igual, no porque el bug siga vigente.
