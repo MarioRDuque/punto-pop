@@ -1,5 +1,4 @@
 <div class="login-wrapper">
-
   <!-- ══════════ FONDO ANIMADO ══════════ -->
   <div class="lw-bg" aria-hidden="true">
     <div class="lw-bg__orb lw-bg__orb--a"></div>
@@ -32,18 +31,21 @@
     <!-- Contenido central -->
     <div class="brand-center">
       <h1 class="brand-headline">
-        Gestiona tu<br>
-        <em class="brand-headline__em">negocio</em><br>
+        Gestiona tu<br />
+        <em class="brand-headline__em">negocio</em><br />
         en un solo lugar
       </h1>
       <p class="brand-description">
-        Plataforma integral con facturación electrónica SRI,
-        inventario y control de acceso seguro.
+        Plataforma integral con facturación electrónica SRI, inventario y control de acceso seguro.
       </p>
       <div class="brand-features">
-        <div class="feature-row"><span class="bp-dot"></span>Facturación electrónica SRI en tiempo real</div>
+        <div class="feature-row">
+          <span class="bp-dot"></span>Facturación electrónica SRI en tiempo real
+        </div>
         <div class="feature-row"><span class="bp-dot"></span>Control de inventario y compras</div>
-        <div class="feature-row"><span class="bp-dot"></span>Acceso seguro con roles y permisos</div>
+        <div class="feature-row">
+          <span class="bp-dot"></span>Acceso seguro con roles y permisos
+        </div>
       </div>
     </div>
 
@@ -57,14 +59,12 @@
 
   <!-- ══════════ PANEL DERECHO — FORMULARIO ══════════ -->
   <div class="form-panel">
-
     <div class="theme-toggle-corner">
       <app-floating-configurator [float]="false" />
     </div>
 
     <div class="form-center">
       <div class="login-box">
-
         <!-- Logo solo en móvil -->
         <div class="mobile-logo">
           <div class="mobile-initials-box">PP</div>
@@ -83,15 +83,12 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" autocomplete="off" novalidate>
           <div class="fields-stack">
-            <app-input
-              label="Usuario"
-              id="email"
-              [icon]="ICONSCONSTANT.USER"
-              [uppercase]="false" />
-            <app-password
-              label="Contraseña"
-              id="password"
-              [uppercase]="false" />
+            <app-input label="Usuario" id="email" [icon]="ICONSCONSTANT.USER" [uppercase]="false" />
+            <app-password label="Contraseña" id="password" [uppercase]="false" />
+          </div>
+
+          <div class="forgot-password-link">
+            <a routerLink="/auth/forgot-password">¿Olvidaste tu contraseña?</a>
           </div>
 
           <p-button
@@ -100,14 +97,12 @@
             icon="pi pi-arrow-right"
             iconPos="right"
             styleClass="login-submit-btn"
-            [loading]="cargandoLogin()" />
+            [loading]="cargandoLogin()"
+          />
         </form>
 
         <div class="form-bottom">© {{ anio }} Punto Pop · v1.0.0</div>
-
       </div>
     </div>
-
   </div>
-
 </div>
